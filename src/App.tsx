@@ -1,17 +1,13 @@
 import { ApolloProvider } from '@apollo/client';
-import {client } from './config/apollo';
-import { DashboardTable } from './components/Table/DashboardTable';
-import { DashboardFilters } from './components/Filters/DashboardFilters';
-import { DashboardLayout } from './components/Layout/DashboardLayout';
+import { client } from './api/graphqlClient';
+import Dashboard from './pages/Dashboard';
+
 function App() {
   return (
     <ApolloProvider client={client}>
-        <DashboardLayout>
-        <DashboardFilters />
-        <DashboardTable />
-      </DashboardLayout>
+      <Dashboard />
     </ApolloProvider>
   );
 }
 
- export default App; 
+export default App; 
