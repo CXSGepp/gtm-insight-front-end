@@ -1,19 +1,50 @@
 import React from "react";
 import { DashboardFilters } from "../Filters/DashboardFilters";
 import DataTable from "../components/Layout/table/DataTable";
-import { Typography, Box } from '@mui/material';
-import logoGepp from "../assets/GEPP_Logo_fondo_blanco.png"; // Import the image
+import { Typography, Box, Paper } from '@mui/material';
+import { useTableStore } from "../store/useTableStore";
+import Sidebar from "../components/Sidebar";
 
-export default function Dashboard() {
+
+type Props = {
+  mode: 'CLIENT' | 'WAREHOUSE'
+ }
+
+export default function Dashboard({ mode }: Props) {
+  const { setFilters } = useTableStore()
+
+  React.useEffect(() => {
+    console.log("Dashboard mounted with mode:", mode)
+    setFilters({ viewMode: mode })
+  }, [mode, setFilters])
+
   return (
+    
 
-    <div className="p-4">
-          <Box display="flex" alignItems="center" justifyContent="space-between">
-      <Typography variant="h4" >Reporte GEPP En Tus Manos</Typography>
-      <img src={logoGepp} alt="GEPP Logo" style={{ height: "100px" }} />
+  <Paper
+    sx={{
+      maxWidth: '1400px',
+      width: '100%',
+      minHeight: '100vh',
+      p: 3,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',  
+      gap: 2,
+      boxShadow: 3,
+      bgcolor: 'background.paper',
+    }}
+  >
+    
+    <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+      <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+        Reporte GETM
+      </Typography>
     </Box>
       <DashboardFilters />
       <DataTable />
-    </div>
-  );
+    </Paper>
+
+    );
+  
 }

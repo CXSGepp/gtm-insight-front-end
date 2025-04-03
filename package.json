@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@mui/x-data-grid": "^7.27.2",
+    "@tanstack/react-router": "^1.114.32",
     "@tanstack/react-table": "^8.21.2",
     "@types/react-window": "^1.8.8",
     "react": "^19.0.0",
@@ -21,6 +22,8 @@
   "devDependencies": {
     "@eslint/js": "^9.21.0",
     "@tailwindcss/postcss": "^4.0.12",
+    "@tanstack/react-router-devtools": "^1.114.32",
+    "@tanstack/router-plugin": "^1.114.32",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",

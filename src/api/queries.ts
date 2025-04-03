@@ -41,6 +41,45 @@ export const GET_DISTINCT_FILTER_OPTIONS = gql`
       bodegas
       tiposruta
       clasificaciones
+      
+    }
+  }
+`;
+
+export const GET_SKUS_FOR_ROW = gql`
+  query getSkusForRow(
+    $page: Int,
+    $limit: Int,
+    $filters: EtmDashboardFilterInput,
+    $bodega: Int!,
+    $cliente: Int
+  ) {
+    getSkusForRow(
+      page: $page,
+      limit: $limit,
+      filters: $filters,
+      bodega: $bodega,
+      cliente: $cliente
+    ) {
+      items {
+        ID
+        CLIENTE
+        BODEGA
+        ID_PRODUCTO
+        DESCRIPCION
+        ACTIVO_OPM
+        ACTIVO_SIO
+        ACTIVO_HH
+        CANAL
+        LISTA_PRECIO
+        FECHA_REGISTRO
+        DATABASE
+        SEMAFORO_GLOBAL
+        LAST_UPDATED
+      }
+      total
+      hasMore
+      page
     }
   }
 `;

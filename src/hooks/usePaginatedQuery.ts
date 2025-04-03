@@ -25,6 +25,11 @@ export function usePaginatedQuery() {
     bodegas: [],
     tiposRuta: [],
     clasificaciones: [],
+    skus: [],
+    baseDatos: [],
+    estatusOpm: [],
+    estatusSio: [],
+    uopm: [],
   });
 
   useEffect(() => {
