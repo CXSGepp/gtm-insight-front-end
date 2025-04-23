@@ -1,9 +1,8 @@
 import React from "react";
 import { DashboardFilters } from "../Filters/DashboardFilters";
 import DataTable from "../components/Layout/table/DataTable";
-import { Typography, Box, Paper } from '@mui/material';
 import { useTableStore } from "../store/useTableStore";
-import Sidebar from "../components/Sidebar";
+import { Box, Paper } from "@mui/material";
 
 
 type Props = {
@@ -19,32 +18,29 @@ export default function Dashboard({ mode }: Props) {
   }, [mode, setFilters])
 
   return (
-    
-
-  <Paper
+    <Box
     sx={{
-      maxWidth: '1400px',
-      width: '100%',
-      minHeight: '100vh',
-      p: 3,
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',  
-      gap: 2,
-      boxShadow: 3,
-      bgcolor: 'background.paper',
+      display: "flex",
+      justifyContent: "center",
+      width: "100%",
+      mt: 4, // Margen superior opcional
     }}
   >
-    
-    <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
-      <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-        Reporte GETM
-      </Typography>
-    </Box>
-      <DashboardFilters />
+    <Paper
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+        maxWidth: "1200px", // Máximo ancho del contenido
+        px: 4,
+        py: 2,
+      }}
+    >
+      <DashboardFilters mode={mode} />
       <DataTable />
     </Paper>
-
-    );
+  </Box>
+  
+  );
   
 }

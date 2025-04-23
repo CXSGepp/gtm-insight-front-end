@@ -11,6 +11,10 @@ import {
   TableFooter,
   TablePagination,
   Chip,
+  Typography,
+  Box,
+  Modal,
+  Button,
 } from "@mui/material";
 import {
   useReactTable,
@@ -19,8 +23,44 @@ import {
   ColumnDef,
   getPaginationRowModel,
 } from "@tanstack/react-table";
-// import { fetchSkusForRow } from "../api/fetchSkusForRow"; // Ya no se usa para demo
 import { useTableStore } from "../store/useTableStore";
+
+const mockPromotions = [
+  { id: 1, promo: "2x1 en Julio", fechaInicio: "2025-07-01", fechaFin: "2025-07-31" },
+  { id: 2, promo: "Descuento 10%", fechaInicio: "2025-08-01", fechaFin: "2025-08-15" },
+];
+
+const PromoModal = ({ open, handleClose, sku }: { open: boolean; handleClose: () => void; sku: string }) => {
+  return (
+    <Modal open={open} onClose={handleClose}>
+      <Box sx={{ p: 4, backgroundColor: "white", margin: "auto", mt: 10, width: 600, borderRadius: 2 }}>
+        <Typography variant="h6" gutterBottom>
+          Promociones simuladas para SKU: {sku}
+        </Typography>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell >ID</TableCell>
+              <TableCell>Promoción</TableCell>
+              <TableCell>Fecha Inicio</TableCell>
+              <TableCell>Fecha Fin</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {mockPromotions.map((promo) => (
+              <TableRow key={promo.id}>
+                <TableCell sx={{color: "black"}}>{promo.id}</TableCell>
+                <TableCell sx={{color: "black"}}>{promo.promo}</TableCell>
+                <TableCell sx={{color: "black"}}>{promo.fechaInicio}</TableCell>
+                <TableCell sx={{color: "black"}}>{promo.fechaFin}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Box>
+    </Modal>
+  );
+};
 
 const renderChip = (value: number) => (
   <Chip
@@ -28,12 +68,10 @@ const renderChip = (value: number) => (
     variant="outlined"
     size="small"
     color={value === 1 ? "success" : "error"}
-
   />
 );
 
 const renderChipGlobal = (value: string) => {
-  // Convertir a minúsculas para comparar sin problemas
   const state = value.toLowerCase();
   let label = value;
   let color: "success" | "error" | "warning" | "default" = "default";
@@ -65,6 +103,7 @@ const renderChipGlobal = (value: string) => {
     />
   );
 };
+
 const skuColumns: ColumnDef<any>[] = [
   { accessorKey: "ID_PRODUCTO" },
   { accessorKey: "DESCRIPCION" },
@@ -89,10 +128,20 @@ const skuColumns: ColumnDef<any>[] = [
     cell: ({ cell }) => renderChip(cell.getValue<number>()),
   },
   { accessorKey: "DATABASE", header: "Database" },
-  { accessorKey: "SEMAFORO_GLOBAL", header: "Semáforo Global",
+  {
+    accessorKey: "SEMAFORO_GLOBAL",
+    header: "Semáforo Global",
     cell: ({ cell }) => renderChipGlobal(cell.getValue<string>()),
-   },
-  
+  },
+  {
+    id: "promos",
+    header: "Promociones",
+    cell: ({ row }) => (
+      <Button size="small" variant="outlined" onClick={() => row.original.handleOpenModal(row.original.ID_PRODUCTO)}>
+        Ver Promos
+      </Button>
+    ),
+  },
 ];
 
 interface SkuDetailTableProps {
@@ -100,7 +149,7 @@ interface SkuDetailTableProps {
   cliente?: number;
 }
 
-const dummyData = [
+const dummyDataBase = [
   {
     ID_PRODUCTO: 3370,
     DESCRIPCION: "seven up six",
@@ -111,106 +160,111 @@ const dummyData = [
     DATABASE: "Refresco",
     SEMAFORO_GLOBAL: "VERDE",
   },
-  {
+    {
     ID_PRODUCTO: 8890,
-    DESCRIPCION: "seven up six",
+    DESCRIPCION: "mirinda naranja",
     ACTIVO_OPM: 0,
     ACTIVO_SIO: 1,
     ACTIVO_HH: 0,
     CANAL: 1,
     DATABASE: "Refresco",
-    SEMAFORO_GLOBAL: "ROJO",
+    SEMAFORO_GLOBAL: "ROJO"
   },
   {
     ID_PRODUCTO: 3340,
-    DESCRIPCION: "seven up six",
+    DESCRIPCION: "pepsi black",
     ACTIVO_OPM: 1,
     ACTIVO_SIO: 1,
     ACTIVO_HH: 1,
     CANAL: 0,
     DATABASE: "Refresco",
-    SEMAFORO_GLOBAL: "AMARILLO",
+    SEMAFORO_GLOBAL: "AMARILLO"
   },
   {
-    ID_PRODUCTO: 3320,
-    DESCRIPCION: "seven up six",
+    ID_PRODUCTO: 4455,
+    DESCRIPCION: "mountain dew",
     ACTIVO_OPM: 0,
     ACTIVO_SIO: 0,
     ACTIVO_HH: 1,
-    CANAL: 1,
-    DATABASE: "Refresco",
-    SEMAFORO_GLOBAL: "VERDE",
-  },
-  {
-    ID_PRODUCTO: 3370,
-    DESCRIPCION: "seven up six",
-    ACTIVO_OPM: 1,
-    ACTIVO_SIO: 0,
-    ACTIVO_HH: 0,
     CANAL: 2,
     DATABASE: "Refresco",
-    SEMAFORO_GLOBAL: "ROJO",
+    SEMAFORO_GLOBAL: "VERDE"
   },
   {
-    ID_PRODUCTO: 3320,
-    DESCRIPCION: "seven up six",
+    ID_PRODUCTO: 5566,
+    DESCRIPCION: "lipton té",
+    ACTIVO_OPM: 1,
+    ACTIVO_SIO: 1,
+    ACTIVO_HH: 0,
+    CANAL: 2,
+    DATABASE: "Té",
+    SEMAFORO_GLOBAL: "VERDE"
+  },
+  {
+    ID_PRODUCTO: 6677,
+    DESCRIPCION: "agua pura",
     ACTIVO_OPM: 0,
+    ACTIVO_SIO: 1,
+    ACTIVO_HH: 1,
+    CANAL: 0,
+    DATABASE: "Agua",
+    SEMAFORO_GLOBAL: "ROJO"
+  },
+  {
+    ID_PRODUCTO: 7788,
+    DESCRIPCION: "juguito kids",
+    ACTIVO_OPM: 1,
     ACTIVO_SIO: 0,
     ACTIVO_HH: 1,
     CANAL: 1,
-    DATABASE: "Refresco",
-    SEMAFORO_GLOBAL: "VERDE",
+    DATABASE: "Jugos",
+    SEMAFORO_GLOBAL: "AMARILLO"
   },
   {
-    ID_PRODUCTO: 3370,
-    DESCRIPCION: "seven up six",
+    ID_PRODUCTO: 8899,
+    DESCRIPCION: "gatorade blue",
     ACTIVO_OPM: 1,
-    ACTIVO_SIO: 0,
-    ACTIVO_HH: 0,
-    CANAL: 2,
-    DATABASE: "Refresco",
-    SEMAFORO_GLOBAL: "ROJO",
-  },
-  {
-    ID_PRODUCTO: 3320,
-    DESCRIPCION: "seven up six",
-    ACTIVO_OPM: 0,
-    ACTIVO_SIO: 0,
+    ACTIVO_SIO: 1,
     ACTIVO_HH: 1,
     CANAL: 1,
-    DATABASE: "Refresco",
-    SEMAFORO_GLOBAL: "VERDE",
+    DATABASE: "Energético",
+    SEMAFORO_GLOBAL: "VERDE"
   },
   {
-    ID_PRODUCTO: 3370,
-    DESCRIPCION: "seven up six",
-    ACTIVO_OPM: 1,
+    ID_PRODUCTO: 9900,
+    DESCRIPCION: "pepsi max",
+    ACTIVO_OPM: 0,
     ACTIVO_SIO: 0,
     ACTIVO_HH: 0,
-    CANAL: 2,
+    CANAL: 0,
     DATABASE: "Refresco",
-    SEMAFORO_GLOBAL: "ROJO",
-  },
+    SEMAFORO_GLOBAL: "ROJO"
+  }
 ];
 
 const SkuDetailTable: React.FC<SkuDetailTableProps> = ({ bodega, cliente }) => {
-  // Para demo, ignoramos bodega y cliente y usamos datos dummy.
-  // Si deseas que el valor de bodega y cliente se muestren en la UI, puedes agregarlos en la descripción.
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [total, setTotal] = useState<number>(0);
   const [page, setPage] = useState<number>(0);
   const [limit, setLimit] = useState<number>(50);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedSku, setSelectedSku] = useState<string>("");
+
+  const handleOpenModal = (sku: string) => {
+    setSelectedSku(sku);
+    setModalOpen(true);
+  };
 
   useEffect(() => {
-    // Simula la carga de datos (por ejemplo, con un timeout)
     setLoading(true);
     setTimeout(() => {
-      setData(dummyData);
-      setTotal(dummyData.length);
+      const enrichedData = dummyDataBase.map((item) => ({ ...item, handleOpenModal }));
+      setData(enrichedData);
+      setTotal(enrichedData.length);
       setLoading(false);
     }, 500);
-  }, [bodega, cliente]); // Si deseas recargar al cambiar bodega o cliente
+  }, [bodega, cliente]);
 
   const table = useReactTable({
     data,
@@ -238,13 +292,7 @@ const SkuDetailTable: React.FC<SkuDetailTableProps> = ({ bodega, cliente }) => {
 
   return (
     <Paper sx={{ width: "100%", overflow: "hidden", mt: 1 }}>
-      <TableContainer
-        sx={{
-          maxHeight: 300,
-          overflowY: "auto",
-          overflowX: "auto",
-        }}
-      >
+      <TableContainer sx={{ maxHeight: 300, overflowY: "auto", overflowX: "auto" }}>
         <Table stickyHeader size="small" aria-label="tabla de SKUs">
           <TableHead>
             <TableRow>
@@ -299,6 +347,7 @@ const SkuDetailTable: React.FC<SkuDetailTableProps> = ({ bodega, cliente }) => {
           </TableFooter>
         </Table>
       </TableContainer>
+      <PromoModal open={modalOpen} handleClose={() => setModalOpen(false)} sku={selectedSku} />
     </Paper>
   );
 };

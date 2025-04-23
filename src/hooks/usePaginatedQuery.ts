@@ -23,7 +23,7 @@ export function usePaginatedQuery() {
     regiones: [],
     zonas: [],
     bodegas: [],
-    tiposRuta: [],
+    tiposruta: [],
     clasificaciones: [],
     skus: [],
     baseDatos: [],

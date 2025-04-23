@@ -1,17 +1,18 @@
 import React from "react";
 import {
-  Paper,
+  
   TextField,
   Button,
   Box,
   Autocomplete,
   ToggleButtonGroup,
   ToggleButton,
+  Paper,
 } from "@mui/material";
 import { useTableStore } from "../store/useTableStore";
 import { usePaginatedQuery } from "../hooks/usePaginatedQuery";
-// Importamos los tipos comunes
 import { FilterValue, Filters } from "../shared/types";
+import { max } from 'lodash';
 
 const filterKeyMap: Record<string, string> = {
   cliente: "cliente",
@@ -19,7 +20,7 @@ const filterKeyMap: Record<string, string> = {
   region: "region",
   zona: "zona",
   bodega: "bodega",
-  tiposruta: "tiposruta",
+  tiposuta: "tiposruta",
   clasificaciones: "clasificacion",
   sku: "sku",
   bd: "bd",
@@ -72,14 +73,13 @@ export const DashboardFilters = ({ mode }: Props) => {
     setLocalFilters(filters);
   }, [filters]);
 
-  // Destructuramos todas las opciones, incluyendo las nuevas
   const {
     clientes = [],
     telefonos = [],
     regiones = [],
     zonas = [],
     bodegas = [],
-    tiposRuta = [],
+    tiposruta = [],
     clasificaciones = [],
     skus = [],
     baseDatos = [],
@@ -100,12 +100,9 @@ export const DashboardFilters = ({ mode }: Props) => {
     options: (string | number)[],
     isNumber = false
   ) => (
-    <Box sx={{ width: "100%", maxWidth: 250 }} key={field}>
-      <Autocomplete
-        // Puedes descomentar freeSolo si quieres permitir entrada libre
-        // freeSolo
-        size="small"
-        options={options.length > 0 ? options.map(String) : []}
+
+      <Autocomplete 
+      options={options.length > 0 ? options.map(String) : []}
         value={
           localFilters[field] !== null && localFilters[field] !== undefined
             ? String(localFilters[field])
@@ -117,13 +114,16 @@ export const DashboardFilters = ({ mode }: Props) => {
         loading={loading}
         loadingText="Cargando..."
         noOptionsText="Sin opciones"
+        sx={{
+          minWidth: 160, 
+        }}
       />
-    </Box>
+
   );
 
   return (
-    <Paper sx={{ p: 4, mb: 4 }}>
-      <Box component="form" onSubmit={handleSubmit}>
+<Paper sx={{ display: "flex", flexDirection: "column", padding: 0, mt: 0, pt: 0 }}>
+<Box component="form" onSubmit={handleSubmit}>
         <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
           <ToggleButtonGroup
             color="primary"
@@ -142,26 +142,42 @@ export const DashboardFilters = ({ mode }: Props) => {
         </Box>
 
         {viewMode === "CLIENT" && (
-          <div className="flex flex-wrap gap-6 p-6">
-            {renderFilter("Cliente", "cliente", clientes, true)}
+          <Box 
+          sx={{
+            
+            display: "flex",
+            flexDirection: "row", // Mostrar horizontalmente
+            flexWrap: "wrap", // Permitir salto de línea si no cabe todo
+            gap: 2, // Espaciado entre filtros
+            mb: 2, // Margen inferior
+            minWidth: 160
+          }}
+          >            {renderFilter("Cliente", "cliente", clientes, true)}
             {renderFilter("Teléfono", "telefonos", telefonos, true)}
             {renderFilter("Región", "region", regiones, true)}
             {renderFilter("Zona", "zona", zonas, true)}
             {renderFilter("Clasificación", "clasificaciones", clasificaciones, true)}
-            {renderFilter("Tipo de Ruta", "tiposruta", tiposRuta)}
+            {renderFilter("Tipo de Ruta", "tiposruta", tiposruta)}
             {renderFilter("Bodega", "bodega", bodegas, true)}
             {renderFilter("SKU", "sku", skus, true)}
             {renderFilter("Base de Datos", "bd", baseDatos, true)}
             {renderFilter("Estatus OPM", "estatusOpm", estatusOpm, true)}
             {renderFilter("Estatus SIO", "estatusSio", estatusSio, true)}
             {renderFilter("UOPM", "uopm", uopm, true)}
-          </div>
+          </Box>
         )}
 
         {viewMode === "WAREHOUSE" && (
-          <div className="flex flex-wrap gap-6 p-6">
+          <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row", // Mostrar horizontalmente
+            flexWrap: "wrap", // Permitir salto de línea si no cabe todo
+            gap: 2, // Espaciado entre filtros
+            mb: 2, 
+          }}>
             {renderFilter("Bodega", "bodega", bodegas, true)}
-            {renderFilter("Tipo de Ruta", "tiposruta", tiposRuta, true)}
+            {renderFilter("Tipo de Ruta", "tiposruta", tiposruta, true)}
             {renderFilter("Clasificación", "clasificaciones", clasificaciones, true)}
             {renderFilter("Región", "region", regiones, true)}
             {renderFilter("Zona", "zona", zonas, true)}
@@ -170,10 +186,9 @@ export const DashboardFilters = ({ mode }: Props) => {
             {renderFilter("Estatus OPM", "estatusOpm", estatusOpm, true)}
             {renderFilter("Estatus SIO", "estatusSio", estatusSio, true)}
             {renderFilter("UOPM", "uopm", uopm)}
-          </div>
+          </Box>
         )}
 
-        <Paper sx={{ p: 2, mt: 2 }}>
           <Box sx={{ display: "flex", gap: 2 }}>
             <Button type="submit" variant="contained" color="primary" disabled={loading}>
               Aplicar Filtros
@@ -182,8 +197,8 @@ export const DashboardFilters = ({ mode }: Props) => {
               Limpiar Filtros
             </Button>
           </Box>
-        </Paper>
+        
       </Box>
-    </Paper>
+</Paper>
   );
 };

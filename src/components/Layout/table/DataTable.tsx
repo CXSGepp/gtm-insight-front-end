@@ -115,7 +115,7 @@ export default function DataTableETM() {
 
   return (
     
-    <Paper sx={{ width: "100%", overflow: "hidden" }}>
+    <Paper sx={{ width: "100%", overflow: "hidden", mt: 4 }}>
       <TableContainer sx={{ maxHeight: 440, overflowY: "auto" }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -124,11 +124,6 @@ export default function DataTableETM() {
                 {headerGroup.headers.map((header) => (
                   <TableCell
                     key={header.id}
-                    sx={{
-                      fontWeight: "bold",
-                      color: "#fff",
-                      borderBottom: "1px solid #333",
-                    }}
                     align={table.getIsAllColumnsVisible() ? "left" : "center"}
                     style={{ minWidth: header.getSize() }}
                   >
