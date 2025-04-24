@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchSkusForRow } from "../api/fetchSkusForRow";
+import { fetchSkusForRow } from "../api/fetchSkusForRow.obsolet";
 import { useTableStore } from "../store/useTableStore";
 
 export function useSkusForRow(bodega: number, cliente?: number, page = 0, limit = 50) {
