@@ -19,15 +19,16 @@ export const dashboardService = {
     ): Promise<DashboardResponse> {
         try {
             const validLimit = Math.min(Math.max(1, limit), 100);
-            const params: DashboardQueryParams = { page, limit: validLimit, filters };
+            const params: DashboardQueryParams = { 
+                page, 
+                limit: validLimit, 
+                filters 
+            };
             
             const response = await fetchWithRetry<DashboardDataResponse, DashboardQueryParams>(
                 GET_REPORT_ETM_DASHBOARD,
                 params
             );
-            if (!response?.getReportEtmDashboard) {
-                throw new Error('No dashboard data received');
-            }
             return response.getReportEtmDashboard;
         } catch (error) {
             throw handleApiError(error);
@@ -36,13 +37,10 @@ export const dashboardService = {
 
     async fetchFilterOptions(): Promise<FilterOptionsResponse> {
         try {
-            const response = await fetchWithRetry<FilterOptionsResponse, object>(
+            const response = await fetchWithRetry<FilterOptionsResponse, {}>(
                 GET_DISTINCT_FILTER_OPTIONS,
                 {}
             );
-            if (!response) {
-                throw new Error('No filter options received');
-            }
             return response;
         } catch (error) {
             throw handleApiError(error);

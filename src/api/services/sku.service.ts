@@ -11,9 +11,6 @@ export const skuService = {
                 GET_SKUS_FOR_ROW,
                 params
             );
-            if (!response?.getSkusForRow) {
-                throw new Error('No SKU data received');
-            }
             return response.getSkusForRow;
         } catch (error) {
             throw handleApiError(error);
