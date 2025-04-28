@@ -1,5 +1,3 @@
-import { DashboardFilters } from '../../Filters/DashboardFilters';
-
 export interface DashboardItem {
     ID: number;
     REGION: string;
@@ -10,60 +8,91 @@ export interface DashboardItem {
     CLIENTE?: number;
     NOMBRE?: string;
     TIPO_RUTA: string;
-    CLASIFICA: string;
+    CLASIFICACION: string;
     FRECUENCIA: string;
-    CLAVE_LISTA: string;
-    ACTIVA: boolean;
+    CLAVE_LISTA: number;
+    ACTIVA: string;
     TELEFONO?: string;
     DIRECCION?: string;
     LAST_UPDATED: string;
-}
-
-export interface DashboardResponse {
+  }
+  
+  export interface DashboardResponse {
     items: DashboardItem[];
     total: number;
     hasMore: boolean;
     page: number;
-}
-
-export interface DashboardFilters {
-    cliente?: number;
-    telefonos?: string[];
+  }
+  
+  export interface DashboardFilters {
     region?: string;
     zona?: string;
-    clasificaciones?: string[];
-    tiposruta?: string[];
+    localidad?: string;
     bodega?: number;
-    skus?: string[];
-    baseDatos?: string;
+    ruta?: number;
+    cliente?: number;
+    nombre?: string;
+    tipoRuta?: string;
+    clasificacion?: string;
+    claveLista?: number;
+    activa?: string;
+    telefono?: string;
+    direccion?: string;
+    viewMode?: string;
+    sku?: string;
+    bd?: string;
+    uopm?: string;
     estatusOpm?: string;
     estatusSio?: string;
-    uopm?: string;
-}
-
-export interface DashboardFilterOptions {
+    fechaRegistro?: string;
+  }
+  
+  export interface DashboardFilterOptions {
     clientes: string[];
     telefonos: string[];
     regiones: string[];
     zonas: string[];
-    bodegas: string[];
+    bodegas: number[]; // <<== fixed from string[] to number[]
     tiposruta: string[];
     clasificaciones: string[];
-}
-
-export interface PaginationParams {
+  }
+  
+  export interface PaginationParams {
     page: number;
     limit: number;
-}
-
-export interface DashboardQueryParams extends PaginationParams {
+  }
+  
+  export interface DashboardQueryParams extends PaginationParams {
     filters: DashboardFilters;
-}
-
-export interface FilterOptionsResponse {
+  }
+  
+  export interface FilterOptionsResponse {
     getDistinctFilterOptions: DashboardFilterOptions;
-}
-
-export interface DashboardDataResponse {
+  }
+  
+  export interface DashboardDataResponse {
     getReportEtmDashboard: DashboardResponse;
+  }
+
+export interface EtmDashboardFilterInput {
+  region?: string;
+  zona?: string;
+  localidad?: string;
+  bodega?: number;
+  ruta?: number;
+  cliente?: number;
+  nombre?: string;
+  tipoRuta?: string;
+  clasificacion?: string;
+  claveLista?: number;
+  activa?: string;
+  telefono?: string;
+  direccion?: string;
+  viewMode?: string;
+  sku?: string;
+  bd?: string;
+  uopm?: string;
+  estatusOpm?: string;
+  estatusSio?: string;
+  fechaRegistro?: string;
 }

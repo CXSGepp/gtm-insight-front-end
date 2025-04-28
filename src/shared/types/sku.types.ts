@@ -1,3 +1,5 @@
+import { DashboardFilters } from "./dashboard.types";
+
 export interface SkuItem {
     ID: number;
     CLIENTE: number;
@@ -13,33 +15,34 @@ export interface SkuItem {
     DATABASE: string;
     SEMAFORO_GLOBAL: string;
     LAST_UPDATED: string;
-}
-
-export interface SkuResponse {
+  }
+  
+  export interface SkuResponse {
     items: SkuItem[];
     total: number;
     hasMore: boolean;
     page: number;
-}
-
-export interface SkuQueryParams {
+  }
+  
+  export interface SkuQueryParams {
     bodega: number;
     cliente?: number;
-    filters: Record<string, any>; 
+    filters: DashboardFilters; // <<== typed properly now
     page: number;
     limit: number;
-}
-
-export interface SkuDataResponse {
+  }
+  
+  export interface SkuDataResponse {
     getSkusForRow: SkuResponse;
-}
-
-export interface SkuStatus {
+  }
+  
+  export interface SkuStatus {
     opm: boolean;
     sio: boolean;
     hh: boolean;
-}
-
-export interface SkuItemWithStatus extends SkuItem {
+  }
+  
+  export interface SkuItemWithStatus extends SkuItem {
     status: SkuStatus;
-}
+  }
+  
