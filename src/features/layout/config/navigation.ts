@@ -1,18 +1,24 @@
-import { Home, Warehouse } from '@mui/icons-material';
-
-
+import { Warehouse } from '@mui/icons-material';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 
 export const navigationItems = [
   {
-    label: 'Cliente-Bodega',
-    icon: Home,
-    path: '/',
-    key: 'customer'
-  },
-  {
-    label: 'Bodega',
-    icon: Warehouse,
-    path: '/warehouse',
-    key: 'warehouse'
-  }
+    label: 'Dashboard',
+    icon: AssessmentIcon,
+    key: 'dashboard',
+    children: [
+      {
+        label: 'Cliente',
+        icon: SupportAgentIcon,
+        key: 'customer'
+      },
+      {
+        label: 'Bodega',
+        icon: Warehouse,
+        path:'/warehouse',
+        key: 'warehouse'
+      }
+    ]
+  } 
 ];

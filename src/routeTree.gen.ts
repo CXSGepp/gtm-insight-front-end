@@ -10,10 +10,10 @@
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as WarehouseDashboardImport } from './routes/warehouseDashboard'
-import { Route as RouterImport } from './routes/router'
-import { Route as ClientDashboardImport } from './routes/clientDashboard'
+import { Route as rootRoute } from './app/routes/__root'
+import { Route as WarehouseDashboardImport } from './app/routes/warehouse/warehouseDashboard'
+import { Route as RouterImport } from './app/routes/router'
+import { Route as ClientDashboardImport } from './app/routes/customer/custumerDashboard'
 
 // Create/Update Routes
 
