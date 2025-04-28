@@ -51,8 +51,8 @@ export default function CustomerFilters() {
       <FilterInput
         label="Tipo Ruta"
         type="autocomplete"
-        options={filterOptions.tiposruta || []}
-        value={filters.tiposruta || ''}
+        options={filterOptions.tiposRuta || []}
+        value={filters.tiposRuta || ''}
         onChange={(value) => setFilters({ ...filters, tiposruta: value })}
       />
       <FilterInput

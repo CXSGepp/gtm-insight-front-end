@@ -9,7 +9,7 @@ const emptyFilterOptions: DashboardFilterOptions = {
   regiones: [],
   zonas: [],
   bodegas: [],
-  tiposruta: [],
+  tiposRuta: [],
   clasificaciones: [],
 };
 

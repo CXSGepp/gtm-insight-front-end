@@ -8,7 +8,7 @@ export const GET_DISTINCT_FILTER_OPTIONS = gql`
             regiones
             zonas
             bodegas
-            tiposruta
+            tiposRuta
             clasificaciones
         }
     }

@@ -20,7 +20,7 @@ function mapFrontendFiltersToBackend(filters: DashboardFilters): EtmDashboardFil
     telefono: filters.telefono,
     region: filters.region,
     zona: filters.zona,
-    tipoRuta: filters.tipoRuta,
+    tiposRuta: filters.tiposRuta,
     clasificacion: filters.clasificacion,
     bodega: filters.bodega,
     sku: filters.sku,
