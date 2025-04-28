@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const ETM_DASHBOARD_FIELDS = gql`
-    fragment DashboardFields on EtmDashboard {
+    fragment DashboardFields on ReportGeppEtmEntity {
     ID
     REGION
     ZONA

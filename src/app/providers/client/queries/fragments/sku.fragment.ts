@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const SKU_FIELDS = gql`
-    fragment SkuFields on Sku {
+    fragment SkuFields on ReportGeppEtmSkusEntity {
         ID
         CLIENTE
         BODEGA
