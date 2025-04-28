@@ -37,7 +37,7 @@ export function usePaginatedCustomerQuery() {
 
     return {
         rows,
-        total: rows.legth,
+        total: rows.length,
         loading,
         page,
         pageSize,
