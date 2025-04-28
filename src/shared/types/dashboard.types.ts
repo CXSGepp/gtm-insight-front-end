@@ -32,7 +32,7 @@ export interface DashboardFilters {
   ruta?: number;
   cliente?: number;
   nombre?: string;
-  tipoRuta?: string;
+  tiposRuta?: string;
   clasificacion?: string;
   claveLista?: number;
   activa?: string;
@@ -81,7 +81,7 @@ export interface EtmDashboardFilterInput {
   zona?: string;
   localidad?: string;
   ruta?: number;
-  tipoRuta?: string;
+  tiposRuta?: string;
   clasificacion?: string;
   bodega?: number;
   sku?: string;
