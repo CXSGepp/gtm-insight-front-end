@@ -4,7 +4,7 @@ import { navigationItems } from '../../config/navigation';
 import { useLayoutStore } from '../../store/useLayoutStore';
 import { Box, Divider, List, ListItemButton, ListItemIcon, ListItemText, Paper, Collapse } from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import geppLogo from '../../assets/logo.png';
+import geppLogo from '../../../../assets/geppLogo.png';
 export const Sidebar = () => {
   const { sidebarOpen } = useLayoutStore();
   const router = useRouter();

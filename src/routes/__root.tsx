@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet } from '@tanstack/react-router';
-import Layout from '../../features/layout/components/base/Layout';
+import Layout from '../features/layout/components/base/Layout';
 
 export default function RootRoute() {
   return (

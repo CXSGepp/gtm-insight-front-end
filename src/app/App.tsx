@@ -3,7 +3,7 @@ import { ApolloProvider } from '@apollo/client';
 import { client } from '../app/providers/client/graphqlClient';
 
 import { RouterProvider } from '@tanstack/react-router';
-import { router } from '../app/routes/router';
+import { router } from '../routes/router';
 import { ThemeProvider } from '@mui/material';
 import theme from '../theme';
 

@@ -10,18 +10,12 @@
 
 // Import Routes
 
-import { Route as rootRoute } from './app/routes/__root'
-import { Route as WarehouseDashboardImport } from './app/routes/warehouse/warehouseDashboard'
-import { Route as RouterImport } from './app/routes/router'
-import { Route as ClientDashboardImport } from './app/routes/customer/custumerDashboard'
+import { Route as rootRoute } from './routes/__root'
+import { Route as RouterImport } from './routes/router'
+import { Route as WarehouseWarehouseDashboardImport } from './routes/warehouse/warehouseDashboard'
+import { Route as CustomerCustomerDashboardImport } from './routes/customer/customerDashboard'
 
 // Create/Update Routes
-
-const WarehouseDashboardRoute = WarehouseDashboardImport.update({
-  id: '/warehouseDashboard',
-  path: '/warehouseDashboard',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const RouterRoute = RouterImport.update({
   id: '/router',
@@ -29,9 +23,16 @@ const RouterRoute = RouterImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const ClientDashboardRoute = ClientDashboardImport.update({
-  id: '/clientDashboard',
-  path: '/clientDashboard',
+const WarehouseWarehouseDashboardRoute =
+  WarehouseWarehouseDashboardImport.update({
+    id: '/warehouse/warehouseDashboard',
+    path: '/warehouse/warehouseDashboard',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const CustomerCustomerDashboardRoute = CustomerCustomerDashboardImport.update({
+  id: '/customer/customerDashboard',
+  path: '/customer/customerDashboard',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -39,13 +40,6 @@ const ClientDashboardRoute = ClientDashboardImport.update({
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/clientDashboard': {
-      id: '/clientDashboard'
-      path: '/clientDashboard'
-      fullPath: '/clientDashboard'
-      preLoaderRoute: typeof ClientDashboardImport
-      parentRoute: typeof rootRoute
-    }
     '/router': {
       id: '/router'
       path: '/router'
@@ -53,11 +47,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RouterImport
       parentRoute: typeof rootRoute
     }
-    '/warehouseDashboard': {
-      id: '/warehouseDashboard'
-      path: '/warehouseDashboard'
-      fullPath: '/warehouseDashboard'
-      preLoaderRoute: typeof WarehouseDashboardImport
+    '/customer/customerDashboard': {
+      id: '/customer/customerDashboard'
+      path: '/customer/customerDashboard'
+      fullPath: '/customer/customerDashboard'
+      preLoaderRoute: typeof CustomerCustomerDashboardImport
+      parentRoute: typeof rootRoute
+    }
+    '/warehouse/warehouseDashboard': {
+      id: '/warehouse/warehouseDashboard'
+      path: '/warehouse/warehouseDashboard'
+      fullPath: '/warehouse/warehouseDashboard'
+      preLoaderRoute: typeof WarehouseWarehouseDashboardImport
       parentRoute: typeof rootRoute
     }
   }
@@ -66,43 +67,53 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-  '/clientDashboard': typeof ClientDashboardRoute
   '/router': typeof RouterRoute
-  '/warehouseDashboard': typeof WarehouseDashboardRoute
+  '/customer/customerDashboard': typeof CustomerCustomerDashboardRoute
+  '/warehouse/warehouseDashboard': typeof WarehouseWarehouseDashboardRoute
 }
 
 export interface FileRoutesByTo {
-  '/clientDashboard': typeof ClientDashboardRoute
   '/router': typeof RouterRoute
-  '/warehouseDashboard': typeof WarehouseDashboardRoute
+  '/customer/customerDashboard': typeof CustomerCustomerDashboardRoute
+  '/warehouse/warehouseDashboard': typeof WarehouseWarehouseDashboardRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/clientDashboard': typeof ClientDashboardRoute
   '/router': typeof RouterRoute
-  '/warehouseDashboard': typeof WarehouseDashboardRoute
+  '/customer/customerDashboard': typeof CustomerCustomerDashboardRoute
+  '/warehouse/warehouseDashboard': typeof WarehouseWarehouseDashboardRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/clientDashboard' | '/router' | '/warehouseDashboard'
+  fullPaths:
+    | '/router'
+    | '/customer/customerDashboard'
+    | '/warehouse/warehouseDashboard'
   fileRoutesByTo: FileRoutesByTo
-  to: '/clientDashboard' | '/router' | '/warehouseDashboard'
-  id: '__root__' | '/clientDashboard' | '/router' | '/warehouseDashboard'
+  to:
+    | '/router'
+    | '/customer/customerDashboard'
+    | '/warehouse/warehouseDashboard'
+  id:
+    | '__root__'
+    | '/router'
+    | '/customer/customerDashboard'
+    | '/warehouse/warehouseDashboard'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  ClientDashboardRoute: typeof ClientDashboardRoute
   RouterRoute: typeof RouterRoute
-  WarehouseDashboardRoute: typeof WarehouseDashboardRoute
+  CustomerCustomerDashboardRoute: typeof CustomerCustomerDashboardRoute
+  WarehouseWarehouseDashboardRoute: typeof WarehouseWarehouseDashboardRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  ClientDashboardRoute: ClientDashboardRoute,
   RouterRoute: RouterRoute,
-  WarehouseDashboardRoute: WarehouseDashboardRoute,
+  CustomerCustomerDashboardRoute: CustomerCustomerDashboardRoute,
+  WarehouseWarehouseDashboardRoute: WarehouseWarehouseDashboardRoute,
 }
 
 export const routeTree = rootRoute
@@ -115,19 +126,19 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/clientDashboard",
         "/router",
-        "/warehouseDashboard"
+        "/customer/customerDashboard",
+        "/warehouse/warehouseDashboard"
       ]
-    },
-    "/clientDashboard": {
-      "filePath": "clientDashboard.tsx"
     },
     "/router": {
       "filePath": "router.ts"
     },
-    "/warehouseDashboard": {
-      "filePath": "warehouseDashboard.tsx"
+    "/customer/customerDashboard": {
+      "filePath": "customer/customerDashboard.tsx"
+    },
+    "/warehouse/warehouseDashboard": {
+      "filePath": "warehouse/warehouseDashboard.tsx"
     }
   }
 }
