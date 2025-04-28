@@ -17,42 +17,43 @@ export function usePaginatedCustomerQuery() {
   const { filters, page, pageSize, total, setTotal } = useCustomerTableStore();
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [filterOptions, setFilterOptions] = useState<DashboardFilterOptions>(emptyFilterOptions);
+  const [filterOptions, setFilterOptions] =
+    useState<DashboardFilterOptions>(emptyFilterOptions);
 
-  // Fetch paginated dashboard data
   useEffect(() => {
-    async function fetchData() {
+    let ignore = false;
+    (async () => {
       setLoading(true);
       try {
         const data = await dashboardService.fetchDashboardData(page, pageSize, filters);
-        setRows(data.items);
-        setTotal(data.total);
+        if (!ignore) {
+          setRows(data?.items ?? []);   // ← always an array
+          setTotal(data.total ?? 0);
+        }
       } finally {
-        setLoading(false);
+        if (!ignore) setLoading(false);
       }
-    }
-    fetchData();
+    })();
+    return () => { ignore = true; };
   }, [filters, page, pageSize, setTotal]);
 
-  // Fetch filter‐options once on mount
   useEffect(() => {
-    async function fetchFilters() {
+    (async () => {
       try {
         const options = await dashboardService.fetchFilterOptions();
         setFilterOptions(options.getDistinctFilterOptions);
-      } catch (error) {
-        console.error('Error loading filter options', error);
+      } catch (e) {
+        console.error('Error loading filter options', e);
       }
-    }
-    fetchFilters();
+    })();
   }, []);
 
   return {
     rows,
-    total,            // now returns the real total from the API
+    total,
     loading,
     page,
     pageSize,
-    filterOptions,    // always has a full shape, never undefined
+    filterOptions,
   };
 }

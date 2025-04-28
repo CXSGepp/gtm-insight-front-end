@@ -35,8 +35,13 @@ export default function BaseTable<TData>({
 }: BaseTableProps<TData>) {
   const [expanded, setExpanded] = React.useState({});
 
+  /* ------------------------------------------------------------------ */
+  /* GUARANTEE AN ARRAY – react-table must never receive undefined      */
+  /* ------------------------------------------------------------------ */
+  const safeData = (data ?? []) as TData[];
+
   const table = useReactTable({
-    data,
+    data: safeData,
     columns,
     manualPagination: true,
     pageCount: Math.ceil(totalItems / pageSize) || 1,
@@ -55,7 +60,7 @@ export default function BaseTable<TData>({
     getRowCanExpand: () => !!expandableRowContent,
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: expandableRowContent ? getExpandedRowModel() : undefined,
-    getRowId: getRowId ? getRowId : (row: any) => row.id, // We can later refine any if needed
+    getRowId: getRowId ? getRowId : (row: any) => row.id,
   });
 
   return (
@@ -63,11 +68,11 @@ export default function BaseTable<TData>({
       <TableContainer sx={{ maxHeight: 600 }}>
         <Table stickyHeader size="small">
           <TableHead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableCell key={header.id}>
-                    {flexRender(header.column.columnDef.header, header.getContext())}
+            {table.getHeaderGroups().map((hg) => (
+              <TableRow key={hg.id}>
+                {hg.headers.map((h) => (
+                  <TableCell key={h.id}>
+                    {flexRender(h.column.columnDef.header, h.getContext())}
                   </TableCell>
                 ))}
               </TableRow>
@@ -78,7 +83,7 @@ export default function BaseTable<TData>({
             {loading ? (
               <TableRow>
                 <TableCell colSpan={columns.length} align="center">
-                  <CircularProgress />
+                  <CircularProgress size={24} />
                 </TableCell>
               </TableRow>
             ) : table.getRowModel().rows.length === 0 ? (

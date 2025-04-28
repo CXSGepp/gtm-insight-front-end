@@ -1,45 +1,34 @@
 import { useEffect, useState } from 'react';
 import { dashboardService } from '../../../app/providers/services/dashboard.service';
-import { useWarehouseTableStore  } from '../store/warehouseTableStore';
-
+import { useWarehouseTableStore } from '../store/warehouseTableStore';
 
 export function usePaginatedWarehouseQuery() {
-    const { filters, page, pageSize, setTotal } = useWarehouseTableStore();
-    const [rows, setRows] = useState<any[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [filterOptions, setFilterOptions] = useState<any>({});
+  const { filters, page, pageSize, total, setTotal } = useWarehouseTableStore();
+  const [rows, setRows] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        async function fetchData() {
-            setLoading(true);
-            try {
-                const data = await dashboardService.fetchDashboardData(page, pageSize, filters);
-                setRows(data.items);
-                setTotal(data.total);
-            } finally {
-                setLoading(false);
-            }
+  useEffect(() => {
+    let ignore = false;
+    (async () => {
+      setLoading(true);
+      try {
+        const data = await dashboardService.fetchDashboardData(page, pageSize, filters);
+        if (!ignore) {
+          setRows(data?.items ?? []);   // ← always an array
+          setTotal(data.total ?? 0);
         }
-        fetchData();
-    }, [filters, page, pageSize]);
+      } finally {
+        if (!ignore) setLoading(false);
+      }
+    })();
+    return () => { ignore = true; };
+  }, [filters, page, pageSize, setTotal]);
 
-    useEffect(() => {
-        async function fetchFilters() {
-            try {
-                const options = await dashboardService.fetchFilterOptions();
-                setFilterOptions(options.getDistinctFilterOptions);
-            } catch (error) {
-                console.error('Error fetching filter options:', error);
-            }
-        }
-            fetchFilters();
-    }, []);
-    return {
-        rows,
-        total: rows.length,
-        loading,
-        page,
-        pageSize,
-        filterOptions
-      };
+  return {
+    rows,
+    total,
+    loading,
+    page,
+    pageSize,
+  };
 }
