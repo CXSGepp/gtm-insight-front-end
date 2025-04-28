@@ -17,7 +17,7 @@ export const client = new ApolloClient({
   link: from([errorLink, retryLink, httpLink]),
   cache: createCacheConfig(),
   defaultOptions: {
-    watchQuery: { fetchPolicy: 'cache-and-network'},
-    query: { fetchPolicy: 'network-only' },
+    watchQuery: { fetchPolicy: 'cache-and-network', errorPolicy: 'all' },
+    query: { fetchPolicy: 'network-only', errorPolicy: 'all'  },
   },
 });
