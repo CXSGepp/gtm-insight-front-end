@@ -124,6 +124,7 @@ export default function BaseTable<TData>({
 
           <TableFooter>
             <TableRow>
+            <TableCell colSpan={columns.length + (expandableRowContent ? 1 : 0)}>
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25, 50, 100]}
                 component="div"
@@ -135,6 +136,7 @@ export default function BaseTable<TData>({
                 labelRowsPerPage="Rows per page"
                 labelDisplayedRows={({ from, to, count }) => `${from}-${to} of ${count}`}
               />
+               </TableCell>
             </TableRow>
           </TableFooter>
         </Table>
