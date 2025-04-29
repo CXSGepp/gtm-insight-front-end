@@ -6,7 +6,7 @@ export function usePaginatedWarehouseQuery() {
   const { filters, page, pageSize, total, setTotal } = useWarehouseTableStore();
 
   const [rows, setRows] = useState<any[]>([]);
-  const [filterOptions, setFilterOptions] = useState<any>(null); // 🔥 filtros cargados aquí
+  const [filterOptions, setFilterOptions] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -16,8 +16,15 @@ export function usePaginatedWarehouseQuery() {
       setLoading(true);
       setError(null);
       try {
-        const data = await dashboardService.fetchDashboardData(page, pageSize, filters);
+        const data = await dashboardService.fetchDashboardData(
+          page,
+          pageSize,
+          filters,
+          'WAREHOUSE' // ✅ FIX: for warehouse-specific data
+        );
+
         if (!ignore) {
+          console.log('[Warehouse Query Response]', data); // 👁️ útil para debugging
           setRows(data?.items ?? []);
           setTotal(data?.total ?? 0);
         }
@@ -30,11 +37,11 @@ export function usePaginatedWarehouseQuery() {
         if (!ignore) setLoading(false);
       }
     }
+
     fetchData();
     return () => { ignore = true; };
   }, [filters, page, pageSize, setTotal]);
 
-  // Cargar opciones de filtros (bodegas, zonas, regiones)
   useEffect(() => {
     let ignore = false;
     async function fetchFilters() {
@@ -50,9 +57,10 @@ export function usePaginatedWarehouseQuery() {
         }
       }
     }
+
     fetchFilters();
     return () => { ignore = true; };
-  }, []); // 🔥 sólo se carga una vez
+  }, []);
 
   return {
     rows,
