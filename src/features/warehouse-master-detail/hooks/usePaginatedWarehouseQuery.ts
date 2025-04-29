@@ -12,9 +12,14 @@ export function usePaginatedWarehouseQuery() {
     (async () => {
       setLoading(true);
       try {
-        const data = await dashboardService.fetchDashboardData(page, pageSize, filters);
+        const data = await dashboardService.fetchDashboardData(
+          page, 
+          pageSize, 
+          filters,
+          'WAREHOUSE' // <-- Aquí enviamos modo warehouse explícitamente
+        );
         if (!ignore) {
-          setRows(data?.items ?? []);   // ← always an array
+          setRows(data?.items ?? []);
           setTotal(data.total ?? 0);
         }
       } finally {

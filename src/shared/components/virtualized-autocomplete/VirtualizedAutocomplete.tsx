@@ -11,12 +11,11 @@ import { VirtualizedAutocompleteProps } from './virtualizedAutocomplete.types';
 
 function renderRow(props: ListChildComponentProps) {
   const { data, index, style } = props;
-  const option = data?.[index];
-  if (!option) return null; 
+  const option = data[index];
 
   return (
     <div style={{ ...style }}>
-      {React.isValidElement(option) ? option : <div>{String(option)}</div>}
+      {option}
     </div>
   );
 }

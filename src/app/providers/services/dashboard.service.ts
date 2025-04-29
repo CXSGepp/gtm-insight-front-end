@@ -11,9 +11,6 @@ import {
 import { EtmDashboardFilterInput } from '../../../shared/types/dashboard.types'; 
 import { handleApiError } from '../utils/errorUtils';
 
-/* ---------------------------- */
-/* 🛠 Mapping function           */
-/* ---------------------------- */
 function mapFrontendFiltersToBackend(filters: DashboardFilters): EtmDashboardFilterInput {
   return {
     cliente: filters.cliente,
@@ -39,22 +36,22 @@ function mapFrontendFiltersToBackend(filters: DashboardFilters): EtmDashboardFil
   };
 }
 
-/* ---------------------------- */
-/* 🧠 Dashboard service         */
-/* ---------------------------- */
 export const dashboardService = {
   async fetchDashboardData(
     page: number = 0,
     limit: number = 50,
     filters: DashboardFilters = {},
+    mode: 'CUSTOMER' | 'WAREHOUSE' = 'CUSTOMER', // <-- Nuevo parámetro
   ): Promise<DashboardResponse> {
     try {
       const validLimit = Math.min(Math.max(1, limit), 100);
       const mappedFilters = mapFrontendFiltersToBackend(filters);
+
       const params: DashboardQueryParams = {
         page,
         limit: validLimit,
         filters: mappedFilters,
+        mode, // <-- También enviamos el modo
       };
 
       const response = await fetchWithRetry<DashboardDataResponse, DashboardQueryParams>(
