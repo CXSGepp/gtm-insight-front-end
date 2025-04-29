@@ -8,11 +8,11 @@ import {
 type FilterInputProps = {
   label: string;
   type?: 'text' | 'autocomplete';
-  value: string | number;
+  value: string | number | null; // Allow value to be string, number, or null (common for autocomplete)
   onChange: (value: any) => void;
-  options?: (string | number)[];
+  options?: (string | number)[]; // Options can still be string or number
   loading?: boolean;
-  freeSolo?: boolean; // ✅ Agregado
+  freeSolo?: boolean;
 };
 
 export default function FilterInput({
@@ -22,17 +22,23 @@ export default function FilterInput({
   onChange,
   options = [],
   loading = false,
-  freeSolo = false, // ✅ Valor por defecto
+  freeSolo = false,
 }: FilterInputProps) {
   if (type === 'autocomplete') {
+    const autocompleteValue = value === '' ? null : value; // Ensure value is null if it's an empty string for Autocomplete
+
     return (
       <Autocomplete
         fullWidth
         disablePortal
-        freeSolo={freeSolo} // ✅ Ahora está definido
+        freeSolo={freeSolo}
         options={options}
-        value={value ?? ''}
-        onChange={(event, newValue) => onChange(newValue ?? '')}
+        getOptionLabel={(option) => String(option)} // Ensure options are treated as strings for display
+        isOptionEqualToValue={(option, val) => String(option) === String(val)} // Handle cases where the option might be a number but the value state is a string or vice-versa
+        value={autocompleteValue} // Use the adjusted value
+        onChange={(event, newValue) => {
+          onChange(newValue ?? ''); // When clearing the field (newValue is null) or using freeSolo with empty input, pass an empty string.
+        }}
         renderInput={(params) => (
           <TextField
             {...params}
@@ -54,12 +60,14 @@ export default function FilterInput({
     );
   }
 
+  const textValue = value === null || value === undefined ? '' : String(value); // For text input, ensure value is a string
+
   return (
     <TextField
       label={label}
       fullWidth
       variant="outlined"
-      value={value}
+      value={textValue} // Use the adjusted string value
       onChange={(e) => onChange(e.target.value)}
     />
   );

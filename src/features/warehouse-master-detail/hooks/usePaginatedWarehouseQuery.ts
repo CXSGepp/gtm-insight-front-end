@@ -10,7 +10,6 @@ export function usePaginatedWarehouseQuery() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  // Cargar la data principal (rows de la tabla)
   useEffect(() => {
     let ignore = false;
     async function fetchData() {
