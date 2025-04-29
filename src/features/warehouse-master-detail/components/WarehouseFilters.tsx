@@ -4,7 +4,6 @@ import FilterInput from '../../../shared/components/filters/filter-input/FilterI
 import { useWarehouseTableStore } from '../store/warehouseTableStore';
 import { usePaginatedWarehouseQuery } from '../hooks/usePaginatedWarehouseQuery';
 import WarehouseFiltersSkeleton from './WarehouseFiltersSkeleton';
-import { Grid } from '@mui/material';
 
 export default function WarehouseFilters() {
   const { filters, setFilters, resetFilters } = useWarehouseTableStore();
@@ -16,8 +15,7 @@ export default function WarehouseFilters() {
 
   return (
     <FilterContainer onApply={() => setFilters(filters)} onReset={resetFilters}>
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={6} md={3}>
+
           <FilterInput
             label="Bodega"
             type="autocomplete"
@@ -26,8 +24,7 @@ export default function WarehouseFilters() {
             value={filters.bodega ?? ''}
             onChange={(value) => setFilters({ ...filters, bodega: value })}
           />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+
           <FilterInput
             label="Zona"
             type="autocomplete"
@@ -36,8 +33,7 @@ export default function WarehouseFilters() {
             value={filters.zona ?? ''}
             onChange={(value) => setFilters({ ...filters, zona: value })}
           />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+
           <FilterInput
             label="Región"
             type="autocomplete"
@@ -46,8 +42,7 @@ export default function WarehouseFilters() {
             value={filters.region ?? ''}
             onChange={(value) => setFilters({ ...filters, region: value })}
           />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+
           <FilterInput
             label="Clasificación"
             type="autocomplete"
@@ -56,8 +51,7 @@ export default function WarehouseFilters() {
             value={filters.clasificacion ?? ''}
             onChange={(value) => setFilters({ ...filters, clasificacion: value })}
           />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+
           <FilterInput
             label="Tipo de Ruta"
             type="autocomplete"
@@ -66,8 +60,7 @@ export default function WarehouseFilters() {
             value={filters.tipoRuta ?? ''}
             onChange={(value) => setFilters({ ...filters, tipoRuta: value })}
           />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+
           <FilterInput
             label="SKU"
             type="autocomplete"
@@ -76,8 +69,7 @@ export default function WarehouseFilters() {
             value={filters.sku ?? ''}
             onChange={(value) => setFilters({ ...filters, sku: value })}
           />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+
           <FilterInput
             label="Origen"
             type="autocomplete"
@@ -86,8 +78,7 @@ export default function WarehouseFilters() {
             value={filters.bd ?? ''}
             onChange={(value) => setFilters({ ...filters, bd: value })}
           />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+
           <FilterInput
             label="Estatus OPM"
             type="autocomplete"
@@ -96,8 +87,7 @@ export default function WarehouseFilters() {
             value={filters.estatusOpm ?? ''}
             onChange={(value) => setFilters({ ...filters, estatusOpm: value })}
           />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+
           <FilterInput
             label="Estatus SIO"
             type="autocomplete"
@@ -106,8 +96,7 @@ export default function WarehouseFilters() {
             value={filters.estatusSio ?? ''}
             onChange={(value) => setFilters({ ...filters, estatusSio: value })}
           />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+
           <FilterInput
             label="Fecha de Registro"
             type="autocomplete"
@@ -116,8 +105,7 @@ export default function WarehouseFilters() {
             value={filters.fechaRegistro ?? ''}
             onChange={(value) => setFilters({ ...filters, fechaRegistro: value })}
           />
-        </Grid>
-      </Grid>
+
     </FilterContainer>
   );
 }
