@@ -19,6 +19,7 @@ export default function FilterInput({
   if (type === 'autocomplete') {
     return (
       <Autocomplete
+        sx={{ minWidth: 200 }}
         options={options}
         getOptionLabel={(option) => {
           if (typeof option === 'string') return option;
