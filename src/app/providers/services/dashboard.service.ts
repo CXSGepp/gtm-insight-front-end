@@ -56,6 +56,12 @@ export const dashboardService = {
     filters: DashboardFilters = {},
     mode: 'CUSTOMER' | 'WAREHOUSE' = 'CUSTOMER',
   ): Promise<DashboardResponse> {
+    console.log(
+      '⚡ fetchDashboardData →',
+      mode,
+      // segunda línea de stack: muestra el archivo origen
+      (new Error().stack || '').split('\n')[2].trim(),
+    );
     try {
       const params: DashboardQueryParams = {
         page,
