@@ -24,6 +24,8 @@ export function usePaginatedWarehouseQuery() {
           'WAREHOUSE',
         );
         if (!ignore) {
+          console.log('[Warehouse first row]', data?.items?.[0]); // Use optional chaining for safety
+
           setRows(data.items);
           setTotal(data.total);
         }
