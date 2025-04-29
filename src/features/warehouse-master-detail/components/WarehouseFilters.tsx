@@ -40,27 +40,6 @@ export default function WarehouseFilters() {
         onChange={(value) => setFilters({ ...filters, region: value })}
       />
       <FilterInput
-        label="Clasificación"
-        type="autocomplete"
-        options={filterOptions.clasi ?? []}
-        value={filters.region ?? ''}
-        onChange={(value) => setFilters({ ...filters, region: value })}
-      />
-      <FilterInput
-        label="SKU"
-        type="autocomplete"
-        options={filterOptions.regiones ?? []}
-        value={filters.region ?? ''}
-        onChange={(value) => setFilters({ ...filters, region: value })}
-      />
-      <FilterInput
-        label="ORIGEN"
-        type="autocomplete"
-        options={filterOptions.regiones ?? []}
-        value={filters.region ?? ''}
-        onChange={(value) => setFilters({ ...filters, region: value })}
-      />
-      <FilterInput
         label="Región"
         type="autocomplete"
         options={filterOptions.regiones ?? []}
