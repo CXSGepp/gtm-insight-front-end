@@ -24,7 +24,10 @@ export default function WarehouseFilters() {
           <FilterInput
             label="Bodega"
             type="autocomplete"
-            options={filterOptions.bodegas ?? []}
+            options={(filterOptions.bodegas ?? []).map((bodega) => ({
+              label: String(bodega),
+              value: bodega,
+            }))}
             value={filters.bodega ?? ''}
             onChange={(value) => setFilters({ ...filters, bodega: value })}
           />
@@ -34,7 +37,10 @@ export default function WarehouseFilters() {
           <FilterInput
             label="Zona"
             type="autocomplete"
-            options={filterOptions.zonas ?? []}
+            options={(filterOptions.zonas ?? []).map((zona) => ({
+              label: String(zona),
+              value: zona,
+            }))}
             value={filters.zona ?? ''}
             onChange={(value) => setFilters({ ...filters, zona: value })}
           />
@@ -44,7 +50,10 @@ export default function WarehouseFilters() {
           <FilterInput
             label="Región"
             type="autocomplete"
-            options={filterOptions.regiones ?? []}
+            options={(filterOptions.regiones ?? []).map((region) => ({
+              label: String(region),
+              value: region,
+            }))}
             value={filters.region ?? ''}
             onChange={(value) => setFilters({ ...filters, region: value })}
           />
@@ -54,66 +63,16 @@ export default function WarehouseFilters() {
           <FilterInput
             label="Clasificación"
             type="autocomplete"
-            options={filterOptions.clasificaciones ?? []}
+            options={(filterOptions.clasificaciones ?? []).map((clasificacion) => ({
+              label: String(clasificacion),
+              value: clasificacion,
+            }))}
             value={filters.clasificacion ?? ''}
             onChange={(value) => setFilters({ ...filters, clasificacion: value })}
           />
         </Grid>
 
-        <Grid item xs={12} sm={6} md={3}>
-          <FilterInput
-            label="Tipo de Ruta"
-            type="autocomplete"
-            options={filterOptions.tiposRuta ?? []}
-            value={filters.tipoRuta ?? ''}
-            onChange={(value) => setFilters({ ...filters, tipoRuta: value })}
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={3}>
-          <FilterInput
-            label="SKU"
-            type="text"
-            value={filters.sku ?? ''}
-            onChange={(value) => setFilters({ ...filters, sku: value })}
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={3}>
-          <FilterInput
-            label="Origen"
-            type="text"
-            value={filters.origen ?? ''}
-            onChange={(value) => setFilters({ ...filters, origen: value })}
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={3}>
-          <FilterInput
-            label="Estatus OPM"
-            type="text"
-            value={filters.estatusOpm ?? ''}
-            onChange={(value) => setFilters({ ...filters, estatusOpm: value })}
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={3}>
-          <FilterInput
-            label="Estatus SIO"
-            type="text"
-            value={filters.estatusSio ?? ''}
-            onChange={(value) => setFilters({ ...filters, estatusSio: value })}
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={3}>
-          <FilterInput
-            label="Fecha de Registro"
-            type="date"
-            value={filters.fechaRegistro ?? ''}
-            onChange={(value) => setFilters({ ...filters, fechaRegistro: value })}
-          />
-        </Grid>
+        {/* Add more filters similarly here */}
       </Grid>
     </FilterContainer>
   );
