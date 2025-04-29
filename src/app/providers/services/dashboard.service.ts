@@ -56,18 +56,17 @@ export const dashboardService = {
     filters: DashboardFilters = {},
     mode: 'CUSTOMER' | 'WAREHOUSE' = 'CUSTOMER',
   ): Promise<DashboardResponse> {
-    console.log(
-      '⚡ fetchDashboardData →',
-      mode,
-      // segunda línea de stack: muestra el archivo origen
-      (new Error().stack || '').split('\n')[2].trim(),
-    );
+    console.log('⚡ fetchDashboardData →', mode, (new Error().stack || '').split('\n')[2].trim());
+
     try {
+      const backendFilters = cleanFilters(mapFrontendFiltersToBackend(filters));
+      backendFilters.viewMode = mode; // 👈 FIX: necesario para que backend use el modo correcto
+
       const params: DashboardQueryParams = {
         page,
         limit: Math.min(Math.max(1, limit), 100),
         mode,
-        filters: cleanFilters(mapFrontendFiltersToBackend(filters)),
+        filters: backendFilters, // ✅ pasa el viewMode incluido
       };
 
       const raw = await fetchWithRetry<DashboardDataResponse, DashboardQueryParams>(
@@ -81,7 +80,6 @@ export const dashboardService = {
       throw handleApiError(err);
     }
   },
-
   async fetchFilterOptions(): Promise<FilterOptionsResponse['getDistinctFilterOptions']> {
     try {
       const raw = await fetchWithRetry<FilterOptionsResponse, Record<string, never>>(
