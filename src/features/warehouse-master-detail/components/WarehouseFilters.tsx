@@ -21,7 +21,7 @@ export default function WarehouseFilters() {
       <FilterInput
         label="Bodega"
         type="autocomplete"
-        options={filterOptions.bodegas ?? []}
+        options={filterOptions.bodegas ?? []} // 🔥 protección extra
         value={filters.bodega ?? ''}
         onChange={(value) => setFilters({ ...filters, bodega: value })}
       />
@@ -42,48 +42,39 @@ export default function WarehouseFilters() {
       <FilterInput
         label="Clasificación"
         type="autocomplete"
-        options={filterOptions.clasificaciones ?? []}
-        value={filters.clasificacion ?? ''}
-        onChange={(value) => setFilters({ ...filters, clasificacion: value })}
+        options={filterOptions.clasi ?? []}
+        value={filters.region ?? ''}
+        onChange={(value) => setFilters({ ...filters, region: value })}
       />
       <FilterInput
-        label="Tipo de Ruta"
-        type="autocomplete"
-        options={filterOptions.tiposRuta ?? []}
-        value={filters.tipoRuta ?? ''}
-        onChange={(value) => setFilters({ ...filters, tipoRuta: value })}
-      />
-       <FilterInput
         label="SKU"
         type="autocomplete"
-        options={filterOptions.skus ?? []}
-        value={filters.sku ?? ''}
-      onChange={(value) => setFilters({ ...filters, sku: value })}
+        options={filterOptions.regiones ?? []}
+        value={filters.region ?? ''}
+        onChange={(value) => setFilters({ ...filters, region: value })}
       />
       <FilterInput
-        label="Origen"
-        type="text"
-        value={filters.bd ?? ''}
-        onChange={(value) => setFilters({ ...filters, bd: value })}
+        label="ORIGEN"
+        type="autocomplete"
+        options={filterOptions.regiones ?? []}
+        value={filters.region ?? ''}
+        onChange={(value) => setFilters({ ...filters, region: value })}
       />
       <FilterInput
-        label="Estatus OPM"
-        type="text"
-        value={filters.estatusOpm ?? ''}
-        onChange={(value) => setFilters({ ...filters, estatusOpm: value })}
+        label="Región"
+        type="autocomplete"
+        options={filterOptions.regiones ?? []}
+        value={filters.region ?? ''}
+        onChange={(value) => setFilters({ ...filters, region: value })}
       />
       <FilterInput
-        label="Estatus SIO"
-        type="text"
-        value={filters.estatusSio ?? ''}
-        onChange={(value) => setFilters({ ...filters, estatusSio: value })}
+        label="Región"
+        type="autocomplete"
+        options={filterOptions.regiones ?? []}
+        value={filters.region ?? ''}
+        onChange={(value) => setFilters({ ...filters, region: value })}
       />
-      <FilterInput
-        label="Fecha de Registro"
-        type="text" // podrías cambiar a date-picker si usas MUI X
-        value={filters.fechaRegistro ?? ''}
-        onChange={(value) => setFilters({ ...filters, fechaRegistro: value })}
-      />
+      {/* Otros filtros aquí si necesitas */}
     </FilterContainer>
   );
 }
