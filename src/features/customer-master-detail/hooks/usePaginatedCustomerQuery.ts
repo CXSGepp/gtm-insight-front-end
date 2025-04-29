@@ -3,27 +3,23 @@ import { dashboardService } from '../../../app/providers/services/dashboard.serv
 import { useCustomerTableStore } from '../store/customerTableStore';
 import { DashboardFilterOptions } from '../../../shared/types/dashboard.types';
 
-const emptyFilterOptions: DashboardFilterOptions = {
-  clientes: [],
-  telefonos: [],
-  regiones: [],
-  zonas: [],
-  bodegas: [],
-  tiposRuta: [],
-  clasificaciones: [],
+const empty: DashboardFilterOptions = {
+  clientes: [], telefonos: [], regiones: [],
+  zonas: [], bodegas: [], tiposRuta: [], clasificaciones: [],
 };
 
 export function usePaginatedCustomerQuery() {
   const { filters, page, pageSize, total, setTotal } = useCustomerTableStore();
 
   const [rows, setRows] = useState<any[]>([]);
-  const [filterOptions, setFilterOptions] = useState<DashboardFilterOptions>(emptyFilterOptions);
+  const [filterOptions, setFilterOptions] = useState<DashboardFilterOptions>(empty);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
+  /* ---------- data ---------- */
   useEffect(() => {
     let ignore = false;
-    async function fetchData() {
+    (async () => {
       setLoading(true);
       setError(null);
       try {
@@ -31,49 +27,28 @@ export function usePaginatedCustomerQuery() {
           page,
           pageSize,
           filters,
-          'CUSTOMER'
+          'CUSTOMER',
         );
         if (!ignore) {
-          setRows(data?.items ?? []);
-          setTotal(data?.total ?? 0);
+          setRows(data.items);
+          setTotal(data.total);
         }
       } catch (err) {
-        console.error('[usePaginatedCustomerQuery] Error fetching data:', err);
         if (!ignore) setError(err as Error);
       } finally {
         if (!ignore) setLoading(false);
       }
-    }
-    fetchData();
+    })();
     return () => { ignore = true; };
   }, [filters, page, pageSize, setTotal]);
 
+  /* ---------- filters ---------- */
   useEffect(() => {
-    let ignore = false;
-    async function fetchFilters() {
-      try {
-        const response = await dashboardService.fetchFilterOptions();
-        if (!ignore) {
-          setFilterOptions(response.getDistinctFilterOptions ?? emptyFilterOptions);
-        }
-      } catch (err) {
-        console.error('[usePaginatedCustomerQuery] Error loading filters:', err);
-        if (!ignore) {
-          setFilterOptions(emptyFilterOptions);
-        }
-      }
-    }
-    fetchFilters();
-    return () => { ignore = true; };
+    dashboardService
+      .fetchFilterOptions()
+      .then(setFilterOptions)
+      .catch(() => setFilterOptions(empty));
   }, []);
 
-  return {
-    rows,
-    total,
-    loading,
-    error,
-    page,
-    pageSize,
-    filterOptions,
-  };
+  return { rows, total, loading, error, page, pageSize, filterOptions };
 }

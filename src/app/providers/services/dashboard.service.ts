@@ -1,17 +1,22 @@
 import { fetchWithRetry } from '../utils/fetchUtils';
-import { GET_REPORT_ETM_DASHBOARD } from '../client/queries/dashboard.queries';
-import { GET_DISTINCT_FILTER_OPTIONS } from '../client/queries/filters.queries';
-import { 
-  DashboardResponse, 
-  DashboardFilters, 
-  FilterOptionsResponse,
+import {
+  GET_REPORT_ETM_DASHBOARD,
+  GET_DISTINCT_FILTER_OPTIONS,
+} from '../client/queries';
+import {
+  DashboardResponse,
+  DashboardFilters,
   DashboardDataResponse,
-  DashboardQueryParams
+  DashboardQueryParams,
+  FilterOptionsResponse,
+  EtmDashboardFilterInput,
 } from '../../../shared/types/dashboard.types';
-import { EtmDashboardFilterInput } from '../../../shared/types/dashboard.types'; 
 import { handleApiError } from '../utils/errorUtils';
 
-function mapFrontendFiltersToBackend(filters: DashboardFilters): EtmDashboardFilterInput {
+/* ------------------------- helpers ------------------------- */
+function mapFrontendFiltersToBackend(
+  filters: DashboardFilters,
+): EtmDashboardFilterInput {
   return {
     cliente: filters.cliente,
     telefono: filters.telefono,
@@ -36,79 +41,59 @@ function mapFrontendFiltersToBackend(filters: DashboardFilters): EtmDashboardFil
   };
 }
 
+function cleanFilters(obj: EtmDashboardFilterInput): EtmDashboardFilterInput {
+  return Object.fromEntries(
+    Object.entries(obj).filter(
+      ([_, v]) => v !== '' && v !== undefined && v !== null,
+    ),
+  ) as EtmDashboardFilterInput;
+}
+
+/* ----------------------- main service ---------------------- */
 export const dashboardService = {
   async fetchDashboardData(
-    page: number = 0,
-    limit: number = 50,
+    page = 0,
+    limit = 50,
     filters: DashboardFilters = {},
     mode: 'CUSTOMER' | 'WAREHOUSE' = 'CUSTOMER',
   ): Promise<DashboardResponse> {
     try {
-      const validLimit = Math.min(Math.max(1, limit), 100);
-
-      const mappedFilters = Object.fromEntries(
-        Object.entries(mapFrontendFiltersToBackend(filters)).filter(
-          ([_, value]) => value !== '' && value !== undefined && value !== null
-        )
-      );
-
       const params: DashboardQueryParams = {
         page,
-        limit: validLimit,
-        filters: mappedFilters,
+        limit: Math.min(Math.max(1, limit), 100),
         mode,
+        filters: cleanFilters(mapFrontendFiltersToBackend(filters)),
       };
 
-      const response = await fetchWithRetry<DashboardDataResponse, DashboardQueryParams>(
+      const raw = await fetchWithRetry<DashboardDataResponse, DashboardQueryParams>(
         GET_REPORT_ETM_DASHBOARD,
-        params
+        params,
       );
 
-      // 🔍 Inspección de la estructura del response
-      console.log('[GraphQL raw response]', response);
-
-      // ✅ CORRECCIÓN: accede a la propiedad correcta del objeto
-      if (!response || !response.getReportEtmDashboard) {
-        console.warn('[DashboardService] No dashboard data found');
-        return {
-          items: [],
-          total: 0,
-          hasMore: false,
-          page,
-        };
-      }
-
-      return response.getReportEtmDashboard;
-    } catch (error) {
-      throw handleApiError(error);
+      const data = raw.getReportEtmDashboard;
+      return data ?? { items: [], total: 0, hasMore: false, page };
+    } catch (err) {
+      throw handleApiError(err);
     }
   },
 
-  async fetchFilterOptions(): Promise<FilterOptionsResponse> {
+  async fetchFilterOptions(): Promise<FilterOptionsResponse['getDistinctFilterOptions']> {
     try {
-      const response = await fetchWithRetry<FilterOptionsResponse, Record<string, never>>(
+      const raw = await fetchWithRetry<FilterOptionsResponse, Record<string, never>>(
         GET_DISTINCT_FILTER_OPTIONS,
-        {}
+        {},
       );
-
-      if (!response || !response.getDistinctFilterOptions) {
-        console.warn('[DashboardService] No filter options found');
-        return {
-          getDistinctFilterOptions: {
-            clientes: [],
-            telefonos: [],
-            regiones: [],
-            zonas: [],
-            bodegas: [],
-            tiposRuta: [],
-            clasificaciones: [],
-          },
-        };
-      }
-
-      return response;
-    } catch (error) {
-      throw handleApiError(error);
+      return raw.getDistinctFilterOptions ?? {
+        clientes: [],
+        telefonos: [],
+        regiones: [],
+        zonas: [],
+        bodegas: [],
+        tiposRuta: [],
+        clasificaciones: [],
+      };
+    } catch (err) {
+      throw handleApiError(err);
     }
   },
 };

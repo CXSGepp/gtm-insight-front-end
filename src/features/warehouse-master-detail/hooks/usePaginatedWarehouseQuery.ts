@@ -10,9 +10,10 @@ export function usePaginatedWarehouseQuery() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
+  /* ---------- data ---------- */
   useEffect(() => {
     let ignore = false;
-    async function fetchData() {
+    (async () => {
       setLoading(true);
       setError(null);
       try {
@@ -20,53 +21,28 @@ export function usePaginatedWarehouseQuery() {
           page,
           pageSize,
           filters,
-          'WAREHOUSE'
+          'WAREHOUSE',
         );
         if (!ignore) {
-          setRows(data?.items ?? []);
-          setTotal(data?.total ?? 0);
+          setRows(data.items);
+          setTotal(data.total);
         }
       } catch (err) {
-        console.error('[usePaginatedWarehouseQuery] Error fetching data:', err);
-        if (!ignore) {
-          setError(err as Error);
-        }
+        if (!ignore) setError(err as Error);
       } finally {
         if (!ignore) setLoading(false);
       }
-    }
-
-    fetchData();
+    })();
     return () => { ignore = true; };
   }, [filters, page, pageSize, setTotal]);
 
+  /* ---------- filters ---------- */
   useEffect(() => {
-    let ignore = false;
-    async function fetchFilters() {
-      try {
-        const response = await dashboardService.fetchFilterOptions();
-        if (!ignore) {
-          setFilterOptions(response.getDistinctFilterOptions ?? {});
-        }
-      } catch (err) {
-        console.error('[usePaginatedWarehouseQuery] Error fetching filters:', err);
-        if (!ignore) {
-          setFilterOptions({});
-        }
-      }
-    }
-
-    fetchFilters();
-    return () => { ignore = true; };
+    dashboardService
+      .fetchFilterOptions()
+      .then(setFilterOptions)
+      .catch(() => setFilterOptions({}));
   }, []);
 
-  return {
-    rows,
-    total,
-    loading,
-    error,
-    page,
-    pageSize,
-    filterOptions,
-  };
+  return { rows, total, loading, error, page, pageSize, filterOptions };
 }
