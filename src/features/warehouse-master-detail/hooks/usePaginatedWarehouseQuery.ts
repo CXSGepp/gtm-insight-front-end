@@ -24,9 +24,17 @@ export function usePaginatedWarehouseQuery() {
           'WAREHOUSE',
         );
         if (!ignore) {
-          console.log('[Warehouse first row]', data?.items?.[0]); // Use optional chaining for safety
-
-          setRows(data.items);
+          // 🔥 Transformar: quitar los "vw_" de todas las llaves
+          const transformedItems = data.items.map((item: Record<string, any>) => {
+            const newItem: Record<string, any> = {};
+            for (const key in item) {
+              const cleanKey = key.startsWith('vw_') ? key.slice(3) : key;  // remove "vw_" if present
+              newItem[cleanKey] = item[key];
+            }
+            return newItem;
+          });
+        
+          setRows(transformedItems);  // 👈 Ahora tendrás objetos limpios
           setTotal(data.total);
         }
       } catch (err) {

@@ -5,17 +5,17 @@ import { usePaginatedWarehouseQuery } from '../hooks/usePaginatedWarehouseQuery'
 import { ColumnDef } from '@tanstack/react-table';
 
 const columns: ColumnDef<any>[] = [
-  { accessorKey: 'id', header: 'ID' },
-  { accessorKey: 'region', header: 'Región' },
-  { accessorKey: 'zona', header: 'Zona' },
-  { accessorKey: 'localidad', header: 'Localidad' },
-  { accessorKey: 'bodega', header: 'Bodega' },
-  { accessorKey: 'ruta', header: 'Ruta' },
-  { accessorKey: 'tipoRuta', header: 'Tipo de Ruta' },
-  { accessorKey: 'clasificacion', header: 'Clasificación' },
-  { accessorKey: 'frecuencia', header: 'Frecuencia' },
-  { accessorKey: 'claveLista', header: 'Clave Lista' },
-  { accessorKey: 'activa', header: 'Activo' },
+  { accessorKey: 'ID', header: 'ID' },
+  { accessorKey: 'REGION', header: 'Región' },
+  { accessorKey: 'ZONA', header: 'Zona' },
+  { accessorKey: 'LOCALIDAD', header: 'Localidad' },
+  { accessorKey: 'BODEGA', header: 'Bodega' },
+  { accessorKey: 'RUTA', header: 'Ruta' },
+  { accessorKey: 'TIPO_RUTA', header: 'Tipo de Ruta' },
+  { accessorKey: 'CLASIFICACION', header: 'Clasificación' },
+  { accessorKey: 'FRECUENCIA', header: 'Frecuencia' },
+  { accessorKey: 'CLAVE_LISTA', header: 'Clave Lista' },
+  { accessorKey: 'ACTIVA', header: 'Activo' },
 ];
 
 
