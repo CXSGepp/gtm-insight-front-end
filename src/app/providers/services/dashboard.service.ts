@@ -41,17 +41,22 @@ export const dashboardService = {
     page: number = 0,
     limit: number = 50,
     filters: DashboardFilters = {},
-    mode: 'CUSTOMER' | 'WAREHOUSE' = 'CUSTOMER', // <-- Nuevo parámetro
+    mode: 'CUSTOMER' | 'WAREHOUSE' = 'CUSTOMER',
   ): Promise<DashboardResponse> {
     try {
       const validLimit = Math.min(Math.max(1, limit), 100);
-      const mappedFilters = mapFrontendFiltersToBackend(filters);
+
+      const mappedFilters = Object.fromEntries(
+        Object.entries(mapFrontendFiltersToBackend(filters)).filter(
+          ([_, value]) => value !== '' && value !== undefined && value !== null
+        )
+      );
 
       const params: DashboardQueryParams = {
         page,
         limit: validLimit,
         filters: mappedFilters,
-        mode, // <-- También enviamos el modo
+        mode,
       };
 
       const response = await fetchWithRetry<DashboardDataResponse, DashboardQueryParams>(
@@ -59,6 +64,10 @@ export const dashboardService = {
         params
       );
 
+      // 🔍 Inspección de la estructura del response
+      console.log('[GraphQL raw response]', response);
+
+      // ✅ CORRECCIÓN: accede a la propiedad correcta del objeto
       if (!response || !response.getReportEtmDashboard) {
         console.warn('[DashboardService] No dashboard data found');
         return {
@@ -81,6 +90,7 @@ export const dashboardService = {
         GET_DISTINCT_FILTER_OPTIONS,
         {}
       );
+
       if (!response || !response.getDistinctFilterOptions) {
         console.warn('[DashboardService] No filter options found');
         return {
@@ -90,11 +100,12 @@ export const dashboardService = {
             regiones: [],
             zonas: [],
             bodegas: [],
-            tiposruta: [],
+            tiposRuta: [],
             clasificaciones: [],
           },
         };
       }
+
       return response;
     } catch (error) {
       throw handleApiError(error);

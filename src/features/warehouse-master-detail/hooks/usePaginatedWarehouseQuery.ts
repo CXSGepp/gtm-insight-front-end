@@ -20,11 +20,9 @@ export function usePaginatedWarehouseQuery() {
           page,
           pageSize,
           filters,
-          'WAREHOUSE' // ✅ FIX: for warehouse-specific data
+          'WAREHOUSE'
         );
-
         if (!ignore) {
-          console.log('[Warehouse Query Response]', data); // 👁️ útil para debugging
           setRows(data?.items ?? []);
           setTotal(data?.total ?? 0);
         }
