@@ -1,8 +1,7 @@
 import { fetchWithRetry } from '../utils/fetchUtils';
-import {
-  GET_REPORT_ETM_DASHBOARD,
-  GET_DISTINCT_FILTER_OPTIONS,
-} from '../client/queries';
+import { GET_REPORT_ETM_DASHBOARD } from '../client/queries/dashboard.queries';
+import { GET_DISTINCT_FILTER_OPTIONS } from '../client/queries/filters.queries';
+
 import {
   DashboardResponse,
   DashboardFilters,
