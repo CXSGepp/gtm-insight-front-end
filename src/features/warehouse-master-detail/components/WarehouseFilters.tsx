@@ -3,13 +3,14 @@ import FilterContainer from '../../../shared/components/filters/filter-container
 import FilterInput from '../../../shared/components/filters/filter-input/FilterInput'; 
 import { useWarehouseTableStore } from '../store/warehouseTableStore';
 import { usePaginatedWarehouseQuery } from '../hooks/usePaginatedWarehouseQuery';
+import WarehouseFiltersSkeleton from './WarehouseFiltersSkeleton';
 
 export default function WarehouseFilters() {
   const { filters, setFilters, resetFilters } = useWarehouseTableStore();
   const { filterOptions, loading } = usePaginatedWarehouseQuery();
 
-  if (loading || !filterOptions) {
-    return <div>Loading filters...</div>;   // 🔥 Aquí protegemos
+  if (!filterOptions || loading) {
+    return <WarehouseFiltersSkeleton />;
   }
 
   return (
@@ -20,7 +21,7 @@ export default function WarehouseFilters() {
       <FilterInput
         label="Bodega"
         type="autocomplete"
-        options={filterOptions.bodegas ?? []} // 🔥 protección extra
+        options={filterOptions.bodegas ?? []}
         value={filters.bodega ?? ''}
         onChange={(value) => setFilters({ ...filters, bodega: value })}
       />
@@ -38,7 +39,50 @@ export default function WarehouseFilters() {
         value={filters.region ?? ''}
         onChange={(value) => setFilters({ ...filters, region: value })}
       />
-      {/* Otros filtros aquí si necesitas */}
+      <FilterInput
+        label="Clasificación"
+        type="autocomplete"
+        options={filterOptions.clasificaciones ?? []}
+        value={filters.clasificacion ?? ''}
+        onChange={(value) => setFilters({ ...filters, clasificacion: value })}
+      />
+      <FilterInput
+        label="Tipo de Ruta"
+        type="autocomplete"
+        options={filterOptions.tiposRuta ?? []}
+        value={filters.tipoRuta ?? ''}
+        onChange={(value) => setFilters({ ...filters, tipoRuta: value })}
+      />
+      <FilterInput
+        label="SKU"
+        type="text"
+        value={filters.sku ?? ''}
+        onChange={(value) => setFilters({ ...filters, sku: value })}
+      />
+      <FilterInput
+        label="Origen"
+        type="text"
+        value={filters.bd ?? ''}
+        onChange={(value) => setFilters({ ...filters, bd: value })}
+      />
+      <FilterInput
+        label="Estatus OPM"
+        type="text"
+        value={filters.estatusOpm ?? ''}
+        onChange={(value) => setFilters({ ...filters, estatusOpm: value })}
+      />
+      <FilterInput
+        label="Estatus SIO"
+        type="text"
+        value={filters.estatusSio ?? ''}
+        onChange={(value) => setFilters({ ...filters, estatusSio: value })}
+      />
+      <FilterInput
+        label="Fecha de Registro"
+        type="text" // podrías cambiar a date-picker si usas MUI X
+        value={filters.fechaRegistro ?? ''}
+        onChange={(value) => setFilters({ ...filters, fechaRegistro: value })}
+      />
     </FilterContainer>
   );
 }
