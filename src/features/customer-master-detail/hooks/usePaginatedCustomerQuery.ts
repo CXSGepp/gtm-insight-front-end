@@ -11,7 +11,7 @@ const empty: DashboardFilterOptions = {
 export function usePaginatedCustomerQuery() {
   const { filters, page, pageSize, total, setTotal } = useCustomerTableStore();
 
-  const [rows, setRows] = useState<DashboardItem[]>([]);
+  const [rows, setRows] = useState<any[]>([]);
   const [filterOptions, setFilterOptions] = useState<DashboardFilterOptions>(empty);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -54,10 +54,7 @@ export function usePaginatedCustomerQuery() {
   useEffect(() => {
     dashboardService
       .fetchFilterOptions()
-      .then((data) => {
-        console.log('[🚨 RAW APOLLO DATA]', data);
-        setFilterOptions(data);
-      })
+      .then(setFilterOptions)
       .catch(() => setFilterOptions(empty));
   }, []);
 
