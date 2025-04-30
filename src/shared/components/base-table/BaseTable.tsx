@@ -50,7 +50,7 @@ const safePageSize = pageSize > 0 ? pageSize : 50;
     data: safeData,
     columns,
     manualPagination: true,
-    pageCount: Math.ceil(totalItems / pageSize) || 1,
+    pageCount: Math.ceil(safeTotalItems / safePageSize) || 1,
     state: {
       pagination: { pageIndex, pageSize: safePageSize, },
       expanded,
