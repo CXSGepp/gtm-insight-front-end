@@ -132,7 +132,7 @@ export const routeTree = rootRoute
       ]
     },
     "/router": {
-      "filePath": "router.ts"
+      "filePath": "router.tsx"
     },
     "/customer/customerDashboard": {
       "filePath": "customer/customerDashboard.tsx"
