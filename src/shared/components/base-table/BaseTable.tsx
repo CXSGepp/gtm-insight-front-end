@@ -1,3 +1,4 @@
+// src/components/BaseTable.tsx
 import React from 'react';
 import {
   useReactTable,
@@ -67,8 +68,14 @@ export default function BaseTable<TData>({
   return (
     <Box sx={{ width: '100%', overflowX: 'auto' }}>
       <Paper sx={{ width: '100%', overflow: 'hidden', mt: 2 }}>
-        <TableContainer sx={{ maxHeight: 500, overflowY: 'auto' }}>
-          <Table stickyHeader size="small">
+        <TableContainer
+          sx={{
+            maxHeight: '60vh',
+            overflowY: 'auto',
+            overflowX: 'auto',
+          }}
+        >
+          <Table stickyHeader size="small" sx={{ minWidth: 1000 }}>
             <TableHead>
               {table.getHeaderGroups().map((hg) => (
                 <TableRow key={hg.id}>

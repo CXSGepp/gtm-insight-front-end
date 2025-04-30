@@ -1,3 +1,4 @@
+// src/layout/Layout.tsx
 import React from 'react';
 import { Box, CssBaseline, Paper, ThemeProvider } from '@mui/material';
 import Sidebar from './Sidebar';
@@ -17,9 +18,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <CssBaseline />
       <Paper
         sx={{
-          overflowX: 'hidden',
           display: 'flex',
-          minHeight: '100vh',
+          flexDirection: 'row',
+          width: '100vw',
+          height: '100vh',
+          overflow: 'hidden',
         }}
         elevation={0}
       >
@@ -27,10 +30,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <Box
           sx={{
             flex: 1,
+            overflowY: 'auto', // permite scroll vertical interno
             display: 'flex',
             flexDirection: 'column',
-            ml: sidebarOpen ? '240px' : '70px',
-            transition: 'margin-left 0.3s ease',
           }}
         >
           <Title />
@@ -43,6 +45,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               display: 'flex',
               flexDirection: 'column',
               gap: 2,
+              overflowX: 'hidden', // evita desbordes laterales
             }}
           >
             {children}

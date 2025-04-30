@@ -1,3 +1,4 @@
+// src/components/layout/MasterDetailLayout.tsx
 import { Box, Paper } from "@mui/material";
 import { DetailSection } from "./DetailSection";
 
@@ -22,9 +23,9 @@ const MasterDetailLayout: React.FC<MasterDetailLayoutProps> = ({
         display: 'flex',
         flexDirection: 'column',
         gap: 2,
-        maxWidth: '1400px',
-        mx: 'auto', // Centra horizontalmente
+        width: '100%',
         px: 2,
+        boxSizing: 'border-box',
       }}
     >
       <Paper sx={{ p: 2, overflowX: 'auto' }}>{filters}</Paper>
