@@ -13,7 +13,7 @@ type NavigationItem = {
 
 export const navigationItems: NavigationItem[] = [
   {
-    label: 'Dashboard',
+    label: 'Dashboards',
     icon: AssessmentIcon,
     key: 'dashboard',
     children: [
