@@ -13,7 +13,7 @@ interface SkuTableState {
   setFilters: (filters: Record<string, any>) => void;
   resetFilters: () => void;
   setTotal: (total: number) => void;
-  setBodega: (bodega: number) => void;  
+  setBodega: (bodega: number) => void;
   setCliente: (cliente: number) => void;
 }
 
@@ -28,7 +28,7 @@ export const useSkuTableStore = create<SkuTableState>((set) => ({
   setCliente: (cliente) => set({ cliente }),
   setPage: (page) => set({ page }),
   setPageSize: (size) => set({ pageSize: size }),
-  setPagination: (page, size) => set({ page, pageSize: size }), // <-- ✅ Agregado aquí
+  setPagination: (page, size) => set({ page, pageSize: size }),
   setFilters: (filters) => set({ filters }),
   resetFilters: () => set({ filters: {} }),
   setTotal: (total) => set({ total }),

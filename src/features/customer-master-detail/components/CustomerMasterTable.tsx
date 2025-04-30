@@ -80,12 +80,12 @@ export default function CustomerMasterTable() {
           setPage(newPage);
           setPageSize(newPageSize);
         }}
-        expandableRowContent={(row) => (
-          <SkuDetailTable
-            bodega={row.BODEGA}
-            cliente={row.CLIENTE}
-          />
-        )}
+        expandableRowContent={(row) => {
+          console.log('[📦 Expand row] ID:', row.ID, 'Bodega:', row.BODEGA, 'Cliente:', row.CLIENTE);
+          return row.BODEGA ? (
+            <SkuDetailTable bodega={row.BODEGA} cliente={row.CLIENTE} />
+          ) : null;
+        }}
         getRowId={(row) => String(row.ID)}
       />
 

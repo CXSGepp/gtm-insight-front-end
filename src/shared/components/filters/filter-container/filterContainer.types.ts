@@ -8,7 +8,7 @@ export interface FilterContainerChildrenProps {
       | React.ReactNode
       | ((props: FilterContainerChildrenProps) => React.ReactNode);
     loading?: boolean;
-    onApply: (filters: Record<string, any>) => void;
+    : (filters: Record<string, any>) => void;
     onReset: () => void;
     applyLabel?: string;
     clearLabel?: string;
