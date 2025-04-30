@@ -65,8 +65,8 @@ export default function BaseTable<TData>({
   });
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-      <TableContainer sx={{ maxHeight: 600, overflowX: 'auto' }}>
+    <Paper sx={{ width: '100%', overflow: 'auto' }}> {/* Cambiado de 'hidden' a 'auto' para scroll */}
+      <TableContainer sx={{ maxHeight: 600, overflowX: 'auto' }}> {/* Scroll horizontal agregado */}
         <Table stickyHeader size="small">
           <TableHead>
             {table.getHeaderGroups().map((hg) => (
