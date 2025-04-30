@@ -76,7 +76,7 @@ export default function BaseTable<TData>({
                     {flexRender(h.column.columnDef.header, h.getContext())}
                   </TableCell>
                 ))}
-                {expandableRowContent && <TableCell />} {/* <-- espacio para botón */}
+                {expandableRowContent ? <TableCell /> : null}
               </TableRow>
             ))}
           </TableHead>

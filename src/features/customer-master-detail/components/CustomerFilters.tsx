@@ -5,6 +5,22 @@ import { useCustomerTableStore } from '../store/customerTableStore';
 import { usePaginatedCustomerQuery } from '../hooks/usePaginatedCustomerQuery';
 import CustomersFiltersSkeleton from './CustomerFiltersSkeleton';
 
+// Helper para convertir strings numéricos a number
+function sanitizeFilters(filters: Record<string, any>) {
+  const parsed = { ...filters };
+
+  // Campos numéricos conocidos
+  const numericFields = ['bodega', 'zona'];
+
+  for (const key of numericFields) {
+    if (parsed[key] && typeof parsed[key] === 'string' && /^\d+$/.test(parsed[key])) {
+      parsed[key] = Number(parsed[key]);
+    }
+  }
+
+  return parsed;
+}
+
 export default function CustomerFilters() {
   const { setFilters, resetFilters } = useCustomerTableStore();
   const { filterOptions, loading } = usePaginatedCustomerQuery();
@@ -15,7 +31,7 @@ export default function CustomerFilters() {
 
   return (
     <FilterContainer
-    onApply={(localFilters) => setFilters(localFilters)}
+      onApply={(localFilters) => setFilters(sanitizeFilters(localFilters))}
       onReset={() => {
         resetFilters();
         setFilters({ viewMode: 'CUSTOMER' });

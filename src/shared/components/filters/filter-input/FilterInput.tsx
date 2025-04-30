@@ -33,7 +33,7 @@ export default function FilterInput({
         options={options}
         getOptionLabel={(option) => {
           if (typeof option === 'string') return option;
-          return option.label;
+          return option.label.toString();
         }}
         isOptionEqualToValue={(option, val) =>
           typeof val === 'object'
@@ -42,16 +42,18 @@ export default function FilterInput({
         }
         value={
           typeof value === 'string' || typeof value === 'number'
-            ? options.find((o) => o.value === value) || (freeSolo ? value : null)
+            ? options.find((o) => o.value === value) || (freeSolo ? { label: value, value } : null)
             : value
         }
         onChange={(_, newValue) => {
-          if (typeof newValue === 'string') return onChange(newValue);
+          if (typeof newValue === 'string') return onChange(/^\d+$/.test(newValue) ? Number(newValue) : newValue);
           if (newValue && typeof newValue === 'object') return onChange(newValue.value);
           return onChange('');
         }}
         onInputChange={(e, newInputValue, reason) => {
-          if (freeSolo && reason === 'input') onChange(newInputValue);
+          if (freeSolo && reason === 'input') {
+            onChange(/^\d+$/.test(newInputValue) ? Number(newInputValue) : newInputValue);
+          }
         }}
         renderInput={(params) => (
           <TextField
