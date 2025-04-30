@@ -1,5 +1,5 @@
+// src/features/warehouse-master-detail/components/WarehouseFilters.tsx
 import React from 'react';
-import { Grid } from '@mui/material';
 import FilterContainer from '../../../shared/components/filters/filter-container/FilterContainer';
 import FilterInput from '../../../shared/components/filters/filter-input/FilterInput';
 import { useWarehouseTableStore } from '../store/warehouseTableStore';
@@ -7,7 +7,7 @@ import { usePaginatedWarehouseQuery } from '../hooks/usePaginatedWarehouseQuery'
 import WarehouseFiltersSkeleton from './WarehouseFiltersSkeleton';
 
 export default function WarehouseFilters() {
-  const { filters, setFilters, resetFilters } = useWarehouseTableStore();
+  const { setFilters, resetFilters } = useWarehouseTableStore();
   const { filterOptions, loading } = usePaginatedWarehouseQuery();
 
   if (!filterOptions || loading) {
@@ -16,10 +16,11 @@ export default function WarehouseFilters() {
 
   return (
     <FilterContainer
-      onApply={() => setFilters(filters)}
+      onApply={(localFilters) => setFilters(localFilters)}
       onReset={resetFilters}
     >
-  
+      {({ localFilters, setLocalFilters }) => (
+        <>
           <FilterInput
             label="Bodega"
             type="autocomplete"
@@ -27,10 +28,9 @@ export default function WarehouseFilters() {
               label: String(bodega),
               value: bodega,
             }))}
-            value={filters.bodega ?? ''}
-            onChange={(value) => setFilters({ ...filters, bodega: value })}
+            value={localFilters.bodega ?? ''}
+            onChange={(value) => setLocalFilters((prev) => ({ ...prev, bodega: value }))}
           />
-    
 
           <FilterInput
             label="Zona"
@@ -39,10 +39,9 @@ export default function WarehouseFilters() {
               label: String(zona),
               value: zona,
             }))}
-            value={filters.zona ?? ''}
-            onChange={(value) => setFilters({ ...filters, zona: value })}
+            value={localFilters.zona ?? ''}
+            onChange={(value) => setLocalFilters((prev) => ({ ...prev, zona: value }))}
           />
-  
 
           <FilterInput
             label="Región"
@@ -51,8 +50,8 @@ export default function WarehouseFilters() {
               label: String(region),
               value: region,
             }))}
-            value={filters.region ?? ''}
-            onChange={(value) => setFilters({ ...filters, region: value })}
+            value={localFilters.region ?? ''}
+            onChange={(value) => setLocalFilters((prev) => ({ ...prev, region: value }))}
           />
 
           <FilterInput
@@ -62,11 +61,11 @@ export default function WarehouseFilters() {
               label: String(clasificacion),
               value: clasificacion,
             }))}
-            value={filters.clasificacion ?? ''}
-            onChange={(value) => setFilters({ ...filters, clasificacion: value })}
+            value={localFilters.clasificacion ?? ''}
+            onChange={(value) => setLocalFilters((prev) => ({ ...prev, clasificacion: value }))}
           />
-
-        {/* Add more filters similarly here */}
+        </>
+      )}
     </FilterContainer>
   );
 }

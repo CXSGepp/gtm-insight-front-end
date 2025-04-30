@@ -1,10 +1,6 @@
-// src/shared/components/filters/filter-container/FilterContainer.tsx
 import React from 'react';
 import { Box, Button, Paper } from '@mui/material';
-import {
-  FilterContainerProps,
-  FilterContainerChildrenProps,
-} from './filterContainer.types';
+import { FilterContainerProps } from './filterContainer.types';
 
 export default function FilterContainer({
   children,
@@ -18,25 +14,31 @@ export default function FilterContainer({
 
   const enhancedChildren =
     typeof children === 'function'
-      ? (children as (props: FilterContainerChildrenProps) => React.ReactNode)({
-          localFilters,
-          setLocalFilters,
-        })
-      : React.Children.map(children, (child) =>
-          React.isValidElement(child)
-            ? React.cloneElement(child, {
-                localFilters,
-                setLocalFilters,
-              })
-            : child,
-        );
+      ? children({ localFilters, setLocalFilters })
+      : children;
 
   return (
     <Paper sx={{ p: 2, mb: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+      {/* Filtros */}
+      <Box
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 2,
+        }}
+      >
         {enhancedChildren}
       </Box>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 1 }}>
+
+      {/* Botones */}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          gap: 2,
+          mt: 1,
+        }}
+      >
         <Button
           variant="outlined"
           color="secondary"
