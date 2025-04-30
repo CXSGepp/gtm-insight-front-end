@@ -1,4 +1,3 @@
-// src/layout/Layout.tsx
 import React from 'react';
 import { Box, CssBaseline, Paper, ThemeProvider } from '@mui/material';
 import Sidebar from './Sidebar';
@@ -16,42 +15,57 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Paper
+      <Box
         sx={{
           display: 'flex',
-          flexDirection: 'row',
           width: '100vw',
           height: '100vh',
           overflow: 'hidden',
         }}
-        elevation={0}
       >
         <Sidebar />
+
         <Box
           sx={{
             flex: 1,
-            overflowY: 'auto', // permite scroll vertical interno
-            display: 'flex',
-            flexDirection: 'column',
+            overflowY: 'auto',
+            ml: sidebarOpen ? '250px' : '70px',
+            transition: 'margin-left 0.3s ease',
+            py: 3,
           }}
         >
-          <Title />
           <Box
-            component={Paper}
-            elevation={2}
             sx={{
-              flex: 1,
-              p: 3,
               display: 'flex',
               flexDirection: 'column',
-              gap: 2,
-              overflowX: 'hidden', // evita desbordes laterales
+              alignItems: 'center',
+              px: 2,
             }}
           >
-            {children}
+            <Box
+              sx={{
+                width: '100%',
+                maxWidth: '1200px', // ajusta según necesidad
+              }}
+            >
+              <Title />
+              <Paper
+                elevation={2}
+                sx={{
+                  mt: 2,
+                  p: 3,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2,
+                  overflowX: 'hidden',
+                }}
+              >
+                {children}
+              </Paper>
+            </Box>
           </Box>
         </Box>
-      </Paper>
+      </Box>
     </ThemeProvider>
   );
 };
