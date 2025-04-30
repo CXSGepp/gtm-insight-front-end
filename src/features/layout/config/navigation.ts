@@ -2,7 +2,16 @@ import { Warehouse } from '@mui/icons-material';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 
-export const navigationItems = [
+
+type NavigationItem = {
+  label: string;
+  icon: typeof SupportAgentIcon;
+  key: string;
+  path?: string;
+  children?: NavigationItem[];
+};
+
+export const navigationItems: NavigationItem[] = [
   {
     label: 'Dashboard',
     icon: AssessmentIcon,
@@ -12,14 +21,14 @@ export const navigationItems = [
         label: 'Clientes',
         icon: SupportAgentIcon,
         path: '/customers',
-        key: 'customer'
+        key: 'customer',
       },
       {
         label: 'Bodegas',
         icon: Warehouse,
-        path:'/warehouse',
-        key: 'warehouse'
-      }
-    ]
-  } 
+        path: '/warehouse',
+        key: 'warehouse',
+      },
+    ],
+  },
 ];
