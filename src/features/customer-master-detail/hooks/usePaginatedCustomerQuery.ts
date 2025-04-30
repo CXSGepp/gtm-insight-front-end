@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { dashboardService } from '../../../app/providers/services/dashboard.service';
 import { useCustomerTableStore } from '../store/customerTableStore';
-import { DashboardFilterOptions } from '../../../shared/types/dashboard.types';
+import { DashboardFilterOptions, DashboardItem } from '../../../shared/types/dashboard.types';
 
 const empty: DashboardFilterOptions = {
   clientes: [], telefonos: [], regiones: [],
@@ -11,18 +11,19 @@ const empty: DashboardFilterOptions = {
 export function usePaginatedCustomerQuery() {
   const { filters, page, pageSize, total, setTotal } = useCustomerTableStore();
 
-  const [rows, setRows] = useState<any[]>([]);
+  const [rows, setRows] = useState<DashboardItem[]>([]);
   const [filterOptions, setFilterOptions] = useState<DashboardFilterOptions>(empty);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  /* ---------- data ---------- */
+  /* ---------- fetch data ---------- */
   useEffect(() => {
-    
     let ignore = false;
+
     (async () => {
       setLoading(true);
       setError(null);
+
       try {
         const result = await dashboardService.fetchDashboardData(
           page,
@@ -30,12 +31,12 @@ export function usePaginatedCustomerQuery() {
           filters,
           'CUSTOMER',
         );
+
+        console.log('[🧪 Raw result]', result);
+
         if (!ignore) {
-          console.log('[🧪 Raw result]', result);
           setRows(result.items);
           setTotal(result.total);
-          console.log('[🔍 rows]', data.items);
-
         }
       } catch (err) {
         if (!ignore) setError(err as Error);
@@ -43,14 +44,18 @@ export function usePaginatedCustomerQuery() {
         if (!ignore) setLoading(false);
       }
     })();
-    return () => { ignore = true; };
+
+    return () => { ignore = true };
   }, [filters, page, pageSize, setTotal]);
 
-  /* ---------- filters ---------- */
+  /* ---------- fetch filter options ---------- */
   useEffect(() => {
     dashboardService
       .fetchFilterOptions()
-      .then(setFilterOptions)
+      .then((data) => {
+        console.log('[🚨 RAW APOLLO DATA]', data);
+        setFilterOptions(data);
+      })
       .catch(() => setFilterOptions(empty));
   }, []);
 

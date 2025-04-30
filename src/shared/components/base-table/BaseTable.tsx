@@ -39,7 +39,7 @@ export default function BaseTable<TData>({
   /* GUARANTEE AN ARRAY – react-table must never receive undefined      */
   /* ------------------------------------------------------------------ */
   const safeData = (data ?? []) as TData[];
-
+  console.log('[👀 Table Data]', safeData);
   const table = useReactTable({
     data: safeData,
     columns,
@@ -60,7 +60,7 @@ export default function BaseTable<TData>({
     getRowCanExpand: () => !!expandableRowContent,
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: expandableRowContent ? getExpandedRowModel() : undefined,
-    getRowId: getRowId ? getRowId : (row: any) => row.id,
+    getRowId: getRowId ? getRowId : (row: any) => row.ID,
   });
 
   return (
