@@ -134,7 +134,7 @@ const safePageSize = pageSize > 0 ? pageSize : 50;
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25, 50, 100]}
                 component="div"
-                count={safePageSize}
+                count={safeTotalItems}
                 rowsPerPage={safePageSize}
                 page={pageIndex}
                 onPageChange={(_, newPage) => onPaginationChange(newPage, safePageSize)}
