@@ -1,13 +1,17 @@
+// src/app/providers/client/cacheConfig.ts
 import { InMemoryCache } from '@apollo/client';
-import { offsetLimitPagination } from '@apollo/client/utilities';
 
-
-export const createCacheConfig = () => new InMemoryCache({ 
-    typePolicies: {
-        Query: {
-            fields: {
-                getReportEtmDashboard: offsetLimitPagination(['filters']),
-            }
-        }
-    }
-})
+export const createCacheConfig = () => new InMemoryCache({
+  typePolicies: {
+    Query: {
+      fields: {
+        getReportEtmDashboard: {
+          keyArgs: ['filters'],
+          merge: (_existing, incoming) => {
+            return incoming; // 👈 reemplaza totalmente, no mezcles páginas
+          },
+        },
+      },
+    },
+  },
+});

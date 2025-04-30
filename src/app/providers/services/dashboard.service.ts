@@ -1,21 +1,17 @@
-import { fetchWithRetry } from '../utils/fetchUtils';
+// src/app/providers/services/dashboard.service.ts
+import { client } from '../client/graphqlClient';
 import { GET_REPORT_ETM_DASHBOARD } from '../client/queries/dashboard.queries';
 import { GET_DISTINCT_FILTER_OPTIONS } from '../client/queries/filters.queries';
 
 import {
-  DashboardResponse,
   DashboardFilters,
-  DashboardDataResponse,
-  DashboardQueryParams,
-  FilterOptionsResponse,
+  DashboardResponse,
   EtmDashboardFilterInput,
+  FilterOptionsResponse
 } from '../../../shared/types/dashboard.types';
 import { handleApiError } from '../utils/errorUtils';
 
-/* ------------------------- helpers ------------------------- */
-function mapFrontendFiltersToBackend(
-  filters: DashboardFilters,
-): EtmDashboardFilterInput {
+function mapFrontendFiltersToBackend(filters: DashboardFilters): EtmDashboardFilterInput {
   return {
     cliente: filters.cliente,
     telefono: filters.telefono,
@@ -41,18 +37,14 @@ function mapFrontendFiltersToBackend(
 }
 
 function cleanFilters(obj: EtmDashboardFilterInput): EtmDashboardFilterInput {
-  const cleaned =  Object.fromEntries(
-    Object.entries(obj).filter(
-      ([key, v]) =>
-        v !== '' && v !== undefined && v !== null
-    ),
+  const cleaned = Object.fromEntries(
+    Object.entries(obj).filter(([_, v]) => v !== '' && v !== undefined && v !== null)
   ) as EtmDashboardFilterInput;
-  if (obj.viewMode) cleaned.viewMode = obj.viewMode;
-  cleaned.viewMode = obj.viewMode ?? 'CUSTOMER'; // <- esto garantiza consistencia
+
+  cleaned.viewMode = obj.viewMode ?? 'CUSTOMER';
   return cleaned;
 }
 
-/* ----------------------- main service ---------------------- */
 export const dashboardService = {
   async fetchDashboardData(
     page = 0,
@@ -60,46 +52,40 @@ export const dashboardService = {
     filters: DashboardFilters = {},
     mode: 'CUSTOMER' | 'WAREHOUSE' = 'CUSTOMER',
   ): Promise<DashboardResponse> {
-    console.log('⚡ fetchDashboardData →', mode, (new Error().stack || '').split('\n')[2].trim());
-
     try {
       const backendFilters = cleanFilters(mapFrontendFiltersToBackend(filters));
-      backendFilters.viewMode = mode; 
+      backendFilters.viewMode = mode;
 
-      const params: DashboardQueryParams = {
-        page,
-        limit: Math.min(Math.max(1, limit), 100),
-        filters: backendFilters,
+      const { data } = await client.query({
+        query: GET_REPORT_ETM_DASHBOARD,
+        variables: {
+          page,
+          limit: Math.min(Math.max(1, limit), 100),
+          filters: backendFilters,
+        },
+        fetchPolicy: 'network-only',
+      });
+      console.log('[🔥 Backend raw response]', data);
+
+      return data.getReportEtmDashboard ?? {
+        items: [],
+        hasMore: false,
+        total: 0,
+        page: 0,
       };
-      console.log('[🧪 Filters sent to backend]', backendFilters);
-
-
-      const raw = await fetchWithRetry<DashboardDataResponse, DashboardQueryParams>(
-        GET_REPORT_ETM_DASHBOARD,
-        params,
-      );
-
-      const data = raw.getReportEtmDashboard;
-return {
-  items: data?.items ?? [],
-  total: data?.total ?? 0,
-  hasMore: data?.hasMore ?? false,
-  page: data?.page ?? 0,
-};
-
     } catch (err) {
       throw handleApiError(err);
     }
   },
+
   async fetchFilterOptions(): Promise<FilterOptionsResponse['getDistinctFilterOptions']> {
     try {
-      const raw = await fetchWithRetry<FilterOptionsResponse, Record<string, never>>(
-        GET_DISTINCT_FILTER_OPTIONS,
-        {},
-      );
-      console.log('[🚨 RAW APOLLO DATA]', raw); 
+      const { data } = await client.query({
+        query: GET_DISTINCT_FILTER_OPTIONS,
+        fetchPolicy: 'network-only',
+      });
 
-      return raw.getDistinctFilterOptions ?? {
+      return data.getDistinctFilterOptions ?? {
         clientes: [],
         telefonos: [],
         regiones: [],
