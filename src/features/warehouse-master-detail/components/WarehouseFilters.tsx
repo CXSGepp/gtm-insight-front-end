@@ -19,8 +19,7 @@ export default function WarehouseFilters() {
       onApply={() => setFilters(filters)}
       onReset={resetFilters}
     >
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={6} md={3}>
+  
           <FilterInput
             label="Bodega"
             type="autocomplete"
@@ -31,9 +30,8 @@ export default function WarehouseFilters() {
             value={filters.bodega ?? ''}
             onChange={(value) => setFilters({ ...filters, bodega: value })}
           />
-        </Grid>
+    
 
-        <Grid item xs={12} sm={6} md={3}>
           <FilterInput
             label="Zona"
             type="autocomplete"
@@ -44,9 +42,8 @@ export default function WarehouseFilters() {
             value={filters.zona ?? ''}
             onChange={(value) => setFilters({ ...filters, zona: value })}
           />
-        </Grid>
+  
 
-        <Grid item xs={12} sm={6} md={3}>
           <FilterInput
             label="Región"
             type="autocomplete"
@@ -57,9 +54,7 @@ export default function WarehouseFilters() {
             value={filters.region ?? ''}
             onChange={(value) => setFilters({ ...filters, region: value })}
           />
-        </Grid>
 
-        <Grid item xs={12} sm={6} md={3}>
           <FilterInput
             label="Clasificación"
             type="autocomplete"
@@ -70,10 +65,8 @@ export default function WarehouseFilters() {
             value={filters.clasificacion ?? ''}
             onChange={(value) => setFilters({ ...filters, clasificacion: value })}
           />
-        </Grid>
 
         {/* Add more filters similarly here */}
-      </Grid>
     </FilterContainer>
   );
 }
