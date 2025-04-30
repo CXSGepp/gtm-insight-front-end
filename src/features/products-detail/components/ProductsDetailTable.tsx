@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, CircularProgress } from '@mui/material';
+import { Box, CircularProgress, Typography, Paper } from '@mui/material';
 import BaseTable from '../../../shared/components/base-table/BaseTable';
 import { useSkuTableStore } from '../store/skuTableStore';
 import { usePaginatedSkuQuery } from '../hooks/usePaginatedSkuQuery';
@@ -42,7 +42,6 @@ export const skuColumns: ColumnDef<any>[] = [
 export default function SkuDetailTable({ bodega, cliente }: SkuDetailTableProps) {
   const { page, pageSize, setPagination, setBodega, setCliente } = useSkuTableStore();
   const { rows, total, loading } = usePaginatedSkuQuery();
-  console.log('[✅ SkuDetailTable mounted] Bodega:', bodega, 'Cliente:', cliente);
 
   React.useEffect(() => {
     setBodega(bodega);
@@ -51,17 +50,19 @@ export default function SkuDetailTable({ bodega, cliente }: SkuDetailTableProps)
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" py={2}>
-        <CircularProgress size={24} />
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight={120}>
+        <CircularProgress size={28} />
       </Box>
     );
   }
 
   if (!loading && rows.length === 0) {
     return (
-      <Box display="flex" justifyContent="center" py={2}>
-        No data found
-      </Box>
+      <Paper sx={{ p: 3, mt: 2, backgroundColor: '#1e1e1e', color: 'white' }}>
+        <Typography variant="subtitle1" align="center">
+          No se han cargado datos para la bodega <b>{bodega}</b> o cliente <b>{cliente}</b>.
+        </Typography>
+      </Paper>
     );
   }
 
