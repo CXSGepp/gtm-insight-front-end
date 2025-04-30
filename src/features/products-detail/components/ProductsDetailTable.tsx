@@ -36,12 +36,13 @@ export const skuColumns: ColumnDef<any>[] = [
     cell: ({ cell }) => <GlobalStatusChip status={cell.getValue<string>()} />,
   },
   { accessorKey: 'CANAL', header: 'Canal' },
-  { accessorKey: 'DATABASE', header: 'Base de Datos' },
+  { accessorKey: 'DB_ORIGEN', header: 'Base de Datos' },
 ];
 
 export default function SkuDetailTable({ bodega, cliente }: SkuDetailTableProps) {
   const { page, pageSize, setPagination, setBodega, setCliente } = useSkuTableStore();
   const { rows, total, loading } = usePaginatedSkuQuery();
+  console.log('[✅ SkuDetailTable mounted] Bodega:', bodega, 'Cliente:', cliente);
 
   React.useEffect(() => {
     setBodega(bodega);

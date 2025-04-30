@@ -13,7 +13,7 @@ export const SKU_FIELDS = gql`
         CANAL
         LISTA_PRECIO
         FECHA_REGISTRO
-        DATABASE
+        DB_ORIGEN
         SEMAFORO_GLOBAL
         LAST_UPDATED
     }
