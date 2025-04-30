@@ -10,6 +10,8 @@ import {
   Paper,
   Collapse,
 } from '@mui/material';
+import { useRouterState } from '@tanstack/react-router';
+
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import geppLogo from '../../../../assets/geppLogo.png';
 import { navigationItems } from '../../config/navigation';
@@ -17,8 +19,10 @@ import { useLayoutStore } from '../../store/useLayoutStore';
 
 export const Sidebar = () => {
   const { sidebarOpen } = useLayoutStore();
-  const router = useRouter();
-  const pathname = router.useMatch().location.pathname; // ✅ reactivo
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  });
+  
   const [openMenus, setOpenMenus] = useState<{ [key: string]: boolean }>({});
 
   const handleToggle = (key: string) => {
