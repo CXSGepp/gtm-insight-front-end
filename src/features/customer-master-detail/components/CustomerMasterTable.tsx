@@ -4,7 +4,7 @@ import { useCustomerTableStore } from '../store/customerTableStore';
 import { ColumnDef } from '@tanstack/react-table';
 import BaseTable from '../../../shared/components/base-table/BaseTable';
 import Pagination from '../../../shared/components/pagination/Pagination';
-import SkuDetailTable from '../../products-detail/components/ProductsDetailTable'; // We'll create it
+import SkuDetailTable from '../../products-detail/components/ProductsDetailTable';
 
 interface CustomerDashboardItem {
   ID: number;
@@ -36,12 +36,32 @@ const columns: ColumnDef<CustomerDashboardItem>[] = [
   { accessorKey: 'TIPO_RUTA', header: 'Tipo de Ruta' },
   { accessorKey: 'CLASIFICACION', header: 'Clasificación' },
   { accessorKey: 'FRECUENCIA', header: 'Frecuencia' },
-  { accessorKey: 'CLAVE_LISTA', header: 'Clave Lista' },
-  { accessorKey: 'ACTIVA', header: 'Activa' },
-  { accessorKey: 'TELEFONO', header: 'Teléfono' },
-  { accessorKey: 'DIRECCION', header: 'Dirección' },
+  {
+    accessorKey: 'CLAVE_LISTA',
+    header: 'Clave Lista',
+    cell: ({ getValue }) => getValue() ?? '—',
+  },
+  {
+    accessorKey: 'ACTIVA',
+    header: 'Activa',
+    cell: ({ getValue }) => (getValue() ? 'Sí' : 'No'),
+  },
+  {
+    accessorKey: 'TELEFONO',
+    header: 'Teléfono',
+    cell: ({ getValue }) => {
+      const tel = getValue();
+      if (!tel) return '—';
+      const str = tel.toString().padStart(10, '0');
+      return `📞 ${str.slice(0, 3)}-${str.slice(3, 6)}-${str.slice(6)}`;
+    },
+  },
+  {
+    accessorKey: 'DIRECCION',
+    header: 'Dirección',
+    cell: ({ getValue }) => getValue() ?? '—',
+  },
 ];
-
 
 export default function CustomerMasterTable() {
   const { rows, total, loading, page, pageSize } = usePaginatedCustomerQuery();
