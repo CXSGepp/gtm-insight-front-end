@@ -43,7 +43,8 @@ export default function BaseTable<TData>({
   console.log('[👀 Table Data]', safeData);
 console.log('[👀 Table Data Count]', safeData.length);
 console.log('[📦 totalItems]', totalItems);
-
+const safeTotalItems = isFinite(totalItems) ? totalItems : 0;
+const safePageSize = pageSize > 0 ? pageSize : 50;
   console.log('[👀 Table Data]', safeData);
   const table = useReactTable({
     data: safeData,
@@ -51,13 +52,13 @@ console.log('[📦 totalItems]', totalItems);
     manualPagination: true,
     pageCount: Math.ceil(totalItems / pageSize) || 1,
     state: {
-      pagination: { pageIndex, pageSize },
+      pagination: { pageIndex, pageSize: safePageSize, },
       expanded,
     },
     onPaginationChange: (updater) => {
       const next =
         typeof updater === 'function'
-          ? updater({ pageIndex, pageSize })
+          ? updater({ pageIndex, pageSize: safePageSize  })
           : updater;
       onPaginationChange(next.pageIndex, next.pageSize);
     },
@@ -133,10 +134,10 @@ console.log('[📦 totalItems]', totalItems);
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25, 50, 100]}
                 component="div"
-                count={totalItems}
-                rowsPerPage={pageSize}
+                count={safePageSize}
+                rowsPerPage={safePageSize}
                 page={pageIndex}
-                onPageChange={(_, newPage) => onPaginationChange(newPage, pageSize)}
+                onPageChange={(_, newPage) => onPaginationChange(newPage, safePageSize)}
                 onRowsPerPageChange={(e) => onPaginationChange(0, Number(e.target.value))}
                 labelRowsPerPage="Rows per page"
                 labelDisplayedRows={({ from, to, count }) => `${from}-${to} of ${count}`}
