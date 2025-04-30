@@ -78,7 +78,13 @@ export const dashboardService = {
       );
 
       const data = raw.getReportEtmDashboard;
-      return data ?? { items: [], total: 0, hasMore: false, page };
+return {
+  items: data?.items ?? [],
+  total: data?.total ?? 0,
+  hasMore: data?.hasMore ?? false,
+  page: data?.page ?? 0,
+};
+
     } catch (err) {
       throw handleApiError(err);
     }
@@ -89,6 +95,8 @@ export const dashboardService = {
         GET_DISTINCT_FILTER_OPTIONS,
         {},
       );
+      console.log('[🚨 RAW APOLLO DATA]', raw); 
+
       return raw.getDistinctFilterOptions ?? {
         clientes: [],
         telefonos: [],
