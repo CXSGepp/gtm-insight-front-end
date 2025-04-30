@@ -18,8 +18,7 @@ export function usePaginatedCustomerQuery() {
 
   /* ---------- data ---------- */
   useEffect(() => {
-    console.log('[🔍 rows]', rows);
-}, [rows]);
+    
     let ignore = false;
     (async () => {
       setLoading(true);
@@ -34,6 +33,8 @@ export function usePaginatedCustomerQuery() {
         if (!ignore) {
           setRows(data.items);
           setTotal(data.total);
+          console.log('[🔍 rows]', data.items);
+
         }
       } catch (err) {
         if (!ignore) setError(err as Error);
