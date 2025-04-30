@@ -36,9 +36,9 @@ export function usePaginatedCustomerQuery() {
         console.log('[🧪 Raw result]', result);
 
         if (!ignore) {
-          console.log('[🧪 Raw result]', data);
-          setRows([...data.items]); ;
-          setTotal(data.total);
+          console.log('[🧪 Raw result]', result);
+          setRows([...result.items]); ;
+          setTotal(result.total);
         }
       } catch (err) {
         if (!ignore) setError(err as Error);

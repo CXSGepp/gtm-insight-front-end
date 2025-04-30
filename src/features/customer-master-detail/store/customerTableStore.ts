@@ -20,7 +20,9 @@ export const useCustomerTableStore = create<CustomerTableState>((set) => ({
     total: 0,
     setPage: (page) => set({ page }),
     setPageSize: (size) => set({ pageSize: size }),
-    setFilters: (filters) => set({ filters }),
+    setFilters: (filters) => set((state) => ({
+        filters: { ...state.filters, ...filters, viewMode: 'CUSTOMER' },
+      })),
     resetFilters: () => set({ filters: { viewMode: 'CUSTOMER' } }),
     setTotal: (total) => set({ total }),
 }));
