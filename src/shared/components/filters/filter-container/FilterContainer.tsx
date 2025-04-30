@@ -1,54 +1,62 @@
+// src/shared/components/filters/filter-container/FilterContainer.tsx
 import React from 'react';
 import { Box, Button, Paper } from '@mui/material';
-import { FilterContainerProps } from './filterContainer.types';;
+import {
+  FilterContainerProps,
+  FilterContainerChildrenProps,
+} from './filterContainer.types';
 
 export default function FilterContainer({
-    children, 
-    loading = false,
-    onApply,
-    onReset,
-    applyLabel = "Aplicar Filtros",
-    clearLabel = "Limpar Filtros"
+  children,
+  loading = false,
+  onApply,
+  onReset,
+  applyLabel = 'Aplicar Filtros',
+  clearLabel = 'Limpiar Filtros',
 }: FilterContainerProps) {
-    return (
-        <Paper sx={{ p: 2, mb: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {/* Filters */}
-          <Box
-            sx={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: 2,
-            }}
-          >
-            {children}
-          </Box>
-    
-          {/* Action Buttons */}
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              gap: 2,
-              mt: 1,
-            }}
-          >
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={onReset}
-              disabled={loading}
-            >
-              {clearLabel}
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={onApply}
-              disabled={loading}
-            >
-              {applyLabel}
-            </Button>
-          </Box>
-        </Paper>
-      );
-    }
+  const [localFilters, setLocalFilters] = React.useState<Record<string, any>>({});
+
+  const enhancedChildren =
+    typeof children === 'function'
+      ? (children as (props: FilterContainerChildrenProps) => React.ReactNode)({
+          localFilters,
+          setLocalFilters,
+        })
+      : React.Children.map(children, (child) =>
+          React.isValidElement(child)
+            ? React.cloneElement(child, {
+                localFilters,
+                setLocalFilters,
+              })
+            : child,
+        );
+
+  return (
+    <Paper sx={{ p: 2, mb: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+        {enhancedChildren}
+      </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 1 }}>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => {
+            setLocalFilters({});
+            onReset();
+          }}
+          disabled={loading}
+        >
+          {clearLabel}
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => onApply(localFilters)}
+          disabled={loading}
+        >
+          {applyLabel}
+        </Button>
+      </Box>
+    </Paper>
+  );
+}
