@@ -49,6 +49,7 @@ function cleanFilters(obj: EtmDashboardFilterInput): EtmDashboardFilterInput {
     ),
   ) as EtmDashboardFilterInput;
   if (obj.viewMode) cleaned.viewMode = obj.viewMode;
+  cleaned.viewMode = obj.viewMode ?? 'CUSTOMER'; // <- esto garantiza consistencia
   return cleaned;
 }
 

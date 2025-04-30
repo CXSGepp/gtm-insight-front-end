@@ -39,6 +39,11 @@ export default function BaseTable<TData>({
   /* GUARANTEE AN ARRAY – react-table must never receive undefined      */
   /* ------------------------------------------------------------------ */
   const safeData = (data ?? []) as TData[];
+  console.log('[🚨 FINAL DATA FROM DASHBOARD]', data);
+  console.log('[👀 Table Data]', safeData);
+console.log('[👀 Table Data Count]', safeData.length);
+console.log('[📦 totalItems]', totalItems);
+
   console.log('[👀 Table Data]', safeData);
   const table = useReactTable({
     data: safeData,

@@ -12,17 +12,18 @@ const createFetchOptions = <T, V extends OperationVariables>(
 export const fetchWithRetry = async <T, V extends OperationVariables>(
   query: DocumentNode,
   variables?: V,
-  options: Partial<QueryOptions<T, V>> = {}
+  options: Partial<Omit<QueryOptions<T, V>, 'query' | 'variables'>> = {}
 ): Promise<T> => {
   const maxRetries = 3;
   let retries = 0;
 
   while (retries < maxRetries) {
     try {
+      const fetchOptions = createFetchOptions<T, V>(options);
       const { data } = await client.query<T, V>({
         query,
-        variables,
-        ...createFetchOptions<T, V>(options),
+        variables, // tipo V | undefined correcto
+        ...fetchOptions,
       });
       return data;
     } catch (error) {

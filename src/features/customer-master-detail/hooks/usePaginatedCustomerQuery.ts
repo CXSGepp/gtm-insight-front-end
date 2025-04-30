@@ -25,6 +25,7 @@ export function usePaginatedCustomerQuery() {
       setError(null);
 
       try {
+        console.log('[🎯 Sending filters]', filters);
         const result = await dashboardService.fetchDashboardData(
           page,
           pageSize,
@@ -35,8 +36,9 @@ export function usePaginatedCustomerQuery() {
         console.log('[🧪 Raw result]', result);
 
         if (!ignore) {
-          setRows(result.items);
-          setTotal(result.total);
+          console.log('[🧪 Raw result]', data);
+          setRows([...data.items]); ;
+          setTotal(data.total);
         }
       } catch (err) {
         if (!ignore) setError(err as Error);

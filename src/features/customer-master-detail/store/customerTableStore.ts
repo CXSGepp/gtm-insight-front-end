@@ -14,13 +14,13 @@ interface CustomerTableState {
 }
 
 export const useCustomerTableStore = create<CustomerTableState>((set) => ({
-    filters: {},
+    filters: { viewMode: 'CUSTOMER' },
     page: 0,
     pageSize: 50,
     total: 0,
     setPage: (page) => set({ page }),
     setPageSize: (size) => set({ pageSize: size }),
     setFilters: (filters) => set({ filters }),
-    resetFilters: () => set({ filters: {} }),
+    resetFilters: () => set({ filters: { viewMode: 'CUSTOMER' } }),
     setTotal: (total) => set({ total }),
 }));
