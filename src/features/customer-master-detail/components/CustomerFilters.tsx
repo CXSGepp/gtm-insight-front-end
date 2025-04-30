@@ -31,7 +31,12 @@ export default function CustomerFilters() {
 
   return (
     <FilterContainer
-      onApply={(localFilters) => setFilters(sanitizeFilters(localFilters))}
+    onApply={(localFilters) => {
+      const sanitized = sanitizeFilters(localFilters);
+      console.log('[🧼 Filtros sanitizados a aplicar]', sanitized); // 👈 AQUI EL LOG
+      setFilters(sanitized);
+    }}
+          
       onReset={() => {
         resetFilters();
         setFilters({ viewMode: 'CUSTOMER' });
