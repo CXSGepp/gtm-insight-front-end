@@ -35,17 +35,21 @@ function mapFrontendFiltersToBackend(
     claveLista: filters.claveLista,
     activa: filters.activa,
     direccion: filters.direccion,
-    viewMode: filters.viewMode,
+    viewMode: filters.viewMode ?? 'CUSTOMER',
     fechaRegistro: filters.fechaRegistro,
   };
 }
 
 function cleanFilters(obj: EtmDashboardFilterInput): EtmDashboardFilterInput {
-  return Object.fromEntries(
+  const cleaned =  Object.fromEntries(
     Object.entries(obj).filter(
-      ([_, v]) => v !== '' && v !== undefined && v !== null,
+      ([key, v]) =>
+        v !== '' && v !== undefined && v !== null &&
+        key !== 'viewMode', 
     ),
   ) as EtmDashboardFilterInput;
+  if (obj.viewMode) cleaned.viewMode = obj.viewMode;
+  return cleaned;
 }
 
 /* ----------------------- main service ---------------------- */
@@ -60,12 +64,11 @@ export const dashboardService = {
 
     try {
       const backendFilters = cleanFilters(mapFrontendFiltersToBackend(filters));
-      backendFilters.viewMode = mode; // 👈 FIX: necesario para que backend use el modo correcto
+      backendFilters.viewMode = mode; 
 
       const params: DashboardQueryParams = {
         page,
         limit: Math.min(Math.max(1, limit), 100),
-        mode,
         filters: backendFilters, // ✅ pasa el viewMode incluido
       };
 

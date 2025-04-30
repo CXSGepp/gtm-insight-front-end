@@ -9,12 +9,13 @@ export const navigationItems = [
     key: 'dashboard',
     children: [
       {
-        label: 'Cliente',
+        label: 'Clientes',
         icon: SupportAgentIcon,
+        path: '/customer',
         key: 'customer'
       },
       {
-        label: 'Bodega',
+        label: 'Bodegas',
         icon: Warehouse,
         path:'/warehouse',
         key: 'warehouse'
