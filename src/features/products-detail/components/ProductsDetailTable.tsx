@@ -50,7 +50,7 @@ export default function SkuDetailTable({ bodega, cliente }: SkuDetailTableProps)
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight={120}>
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight={120} sx={{ backgroundColor: '#121212' }}>
         <CircularProgress size={28} />
       </Box>
     );
@@ -58,23 +58,35 @@ export default function SkuDetailTable({ bodega, cliente }: SkuDetailTableProps)
 
   if (!loading && rows.length === 0) {
     return (
-      <Paper sx={{ p: 3, mt: 2, backgroundColor: '#1e1e1e', color: 'white' }}>
-        <Typography variant="subtitle1" align="center">
-          No se han cargado datos para la bodega <b>{bodega}</b> o cliente <b>{cliente}</b>.
-        </Typography>
-      </Paper>
+      <Box sx={{ mt: 2, backgroundColor: '#121212', borderRadius: 2 }}>
+        <Paper
+          elevation={0}
+          sx={{
+            p: 3,
+            backgroundColor: 'transparent',
+            color: 'white',
+            textAlign: 'center',
+          }}
+        >
+          <Typography variant="subtitle1">
+            No se han cargado datos para la bodega <b>{bodega}</b> o cliente <b>{cliente}</b>.
+          </Typography>
+        </Paper>
+      </Box>
     );
   }
 
   return (
-    <BaseTable
-      columns={skuColumns}
-      data={rows}
-      loading={loading}
-      totalItems={total}
-      pageIndex={page}
-      pageSize={pageSize}
-      onPaginationChange={(newPage, newSize) => setPagination(newPage, newSize)}
-    />
+    <Box sx={{ overflowX: 'auto', backgroundColor: '#121212', borderRadius: 2, p: 1 }}>
+      <BaseTable
+        columns={skuColumns}
+        data={rows}
+        loading={loading}
+        totalItems={total}
+        pageIndex={page}
+        pageSize={pageSize}
+        onPaginationChange={(newPage, newSize) => setPagination(newPage, newSize)}
+      />
+    </Box>
   );
 }
