@@ -69,8 +69,10 @@ export const dashboardService = {
       const params: DashboardQueryParams = {
         page,
         limit: Math.min(Math.max(1, limit), 100),
-        filters: backendFilters, // ✅ pasa el viewMode incluido
+        filters: backendFilters,
       };
+      console.log('[🧪 Filters sent to backend]', backendFilters);
+
 
       const raw = await fetchWithRetry<DashboardDataResponse, DashboardQueryParams>(
         GET_REPORT_ETM_DASHBOARD,

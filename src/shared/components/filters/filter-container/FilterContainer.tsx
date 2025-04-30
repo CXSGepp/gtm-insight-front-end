@@ -53,7 +53,17 @@ export default function FilterContainer({
         <Button
           variant="contained"
           color="primary"
-          onClick={() => onApply(localFilters)}
+          onClick={() => {
+            const sanitizedFilters = {
+              ...localFilters,
+              cliente: localFilters.cliente ? Number(localFilters.cliente) : undefined,
+              bodega: localFilters.bodega ? Number(localFilters.bodega) : undefined,
+              ruta: localFilters.ruta ? Number(localFilters.ruta) : undefined,
+            };
+          
+            console.log('[✅ Enviando filtros sanitizados]', sanitizedFilters);
+            onApply(sanitizedFilters);
+          }}
           disabled={loading}
         >
           {applyLabel}
