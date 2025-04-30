@@ -24,15 +24,16 @@ export function usePaginatedCustomerQuery() {
       setLoading(true);
       setError(null);
       try {
-        const data = await dashboardService.fetchDashboardData(
+        const result = await dashboardService.fetchDashboardData(
           page,
           pageSize,
           filters,
           'CUSTOMER',
         );
         if (!ignore) {
-          setRows(data.items);
-          setTotal(data.total);
+          console.log('[🧪 Raw result]', result);
+          setRows(result.items);
+          setTotal(result.total);
           console.log('[🔍 rows]', data.items);
 
         }
