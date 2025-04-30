@@ -1,4 +1,3 @@
-// src/features/customer-master-detail/components/CustomerFilters.tsx
 import React from 'react';
 import FilterContainer from '../../../shared/components/filters/filter-container/FilterContainer';
 import FilterInput from '../../../shared/components/filters/filter-input/FilterInput';
@@ -17,7 +16,10 @@ export default function CustomerFilters() {
   return (
     <FilterContainer
       onApply={(localFilters) => setFilters(localFilters)}
-      onReset={resetFilters}
+      onReset={() => {
+        resetFilters();
+        setFilters({});
+      }}
     >
       {({ localFilters, setLocalFilters }) => (
         <>
@@ -25,57 +27,91 @@ export default function CustomerFilters() {
             label="Cliente"
             type="autocomplete"
             freeSolo
-            options={filterOptions.clientes?.filter((v, i, a) => v && a.indexOf(v) === i) || []}
-            value={localFilters.cliente || ''}
-            onChange={(value) => setLocalFilters((prev) => ({ ...prev, cliente: value }))}
+            options={
+              (filterOptions.clientes ?? [])
+                .filter((v, i, a) => v != null && a.indexOf(v) === i)
+                .map((v) => ({ label: String(v), value: v }))
+            }
+            value={localFilters.cliente ?? ''}
+            onChange={(value) => setLocalFilters({ ...localFilters, cliente: value })}
           />
+
           <FilterInput
             label="Teléfonos"
             type="autocomplete"
             freeSolo
-            options={filterOptions.telefonos?.filter((v, i, a) => v && a.indexOf(v) === i) || []}
-            value={localFilters.telefono || ''}
-            onChange={(value) => setLocalFilters((prev) => ({ ...prev, telefono: value }))}
+            options={
+              (filterOptions.telefonos ?? [])
+                .filter((v, i, a) => v && a.indexOf(v) === i)
+                .map((v) => ({ label: String(v), value: v }))
+            }
+            value={localFilters.telefono ?? ''}
+            onChange={(value) => setLocalFilters({ ...localFilters, telefono: value })}
           />
+
           <FilterInput
             label="Región"
             type="autocomplete"
             freeSolo
-            options={filterOptions.regiones?.filter((v, i, a) => v && a.indexOf(v) === i) || []}
-            value={localFilters.region || ''}
-            onChange={(value) => setLocalFilters((prev) => ({ ...prev, region: value }))}
+            options={
+              (filterOptions.regiones ?? [])
+                .filter((v, i, a) => v && a.indexOf(v) === i)
+                .map((v) => ({ label: String(v), value: v }))
+            }
+            value={localFilters.region ?? ''}
+            onChange={(value) => setLocalFilters({ ...localFilters, region: value })}
           />
+
           <FilterInput
             label="Zona"
             type="autocomplete"
             freeSolo
-            options={filterOptions.zonas?.filter((v, i, a) => v && a.indexOf(v) === i) || []}
-            value={localFilters.zona || ''}
-            onChange={(value) => setLocalFilters((prev) => ({ ...prev, zona: value }))}
+            options={
+              (filterOptions.zonas ?? [])
+                .filter((v, i, a) => v && a.indexOf(v) === i)
+                .map((v) => ({ label: String(v), value: v }))
+            }
+            value={localFilters.zona ?? ''}
+            onChange={(value) => setLocalFilters({ ...localFilters, zona: value })}
           />
+
           <FilterInput
             label="Clasificación"
             type="autocomplete"
             freeSolo
-            options={filterOptions.clasificaciones?.filter((v, i, a) => v && a.indexOf(v) === i) || []}
-            value={localFilters.clasificacion || ''}
-            onChange={(value) => setLocalFilters((prev) => ({ ...prev, clasificacion: value }))}
+            options={
+              (filterOptions.clasificaciones ?? [])
+                .filter((v, i, a) => v && a.indexOf(v) === i)
+                .map((v) => ({ label: String(v), value: v }))
+            }
+            value={localFilters.clasificacion ?? ''}
+            onChange={(value) => setLocalFilters({ ...localFilters, clasificacion: value })}
           />
+
           <FilterInput
             label="Tipo Ruta"
             type="autocomplete"
             freeSolo
-            options={filterOptions.tiposRuta?.filter((v, i, a) => v && a.indexOf(v) === i) || []}
-            value={localFilters.tipoRuta || ''}
-            onChange={(value) => setLocalFilters((prev) => ({ ...prev, tipoRuta: value }))}
+            options={
+              (filterOptions.tiposRuta ?? [])
+                .filter((v, i, a) => v && a.indexOf(v) === i)
+                .map((v) => ({ label: String(v), value: v }))
+            }
+            value={localFilters.tipoRuta ?? ''}
+            onChange={(value) => setLocalFilters({ ...localFilters, tipoRuta: value })}
           />
+
           <FilterInput
             label="Bodega"
             type="autocomplete"
             freeSolo
-            options={filterOptions.bodegas?.filter((v, i, a) => v && a.indexOf(v) === i) || []}
-            value={localFilters.bodega || ''}
-            onChange={(value) => setLocalFilters((prev) => ({ ...prev, bodega: value }))}
+            options={
+              (filterOptions.bodegas ?? [])
+                .filter((v, i, a) => v != null && a.indexOf(v) === i)
+                .map((v) => ({ label: String(v), value: v }))
+            }
+            value={localFilters.bodega ?? ''}
+            onChange={(value) => setLocalFilters({ ...localFilters, bodega: value })}
           />
         </>
       )}
