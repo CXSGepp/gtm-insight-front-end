@@ -15,7 +15,7 @@ export const Sidebar = () => {
   };
 
   const isRouteActive = (path: string) => {
-    return router.state.location.pathname === path;
+    return router.state.location.pathname.startsWith(path);
   };
 
   return (
