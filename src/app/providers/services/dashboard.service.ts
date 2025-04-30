@@ -44,8 +44,7 @@ function cleanFilters(obj: EtmDashboardFilterInput): EtmDashboardFilterInput {
   const cleaned =  Object.fromEntries(
     Object.entries(obj).filter(
       ([key, v]) =>
-        v !== '' && v !== undefined && v !== null &&
-        key !== 'viewMode', 
+        v !== '' && v !== undefined && v !== null
     ),
   ) as EtmDashboardFilterInput;
   if (obj.viewMode) cleaned.viewMode = obj.viewMode;
