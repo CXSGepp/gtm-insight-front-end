@@ -65,19 +65,23 @@ export default function BaseTable<TData>({
   });
 
   return (
-    <Box sx={{ width: '100%', overflowX: 'auto' }}> {/* Envuelve Paper con Box que permite scroll */}
-      <Paper sx={{ minWidth: '1000px' }}> {/* Fija un ancho mínimo para forzar scroll si es necesario */}
-        <TableContainer sx={{ maxHeight: 600 }}>
+    <Box sx={{ width: '100%', overflowX: 'auto' }}>
+      <Paper sx={{ width: '100%', overflow: 'hidden', mt: 2 }}>
+        <TableContainer sx={{ maxHeight: 500, overflowY: 'auto' }}>
           <Table stickyHeader size="small">
             <TableHead>
               {table.getHeaderGroups().map((hg) => (
                 <TableRow key={hg.id}>
-                  {hg.headers.map((h) => (
-                    <TableCell key={h.id}>
-                      {flexRender(h.column.columnDef.header, h.getContext())}
+                  {hg.headers.map((header) => (
+                    <TableCell
+                      key={header.id}
+                      align="left"
+                      style={{ minWidth: header.getSize?.() ?? 120 }}
+                    >
+                      {flexRender(header.column.columnDef.header, header.getContext())}
                     </TableCell>
                   ))}
-                  {expandableRowContent ? <TableCell /> : null}
+                  {expandableRowContent && <TableCell />}
                 </TableRow>
               ))}
             </TableHead>
@@ -115,7 +119,7 @@ export default function BaseTable<TData>({
 
                     {expandableRowContent && (
                       <TableRow>
-                        <TableCell colSpan={columns.length + 1} sx={{ p: 0 }}>
+                        <TableCell colSpan={columns.length + 1} sx={{ p: 0, border: 0 }}>
                           <Collapse in={row.getIsExpanded()} timeout="auto" unmountOnExit>
                             <Box sx={{ p: 2, bgcolor: '#f9f9f9', borderTop: '1px solid #e0e0e0' }}>
                               {expandableRowContent(row.original)}
