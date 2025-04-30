@@ -11,7 +11,7 @@ export const navigationItems = [
       {
         label: 'Clientes',
         icon: SupportAgentIcon,
-        path: '/customer',
+        path: '/customers',
         key: 'customer'
       },
       {
