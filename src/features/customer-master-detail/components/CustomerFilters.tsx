@@ -3,10 +3,16 @@ import FilterContainer from '../../../shared/components/filters/filter-container
 import FilterInput from '../../../shared/components/filters/filter-input/FilterInput';
 import { useCustomerTableStore } from '../store/customerTableStore';
 import { usePaginatedCustomerQuery } from '../hooks/usePaginatedCustomerQuery';
+import CustomersFiltersSkeleton from './CustomerFiltersSkeleton';
 
 export default function CustomerFilters() {
   const { filters, setFilters, resetFilters } = useCustomerTableStore();
-  const { filterOptions } = usePaginatedCustomerQuery();
+
+const { filterOptions, loading } = usePaginatedCustomerQuery();
+
+    if (!filterOptions || loading) {
+      return <CustomersFiltersSkeleton />;
+    }
 
   return (
     <FilterContainer onApply={() => setFilters(filters)} onReset={resetFilters}>
