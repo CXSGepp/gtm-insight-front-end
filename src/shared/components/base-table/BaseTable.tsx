@@ -1,4 +1,3 @@
-// src/components/BaseTable.tsx
 import React from 'react';
 import {
   useReactTable,
@@ -20,6 +19,7 @@ import {
   IconButton,
   Collapse,
   Box,
+  useTheme,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -35,8 +35,10 @@ export default function BaseTable<TData>({
   onPaginationChange,
   expandableRowContent,
   getRowId,
+  darkMode = false,
 }: BaseTableProps<TData>) {
   const [expanded, setExpanded] = React.useState({});
+  const theme = useTheme();
 
   const safeData = (data ?? []) as TData[];
   const safeTotalItems = isFinite(totalItems) ? totalItems : 0;
@@ -67,7 +69,14 @@ export default function BaseTable<TData>({
 
   return (
     <Box sx={{ width: '100%', overflowX: 'auto' }}>
-      <Paper sx={{ width: '100%', overflow: 'hidden', mt: 2 }}>
+      <Paper
+        sx={{
+          width: '100%',
+          overflow: 'hidden',
+          mt: 2,
+          bgcolor: darkMode ? '#0c0c0c' : undefined,
+        }}
+      >
         <TableContainer
           sx={{
             maxHeight: '60vh',
@@ -75,7 +84,26 @@ export default function BaseTable<TData>({
             overflowX: 'auto',
           }}
         >
-          <Table stickyHeader size="small" sx={{ minWidth: 1000 }}>
+          <Table
+            stickyHeader
+            size="small"
+            sx={{
+              minWidth: 1000,
+              backgroundColor: darkMode ? '#0c0c0c' : undefined,
+              color: darkMode ? '#fff' : undefined,
+              '& th': {
+                backgroundColor: darkMode ? '#00083a' : undefined,
+                color: darkMode ? '#fff' : undefined,
+              },
+              '& td': {
+                color: darkMode ? '#fff' : undefined,
+                borderColor: darkMode ? '#333' : undefined,
+              },
+              '& tbody tr:hover': {
+                backgroundColor: darkMode ? '#1c1c1c' : undefined,
+              },
+            }}
+          >
             <TableHead>
               {table.getHeaderGroups().map((hg) => (
                 <TableRow key={hg.id}>
@@ -128,7 +156,15 @@ export default function BaseTable<TData>({
                       <TableRow>
                         <TableCell colSpan={columns.length + 1} sx={{ p: 0, border: 0 }}>
                           <Collapse in={row.getIsExpanded()} timeout="auto" unmountOnExit>
-                            <Box sx={{ p: 2, bgcolor: '#f9f9f9', borderTop: '1px solid #e0e0e0' }}>
+                            <Box
+                              sx={{
+                                p: 2,
+                                bgcolor: darkMode ? '#121212' : '#f9f9f9',
+                                borderTop: darkMode
+                                  ? '1px solid #333'
+                                  : '1px solid #e0e0e0',
+                              }}
+                            >
                               {expandableRowContent(row.original)}
                             </Box>
                           </Collapse>

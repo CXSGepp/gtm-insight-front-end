@@ -100,15 +100,16 @@ export default function SkuDetailTable({ bodega, cliente }: SkuDetailTableProps)
         },
       }}
     >
-      <BaseTable
-        columns={skuColumns}
-        data={rows}
-        loading={loading}
-        totalItems={total}
-        pageIndex={page}
-        pageSize={pageSize}
-        onPaginationChange={(newPage, newSize) => setPagination(newPage, newSize)}
-      />
+     <BaseTable
+  columns={skuColumns}
+  data={rows}
+  loading={loading}
+  totalItems={total}
+  pageIndex={page}
+  pageSize={pageSize}
+  onPaginationChange={(newPage, newSize) => setPagination(newPage, newSize)}
+  darkMode // habilita el modo oscuro
+/>
     </Box>
   );
 }
