@@ -12,7 +12,7 @@ export interface SkuItem {
     CANAL: string;
     LISTA_PRECIO: string;
     FECHA_REGISTRO: string;
-    DATABASE: string;
+    DB_ORIGEN: string;
     SEMAFORO_GLOBAL: string;
     LAST_UPDATED: string;
   }
