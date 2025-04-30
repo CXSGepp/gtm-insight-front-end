@@ -17,9 +17,18 @@ const MasterDetailLayout: React.FC<MasterDetailLayoutProps> = ({
   detailTitle
 }) => {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-      <Paper sx={{ p: 2 }}>{filters}</Paper>
-      <Paper sx={{ p: 2 }}>{masterTable}</Paper>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        maxWidth: '1400px',
+        mx: 'auto', // Centra horizontalmente
+        px: 2,
+      }}
+    >
+      <Paper sx={{ p: 2, overflowX: 'auto' }}>{filters}</Paper>
+      <Paper sx={{ p: 2, overflowX: 'auto' }}>{masterTable}</Paper>
       {detailContent && (
         <DetailSection isOpen={isDetailOpen} title={detailTitle}>
           {detailContent}
