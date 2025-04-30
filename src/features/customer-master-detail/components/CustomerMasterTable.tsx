@@ -20,7 +20,7 @@ interface CustomerDashboardItem {
   FRECUENCIA: string;
   CLAVE_LISTA: string;
   ACTIVA: boolean;
-  TELEFONO: string;
+  TELEFONO: number;
   DIRECCION: string;
 }
 
