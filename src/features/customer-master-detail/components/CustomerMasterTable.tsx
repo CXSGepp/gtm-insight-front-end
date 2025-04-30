@@ -42,6 +42,7 @@ const columns: ColumnDef<CustomerDashboardItem>[] = [
   { accessorKey: 'DIRECCION', header: 'Dirección' },
 ];
 
+
 export default function CustomerMasterTable() {
   const { rows, total, loading, page, pageSize } = usePaginatedCustomerQuery();
   const { setPage, setPageSize } = useCustomerTableStore();
@@ -50,11 +51,11 @@ export default function CustomerMasterTable() {
     <>
       <BaseTable<CustomerDashboardItem>
         columns={columns}
-        data={rows}
+        data={rows ?? []}
         loading={loading}
-        totalItems={total}
-        pageIndex={page}
-        pageSize={pageSize}
+        totalItems={total ?? 0}
+        pageIndex={page ?? 0}
+        pageSize={pageSize ?? 50}
         onPaginationChange={(newPage, newPageSize) => {
           setPage(newPage);
           setPageSize(newPageSize);

@@ -18,6 +18,8 @@ export function usePaginatedCustomerQuery() {
 
   /* ---------- data ---------- */
   useEffect(() => {
+    console.log('[🔍 rows]', rows);
+}, [rows]);
     let ignore = false;
     (async () => {
       setLoading(true);
