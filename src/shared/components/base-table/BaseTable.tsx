@@ -35,10 +35,10 @@ export default function BaseTable<TData>({
   onPaginationChange,
   expandableRowContent,
   getRowId,
-  darkMode = false,
 }: BaseTableProps<TData>) {
   const [expanded, setExpanded] = React.useState({});
   const theme = useTheme();
+  const isDark = theme.palette.mode === 'dark';
 
   const safeData = (data ?? []) as TData[];
   const safeTotalItems = isFinite(totalItems) ? totalItems : 0;
@@ -74,7 +74,7 @@ export default function BaseTable<TData>({
           width: '100%',
           overflow: 'hidden',
           mt: 2,
-          bgcolor: darkMode ? '#0c0c0c' : undefined,
+          bgcolor: isDark ? theme.palette.background.default : undefined,
         }}
       >
         <TableContainer
@@ -89,18 +89,18 @@ export default function BaseTable<TData>({
             size="small"
             sx={{
               minWidth: 1000,
-              backgroundColor: darkMode ? '#0c0c0c' : undefined,
-              color: darkMode ? '#fff' : undefined,
+              backgroundColor: isDark ? theme.palette.background.default : undefined,
+              color: isDark ? '#fff' : undefined,
               '& th': {
-                backgroundColor: darkMode ? '#00083a' : undefined,
-                color: darkMode ? '#fff' : undefined,
+                backgroundColor: isDark ? '#00083a' : undefined,
+                color: isDark ? '#fff' : undefined,
               },
               '& td': {
-                color: darkMode ? '#fff' : undefined,
-                borderColor: darkMode ? '#333' : undefined,
+                color: isDark ? '#fff' : undefined,
+                borderColor: isDark ? '#333' : undefined,
               },
               '& tbody tr:hover': {
-                backgroundColor: darkMode ? '#1c1c1c' : undefined,
+                backgroundColor: isDark ? '#1c1c1c' : undefined,
               },
             }}
           >
@@ -159,8 +159,8 @@ export default function BaseTable<TData>({
                             <Box
                               sx={{
                                 p: 2,
-                                bgcolor: darkMode ? '#121212' : '#f9f9f9',
-                                borderTop: darkMode
+                                bgcolor: isDark ? '#121212' : '#f9f9f9',
+                                borderTop: isDark
                                   ? '1px solid #333'
                                   : '1px solid #e0e0e0',
                               }}
