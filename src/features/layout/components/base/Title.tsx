@@ -25,7 +25,7 @@ const Title: React.FC = () => {
           variant="body2"
           sx={{ fontSize: '0.9rem', color: '#f50057', mt: 1 }}
         >
-          Estás en la versión de pruebas
+          Estás utilizando la versión de pruebas. Los datos y funcionalidades pueden no estar finalizados.
         </Typography>
       </Toolbar>
     </AppBar>
