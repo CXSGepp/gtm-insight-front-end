@@ -15,13 +15,7 @@ export default function CustomerFilters() {
 
   return (
     <FilterContainer
-      onApply={(localFilters) =>{
-        const filtersToApply = Object.keys(localFilters).length > 0
-          ? localFilters
-          : filters; 
-          setFilters({ ...filtersToApply, viewMode: 'CUSTOMER' });
-
-      }}
+    onApply={(localFilters) => setFilters(localFilters)}
       onReset={() => {
         resetFilters();
         setFilters({ viewMode: 'CUSTOMER' });
