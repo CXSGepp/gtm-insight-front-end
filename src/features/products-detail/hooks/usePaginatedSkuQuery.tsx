@@ -3,22 +3,55 @@ import { skuService } from '../../../app/providers';
 import { useSkuTableStore } from '../store/skuTableStore';
 
 export function usePaginatedSkuQuery() {
-  const { filters, page, pageSize, setTotal, bodega, cliente, total } = useSkuTableStore();
+  const {
+    filters = {},
+    page,
+    pageSize,
+    setTotal,
+    bodega,
+    cliente,
+  } = useSkuTableStore();
+
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (!bodega) {
+      console.warn('[⚠️ usePaginatedSkuQuery] Missing bodega, skipping fetch.');
+      return;
+    }
+
+    const params = {
+      page,
+      limit: pageSize,
+      filters,
+      bodega,
+      cliente,
+    };
+
+    console.log('[📦 Fetch SKUs params]', params);
+
     async function fetchData() {
+      if (!bodega) return; 
       setLoading(true);
       try {
-        const params = { page, limit: pageSize, filters, bodega, cliente };
+        console.log('[🧾 SKUS fetch params]', {
+          page,
+          limit: pageSize,
+          filters,
+          bodega,
+          cliente,
+        });
         const data = await skuService.fetchSkusForRow(params);
         setRows(data.items);
-        setTotal(data.total);  
+        setTotal(data.total);
+      } catch (err) {
+        console.error('[❌ Failed to fetch SKUs]', err);
       } finally {
         setLoading(false);
       }
     }
+
     fetchData();
   }, [filters, page, pageSize, bodega, cliente, setTotal]);
 
@@ -27,6 +60,6 @@ export function usePaginatedSkuQuery() {
     loading,
     page,
     pageSize,
-    total,
+    total: useSkuTableStore.getState().total,
   };
 }
