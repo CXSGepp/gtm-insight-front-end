@@ -50,7 +50,7 @@ export default function SkuDetailTable({ bodega, cliente }: SkuDetailTableProps)
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight={120} sx={{ backgroundColor: '#121212' }}>
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight={120} sx={{ backgroundColor: '#0c0c0c' }}>
         <CircularProgress size={28} />
       </Box>
     );
@@ -58,7 +58,7 @@ export default function SkuDetailTable({ bodega, cliente }: SkuDetailTableProps)
 
   if (!loading && rows.length === 0) {
     return (
-      <Box sx={{ mt: 2, backgroundColor: '#121212', borderRadius: 2 }}>
+      <Box sx={{ mt: 2, backgroundColor: '#0c0c0c', borderRadius: 2 }}>
         <Paper
           elevation={0}
           sx={{
@@ -77,7 +77,29 @@ export default function SkuDetailTable({ bodega, cliente }: SkuDetailTableProps)
   }
 
   return (
-    <Box sx={{ overflowX: 'auto', backgroundColor: '#121212', borderRadius: 2, p: 1 }}>
+    <Box
+      sx={{
+        overflowX: 'auto',
+        backgroundColor: '#0c0c0c',
+        borderRadius: 2,
+        p: 1,
+        '& table': {
+          backgroundColor: '#0c0c0c',
+          color: '#fff',
+          borderCollapse: 'collapse',
+        },
+        '& th, & td': {
+          borderColor: '#222',
+          color: '#fff',
+        },
+        '& thead': {
+          backgroundColor: '#00083a',
+        },
+        '& tbody tr:hover': {
+          backgroundColor: '#1c1c1c',
+        },
+      }}
+    >
       <BaseTable
         columns={skuColumns}
         data={rows}
