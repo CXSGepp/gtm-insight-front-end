@@ -1,65 +1,44 @@
 import { useEffect, useState } from 'react';
 import { skuService } from '../../../app/providers';
-import { useSkuTableStore } from '../store/skuTableStore';
 
-export function usePaginatedSkuQuery() {
-  const {
-    filters = {},
-    page,
-    pageSize,
-    setTotal,
-    bodega,
-    cliente,
-  } = useSkuTableStore();
-
+export function usePaginatedSkuQuery({
+  bodega,
+  cliente,
+  claveLista,
+  page,
+  pageSize,
+}: {
+  bodega: number;
+  cliente?: number;
+  claveLista?: number;
+  page: number;
+  pageSize: number;
+}) {
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     if (!bodega) {
-      console.warn('[⚠️ usePaginatedSkuQuery] Missing bodega, skipping fetch.');
+      setRows([]);
+      setTotal(0);
       return;
     }
-
-    const params = {
-      page,
-      limit: pageSize,
-      filters,
-      bodega,
-      cliente,
-    };
-
-    console.log('[📦 Fetch SKUs params]', params);
-
-    async function fetchData() {
-      if (!bodega) return; 
-      setLoading(true);
-      try {
-        console.log('[🧾 SKUS fetch params]', {
-          page,
-          limit: pageSize,
-          filters,
-          bodega,
-          cliente,
-        });
-        const data = await skuService.fetchSkusForRow(params);
+    setLoading(true);
+    skuService
+      .fetchSkusForRow({
+        bodega,
+        cliente,
+        claveLista,
+        page,
+        limit: pageSize,
+      })
+      .then((data) => {
         setRows(data.items);
         setTotal(data.total);
-      } catch (err) {
-        console.error('[❌ Failed to fetch SKUs]', err);
-      } finally {
-        setLoading(false);
-      }
-    }
+      })
+      .finally(() => setLoading(false));
+  }, [bodega, cliente, claveLista, page, pageSize]); // ← no `filters`
 
-    fetchData();
-  }, [filters, page, pageSize, bodega, cliente, setTotal]);
-
-  return {
-    rows,
-    loading,
-    page,
-    pageSize,
-    total: useSkuTableStore.getState().total,
-  };
+  return { rows, loading, total, page, pageSize };
 }

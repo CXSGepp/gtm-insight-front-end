@@ -4,6 +4,7 @@ import FilterInput from '../../../shared/components/filters/filter-input/FilterI
 import { useCustomerTableStore } from '../store/customerTableStore';
 import { usePaginatedCustomerQuery } from '../hooks/usePaginatedCustomerQuery';
 import CustomersFiltersSkeleton from './CustomerFiltersSkeleton';
+import { useNameSearch } from '../hooks/useNameSearch';
 
 // Helper para convertir strings numéricos a number
 function sanitizeFilters(filters: Record<string, any>) {
@@ -25,6 +26,9 @@ export default function CustomerFilters() {
   const { setFilters, resetFilters } = useCustomerTableStore();
   const { filterOptions, loading } = usePaginatedCustomerQuery();
 
+  const [nombreInput, setNombreInput] = React.useState('');
+  const { options: nombreOptions, loading: nombreLoading } = useNameSearch(nombreInput);
+
   if (!filterOptions || loading) {
     return <CustomersFiltersSkeleton />;
   }
@@ -33,47 +37,52 @@ export default function CustomerFilters() {
     <FilterContainer
     onApply={(localFilters) => {
       const sanitized = sanitizeFilters(localFilters);
-      console.log('[🧼 Filtros sanitizados a aplicar]', sanitized); // 👈 AQUI EL LOG
+      console.log('[🧼 Filtros sanitizados a aplicar]', sanitized); 
       setFilters(sanitized);
     }}
           
       onReset={() => {
         resetFilters();
-        setFilters({ viewMode: 'CUSTOMER' });
       }}
     >
       {({ localFilters, setLocalFilters }) => (
         <>
           <FilterInput
-            label="Cliente"
+            label="Nombre"
             type="autocomplete"
-            freeSolo
+            loading={nombreLoading}
+            value={localFilters.nombre ?? ''}
+            options={(nombreOptions ?? []).map((v) => ({ label: v, value: v }))}
+            onInput={(e) => setNombreInput(e.target.value)}
+            onChange={(value) => setLocalFilters({ ...localFilters, nombre: value })}
+          />
+            <FilterInput
+            label="Bodega"
+            type="autocomplete"
             options={
-              (filterOptions.clientes ?? [])
+              (filterOptions.localidades ?? [])
                 .filter((v, i, a) => v != null && a.indexOf(v) === i)
                 .map((v) => ({ label: String(v), value: v }))
             }
-            value={localFilters.cliente ?? ''}
-            onChange={(value) => setLocalFilters({ ...localFilters, cliente: value })}
+            value={localFilters.localidad ?? ''}
+            onChange={(value) => setLocalFilters({ ...localFilters, localidad: value })}
           />
 
-          <FilterInput
-            label="Teléfonos"
+           <FilterInput
+            label="Id Bodega"
             type="autocomplete"
-            freeSolo
             options={
-              (filterOptions.telefonos ?? [])
-                .filter((v, i, a) => v && a.indexOf(v) === i)
+              (filterOptions.bodegas ?? [])
+                .filter((v, i, a) => v != null && a.indexOf(v) === i)
                 .map((v) => ({ label: String(v), value: v }))
             }
-            value={localFilters.telefono ?? ''}
-            onChange={(value) => setLocalFilters({ ...localFilters, telefono: value })}
+            value={localFilters.bodega ?? ''}
+            onChange={(value) => setLocalFilters({ ...localFilters, bodega: value })}
           />
 
           <FilterInput
             label="Región"
             type="autocomplete"
-            freeSolo
             options={
               (filterOptions.regiones ?? [])
                 .filter((v, i, a) => v && a.indexOf(v) === i)
@@ -82,11 +91,11 @@ export default function CustomerFilters() {
             value={localFilters.region ?? ''}
             onChange={(value) => setLocalFilters({ ...localFilters, region: value })}
           />
+          
 
           <FilterInput
             label="Zona"
             type="autocomplete"
-            freeSolo
             options={
               (filterOptions.zonas ?? [])
                 .filter((v, i, a) => v && a.indexOf(v) === i)
@@ -99,7 +108,6 @@ export default function CustomerFilters() {
           <FilterInput
             label="Clasificación"
             type="autocomplete"
-            freeSolo
             options={
               (filterOptions.clasificaciones ?? [])
                 .filter((v, i, a) => v && a.indexOf(v) === i)
@@ -110,30 +118,55 @@ export default function CustomerFilters() {
           />
 
           <FilterInput
-            label="Tipo Ruta"
+            label="Ruta"
             type="autocomplete"
-            freeSolo
             options={
-              (filterOptions.tiposRuta ?? [])
+              (filterOptions.ruta ?? [])
                 .filter((v, i, a) => v && a.indexOf(v) === i)
                 .map((v) => ({ label: String(v), value: v }))
             }
-            value={localFilters.tipoRuta ?? ''}
-            onChange={(value) => setLocalFilters({ ...localFilters, tipoRuta: value })}
+            value={localFilters.ruta ?? ''}
+            onChange={(value) => setLocalFilters({ ...localFilters, ruta: value })}
           />
-
+          
           <FilterInput
-            label="Bodega"
+            label="Canal"
             type="autocomplete"
             freeSolo
             options={
-              (filterOptions.bodegas ?? [])
-                .filter((v, i, a) => v != null && a.indexOf(v) === i)
+              (filterOptions.canal ?? [])
+                .filter((v, i, a) => v && a.indexOf(v) === i)
                 .map((v) => ({ label: String(v), value: v }))
             }
-            value={localFilters.bodega ?? ''}
-            onChange={(value) => setLocalFilters({ ...localFilters, bodega: value })}
+            value={localFilters.canal ?? ''}
+            onChange={(value) => setLocalFilters({ ...localFilters, canal: value })}
           />
+          
+            <FilterInput
+            label="Id Producto"
+            type="autocomplete"
+            options={
+              (filterOptions.productos ?? [])
+                .filter((v, i, a) => v && a.indexOf(v) === i)
+                .map((v) => ({ label: String(v), value: v }))
+            }
+            value={localFilters.sku ?? ''}
+            onChange={(value) => setLocalFilters({ ...localFilters, sku: value })}
+          />
+
+            <FilterInput
+            label="Producto"
+            type="autocomplete"
+            options={
+              (filterOptions.descripciones ?? [])
+                .filter((v, i, a) => v && a.indexOf(v) === i)
+                .map((v) => ({ label: String(v), value: v }))
+            }
+            value={localFilters.descripcion ?? ''}
+            onChange={(value) => setLocalFilters({ ...localFilters, descripcion: value })}
+          />
+
+         
         </>
       )}
     </FilterContainer>

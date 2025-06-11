@@ -8,32 +8,31 @@ import SkuDetailTable from '../../products-detail/components/ProductsDetailTable
 
 interface CustomerDashboardItem {
   ID: number;
+  NOMBRE: string;
+  CLIENTE: number;
+  LOCALIDAD: string;
+  ID_BODEGA: number
   REGION: string;
   ZONA: string;
-  LOCALIDAD: string;
-  BODEGA: number;
   RUTA: string;
-  CLIENTE: number;
-  NOMBRE: string;
-  TIPO_RUTA: string;
   CLASIFICACION: string;
   FRECUENCIA: string;
-  CLAVE_LISTA: string;
-  ACTIVA: boolean;
+  CLAVE_LISTA: number;
+  CANAL: number;
   TELEFONO: number;
   DIRECCION: string;
+
+
 }
 
 const columns: ColumnDef<CustomerDashboardItem>[] = [
-  { accessorKey: 'ID', header: 'ID' },
+  { accessorKey: 'NOMBRE', header: 'Nombre' },
+  { accessorKey: 'CLIENTE', header: 'Cliente' },
+  { accessorKey: 'LOCALIDAD', header: 'Bodega' },
+  { accessorKey: 'ID_BODEGA', header: 'Id Bodega' },
   { accessorKey: 'REGION', header: 'Región' },
   { accessorKey: 'ZONA', header: 'Zona' },
-  { accessorKey: 'LOCALIDAD', header: 'Localidad' },
-  { accessorKey: 'BODEGA', header: 'Bodega' },
   { accessorKey: 'RUTA', header: 'Ruta' },
-  { accessorKey: 'CLIENTE', header: 'Cliente' },
-  { accessorKey: 'NOMBRE', header: 'Nombre' },
-  { accessorKey: 'TIPO_RUTA', header: 'Tipo de Ruta' },
   { accessorKey: 'CLASIFICACION', header: 'Clasificación' },
   { accessorKey: 'FRECUENCIA', header: 'Frecuencia' },
   {
@@ -41,11 +40,7 @@ const columns: ColumnDef<CustomerDashboardItem>[] = [
     header: 'Clave Lista',
     cell: ({ getValue }) => getValue() ?? '—',
   },
-  {
-    accessorKey: 'ACTIVA',
-    header: 'Activa',
-    cell: ({ getValue }) => (getValue() ? 'Sí' : 'No'),
-  },
+  { accessorKey: 'CANAL', header: 'Canal' },
   {
     accessorKey: 'TELEFONO',
     header: 'Teléfono',
@@ -60,35 +55,41 @@ const columns: ColumnDef<CustomerDashboardItem>[] = [
     accessorKey: 'DIRECCION',
     header: 'Dirección',
     cell: ({ getValue }) => getValue() ?? '—',
-  },
+  }
 ];
 
 export default function CustomerMasterTable() {
   const { rows, total, loading, page, pageSize } = usePaginatedCustomerQuery();
   const { setPage, setPageSize } = useCustomerTableStore();
 
+    const renderDetail = React.useCallback(
+       (row) =>
+         row.ID_BODEGA ? (
+           <SkuDetailTable
+             bodega={row.ID_BODEGA}
+             cliente={row.CLIENTE}
+             claveLista={row.CLAVE_LISTA}
+           />
+         ) : null,
+       []
+     );
+
   return (
     <>
-      <BaseTable<CustomerDashboardItem>
+      <BaseTable
         columns={columns}
-        data={rows ?? []}
+        data={rows}
         loading={loading}
-        totalItems={total ?? 0}
-        pageIndex={page ?? 0}
-        pageSize={pageSize ?? 50}
-        onPaginationChange={(newPage, newPageSize) => {
-          setPage(newPage);
-          setPageSize(newPageSize);
+        totalItems={total}
+        pageIndex={page}
+        pageSize={pageSize}
+        onPaginationChange={(p, s) => {
+          setPage(p);
+          setPageSize(s);
         }}
-        expandableRowContent={(row) => {
-          console.log('[📦 Expand row] ID:', row.ID, 'Bodega:', row.BODEGA, 'Cliente:', row.CLIENTE);
-          return row.BODEGA ? (
-            <SkuDetailTable bodega={row.BODEGA} cliente={row.CLIENTE} />
-          ) : null;
-        }}
-        getRowId={(row) => String(row.ID)}
+        expandableRowContent={renderDetail}           // ← useCallback
+        getRowId={(r) => String(r.ID)}
       />
-
       <Pagination
         page={page}
         pageSize={pageSize}

@@ -3,7 +3,7 @@ export interface DashboardItem {
   REGION: string;
   ZONA: string;
   LOCALIDAD: string;
-  BODEGA: number;
+  ID_BODEGA: number;
   RUTA: string;
   CLIENTE?: number;
   NOMBRE?: string;
@@ -25,36 +25,38 @@ export interface DashboardResponse {
 }
 
 export interface DashboardFilters {
-  region?: string;
+ region?: string;
   zona?: string;
   localidad?: string;
-  bodega?: number;
+  id_bodega?: number;
   ruta?: number;
   cliente?: number;
   nombre?: string;
-  tiposRuta?: string;
   clasificacion?: string;
   claveLista?: number;
   activa?: string;
   telefono?: string;
   direccion?: string;
-  viewMode?: string;
-  sku?: string;
+  sku?: number;
   bd?: string;
   uopm?: string;
   estatusOpm?: string;
   estatusSio?: string;
-  fechaRegistro?: string;
+  descripcion?: string;
+  canal?: number;
 }
 
 export interface DashboardFilterOptions {
-  clientes: string[];
-  telefonos: string[];
+  localidades: string[];
+  bodegas: number[];
   regiones: string[];
   zonas: string[];
-  bodegas: string[];
-  tiposRuta: string[]; // 🛠✅ FIXED: Capital "R"
+  ruta: number[];
   clasificaciones: string[];
+  claveLista: number[];
+  canal: number[];
+  productos: number[];
+  descripciones: string[];
 }
 
 export interface PaginationParams {
@@ -75,26 +77,30 @@ export interface DashboardDataResponse {
 }
 
 export interface EtmDashboardFilterInput {
+  /* ── filtros “master” ─────────────────────────────── */
+  localidad?: string;
+  bodega?: number;
+  nombre?: string;
   cliente?: number;
   telefono?: string;
   region?: string;
   zona?: string;
-  localidad?: string;
-  ruta?: number;
-  tiposRuta?: string;
+  ruta?: number;         
   clasificacion?: string;
-  bodega?: number;
-  sku?: string;
-  bd?: string;
+  claveLista?: number;
+  canal?: number;
+  uopm?: string;
+  direccion?: string;
+
+  /* ── filtros de SKU ──────────────────────────────── */
+  sku?: number;
+  descripcion?: string;       
   estatusOpm?: string;
   estatusSio?: string;
-  uopm?: string;
-  
-  // Agregados:
-  nombre?: string;
-  claveLista?: number;
-  activa?: string;
-  direccion?: string;
-  viewMode?: string;
-  fechaRegistro?: string;
+
+  /* ── paginación ──────────────────────────────────── */
+  page?: number;              
+  limit?: number;
+
+ 
 }

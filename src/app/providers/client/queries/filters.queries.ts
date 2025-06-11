@@ -3,13 +3,15 @@ import { gql } from '@apollo/client';
 export const GET_DISTINCT_FILTER_OPTIONS = gql`
     query getDistinctFilterOptions {
         getDistinctFilterOptions {
-            clientes
-            telefonos
+            localidades
+            bodegas
             regiones
             zonas
-            bodegas
-            tiposRuta
+            ruta
             clasificaciones
+            productos
+            descripciones
+            canal
         }
     }
 `;

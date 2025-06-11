@@ -9,7 +9,10 @@ import { GlobalStatusChip } from '../../../shared/components/chips/GlobalStatusC
 
 interface SkuDetailTableProps {
   bodega: number;
-  cliente: number;
+  cliente?: number;
+  claveLista?: number;
+  page: number;
+  pageSize: number;
 }
 
 export const skuColumns: ColumnDef<any>[] = [
@@ -35,13 +38,18 @@ export const skuColumns: ColumnDef<any>[] = [
     header: 'Semáforo Global',
     cell: ({ cell }) => <GlobalStatusChip status={cell.getValue<string>()} />,
   },
-  { accessorKey: 'CANAL', header: 'Canal' },
   { accessorKey: 'DB_ORIGEN', header: 'Base de Datos' },
 ];
 
-export default function SkuDetailTable({ bodega, cliente }: SkuDetailTableProps) {
-  const { page, pageSize, setPagination, setBodega, setCliente } = useSkuTableStore();
-  const { rows, total, loading } = usePaginatedSkuQuery();
+export default function SkuDetailTable({ bodega, cliente, claveLista, page, pageSize }:  SkuDetailTableProps) {
+  const { setPagination, setBodega, setCliente } = useSkuTableStore();
+  const { rows, total, loading } = usePaginatedSkuQuery({
+    bodega,
+    cliente,
+    claveLista,
+    page,
+    pageSize,
+  });
 
   React.useEffect(() => {
     setBodega(bodega);

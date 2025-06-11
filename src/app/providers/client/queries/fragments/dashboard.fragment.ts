@@ -6,7 +6,7 @@ export const ETM_DASHBOARD_FIELDS = gql`
     REGION
     ZONA
     LOCALIDAD
-    BODEGA
+    ID_BODEGA
     RUTA
     CLIENTE
     NOMBRE

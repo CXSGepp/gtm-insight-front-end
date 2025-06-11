@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { dashboardService } from '../../../app/providers/services/dashboard.service';
 import { useCustomerTableStore } from '../store/customerTableStore';
-import { DashboardFilterOptions, DashboardItem } from '../../../shared/types/dashboard.types';
+import { DashboardFilterOptions } from '../../../shared/types/dashboard.types';
 
 const empty: DashboardFilterOptions = {
   clientes: [], telefonos: [], regiones: [],
@@ -15,6 +15,8 @@ export function usePaginatedCustomerQuery() {
   const [filterOptions, setFilterOptions] = useState<DashboardFilterOptions>(empty);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+const validPage = page ?? 0;
+const validPageSize = [5, 10, 25, 50, 100].includes(pageSize) ? pageSize : 50;
 
   /* ---------- fetch data ---------- */
   useEffect(() => {
@@ -27,10 +29,9 @@ export function usePaginatedCustomerQuery() {
       try {
         console.log('[🎯 Sending filters]', filters);
         const result = await dashboardService.fetchDashboardData(
-          page,
-          pageSize,
-          filters,
-          'CUSTOMER',
+  validPage,
+  validPageSize,
+          filters
         );
 
         console.log('[🧪 Raw result]', result);
