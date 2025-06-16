@@ -6,7 +6,7 @@ palette: {
   primary: {
     light: '#0528F2',
     main: '#0540F2',
-    contrastText: '#fff',
+    contrastText: '#S',
   },
   background: {
     default: '#121212',
@@ -15,7 +15,7 @@ palette: {
 },
 typography: {
   fontFamily: 'Nunito, sans-serif',
-  fontWeightBold: 700,
+  fontWeightBold: 800,
   fontWeightRegular: 400,
   fontWeightLight: 300,
 },

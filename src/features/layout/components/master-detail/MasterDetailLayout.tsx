@@ -1,4 +1,3 @@
-// src/components/layout/MasterDetailLayout.tsx
 import { Box, Paper } from "@mui/material";
 import { DetailSection } from "./DetailSection";
 

@@ -11,6 +11,7 @@ export interface DashboardItem {
   CLASIFICACION: string;
   FRECUENCIA: string;
   CLAVE_LISTA: number;
+  CANAL: number;
   ACTIVA: string;
   TELEFONO?: string;
   DIRECCION?: string;
@@ -28,12 +29,13 @@ export interface DashboardFilters {
  region?: string;
   zona?: string;
   localidad?: string;
-  id_bodega?: number;
+  bodega?: number;
   ruta?: number;
   cliente?: number;
   nombre?: string;
   clasificacion?: string;
   claveLista?: number;
+  canal?: number;
   activa?: string;
   telefono?: string;
   direccion?: string;
@@ -43,7 +45,6 @@ export interface DashboardFilters {
   estatusOpm?: string;
   estatusSio?: string;
   descripcion?: string;
-  canal?: number;
 }
 
 export interface DashboardFilterOptions {

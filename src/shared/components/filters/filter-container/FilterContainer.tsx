@@ -18,18 +18,18 @@ export default function FilterContainer({
       : children;
 
   return (
-    <Paper sx={{ p: 2, mb: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
+    <Paper sx={{ p: 2, mb: 2, display: 'flex', flexDirection: 'column', gap: 2, backgroundColor: 'transparent' }} elevation={0}>
       {/* Filtros */}
       <Box
         sx={{
           display: 'flex',
           flexWrap: 'wrap',
-          gap: 2,
+          gap: 1,
+          justifyContent: 'flex-start',
         }}
       >
         {enhancedChildren}
       </Box>
-
       {/* Botones */}
       <Box
         sx={{

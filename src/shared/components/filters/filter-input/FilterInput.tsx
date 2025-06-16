@@ -14,6 +14,7 @@ interface FilterInputProps {
   loading?: boolean;
   freeSolo?: boolean;
   onChange: (value: any) => void;
+  onInputValueChange?: (value: string) => void;
 }
 
 export default function FilterInput({
@@ -24,6 +25,7 @@ export default function FilterInput({
   options = [],
   loading = false,
   freeSolo = false,
+  onInputValueChange,
 }: FilterInputProps) {
   if (type === 'autocomplete') {
     return (
@@ -50,6 +52,9 @@ export default function FilterInput({
           return onChange('');
         }}
         onInputChange={(e, newInputValue, reason) => {
+          if (onInputValueChange) { 
+            onInputValueChange(newInputValue);
+          }
           if (freeSolo && reason === 'input') {
             onChange(/^\d+$/.test(newInputValue) ? Number(newInputValue) : newInputValue);
           }

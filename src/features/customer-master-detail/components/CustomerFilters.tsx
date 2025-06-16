@@ -29,6 +29,10 @@ export default function CustomerFilters() {
   const [nombreInput, setNombreInput] = React.useState('');
   const { options: nombreOptions, loading: nombreLoading } = useNameSearch(nombreInput);
 
+  React.useEffect(() => {
+    console.log('CustomerFilters - nombreInput actual:', nombreInput);
+  }, [nombreInput]);
+
   if (!filterOptions || loading) {
     return <CustomersFiltersSkeleton />;
   }
@@ -53,7 +57,9 @@ export default function CustomerFilters() {
             loading={nombreLoading}
             value={localFilters.nombre ?? ''}
             options={(nombreOptions ?? []).map((v) => ({ label: v, value: v }))}
-            onInput={(e) => setNombreInput(e.target.value)}
+            onInputValueChange={(inputValue) => {
+              setNombreInput(inputValue);
+            }}
             onChange={(value) => setLocalFilters({ ...localFilters, nombre: value })}
           />
             <FilterInput
@@ -77,7 +83,11 @@ export default function CustomerFilters() {
                 .map((v) => ({ label: String(v), value: v }))
             }
             value={localFilters.bodega ?? ''}
-            onChange={(value) => setLocalFilters({ ...localFilters, bodega: value })}
+           
+            onChange={(value) => { 
+             console.log('Bodega seleccionada:', value);
+            setLocalFilters({ ...localFilters, bodega: value });
+          }}
           />
 
           <FilterInput

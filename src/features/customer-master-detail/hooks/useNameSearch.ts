@@ -28,6 +28,7 @@ export function useNameSearch(input: string) {
           },
         });
 
+    console.log('[🚀 Nombre API Response]', data?.searchNombres); 
         if (!cancel) setOptions(data?.searchNombres || []);
       } catch (e) {
         if (!cancel) setOptions([]);

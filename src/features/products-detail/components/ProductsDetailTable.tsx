@@ -5,19 +5,21 @@ import { useSkuTableStore } from '../store/skuTableStore';
 import { usePaginatedSkuQuery } from '../hooks/usePaginatedSkuQuery';
 import { ColumnDef } from '@tanstack/react-table';
 import { StatusChip } from '../../../shared/components/chips/StatusChip';
-import { GlobalStatusChip } from '../../../shared/components/chips/GlobalStatusChip';
+import { SemaforoDialogCell } from './SemaforoDialogCell';
 
 interface SkuDetailTableProps {
   bodega: number;
   cliente?: number;
   claveLista?: number;
+  idProducto?: number;
+  descripcion?: string;
   page: number;
   pageSize: number;
 }
 
 export const skuColumns: ColumnDef<any>[] = [
   { accessorKey: 'ID_PRODUCTO', header: 'ID Producto' },
-  { accessorKey: 'DESCRIPCION', header: 'Descripción' },
+  { accessorKey: 'DESCRIPCION', header: 'Descripción', size: 200, minSize: 80, maxSize: 200},
   {
     accessorKey: 'ACTIVO_OPM',
     header: 'Activo OPM',
@@ -36,8 +38,20 @@ export const skuColumns: ColumnDef<any>[] = [
   {
     accessorKey: 'SEMAFORO_GLOBAL',
     header: 'Semáforo Global',
-    cell: ({ cell }) => <GlobalStatusChip status={cell.getValue<string>()} />,
+    cell: ({ row }) => {
+      return( 
+      <SemaforoDialogCell
+      
+        status={row.original.SEMAFORO_GLOBAL}
+        activo_opm={row.original.ACTIVO_OPM}
+        activo_sio={row.original.ACTIVO_SIO}
+        canal={row.original.CANAL}
+      />
+    );
+    }
   },
+
+  
   { accessorKey: 'DB_ORIGEN', header: 'Base de Datos' },
 ];
 
@@ -91,6 +105,7 @@ export default function SkuDetailTable({ bodega, cliente, claveLista, page, page
         backgroundColor: '#0c0c0c',
         borderRadius: 2,
         p: 1,
+         maxWidth: '100%',
         '& table': {
           backgroundColor: '#0c0c0c',
           color: '#fff',
@@ -116,7 +131,7 @@ export default function SkuDetailTable({ bodega, cliente, claveLista, page, page
   pageIndex={page}
   pageSize={pageSize}
   onPaginationChange={(newPage, newSize) => setPagination(newPage, newSize)}
-  darkMode // habilita el modo oscuro
+  darkMode
 />
     </Box>
   );
