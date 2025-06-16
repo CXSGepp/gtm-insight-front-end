@@ -9,13 +9,22 @@ export default function FilterContainer({
   onReset,
   applyLabel = 'Aplicar Filtros',
   clearLabel = 'Limpiar Filtros',
+  initialFilters = {}, 
 }: FilterContainerProps) {
-  const [localFilters, setLocalFilters] = React.useState<Record<string, any>>({});
+  const [localFilters, setLocalFilters] = React.useState<Record<string, any>>(initialFilters);
+  React.useEffect(() => {
 
+      if (JSON.stringify(localFilters) !== JSON.stringify(initialFilters)) {
+      setLocalFilters(initialFilters);
+    }
+  }, [initialFilters]);
   const enhancedChildren =
     typeof children === 'function'
       ? children({ localFilters, setLocalFilters })
       : children;
+  const handleResetClick = () => {
+onReset();
+  };
 
   return (
     <Paper sx={{ p: 2, mb: 2, display: 'flex', flexDirection: 'column', gap: 2, backgroundColor: 'transparent' }} elevation={0}>
@@ -42,10 +51,7 @@ export default function FilterContainer({
         <Button
           variant="outlined"
           color="secondary"
-          onClick={() => {
-            setLocalFilters({});
-            onReset();
-          }}
+          onClick={handleResetClick}
           disabled={loading}
         >
           {clearLabel}

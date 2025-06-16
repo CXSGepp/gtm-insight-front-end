@@ -11,7 +11,7 @@ import {
   Box,
 } from '@mui/material';
 import TrafficSharpIcon from '@mui/icons-material/TrafficSharp';
-import bulb from '../../../assets/bulb.png'; // Assuming you have a bulb image in the assets folder
+//import bulb from '../../../assets/bulb.png'; // Assuming you have a bulb image in the assets folder
 interface SemaforoProps {
   status: string;
   activo_opm: boolean;
@@ -73,13 +73,14 @@ export const SemaforoDialogCell: React.FC<SemaforoProps> = ({
             paddingTop: 2,
           }}
         >
-          <img
-            src={bulb}
-            alt="Idea"
+        {/*}
+              alt="Idea"
             width={64}
             height={64}
             style={{ borderRadius: '12px' }}
-          />
+          /> */}
+           
+        
         </Box>
         <DialogTitle sx={{ textAlign: 'center', pt: 1 }}>
           Resumen de validaciones
