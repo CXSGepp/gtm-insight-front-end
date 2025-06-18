@@ -1,4 +1,3 @@
-import { DashboardFilters } from "./dashboard.types";
 
 export interface SkuItem {
     ID: number;

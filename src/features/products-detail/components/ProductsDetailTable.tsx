@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, CircularProgress, Typography, Paper } from '@mui/material';
+import { Box, CircularProgress, Typography, Paper, Chip } from '@mui/material';
 import BaseTable from '../../../shared/components/base-table/BaseTable';
 import { useSkuTableStore } from '../store/skuTableStore';
 import { usePaginatedSkuQuery } from '../hooks/usePaginatedSkuQuery';
@@ -17,6 +17,10 @@ interface SkuDetailTableProps {
   pageSize: number;
 }
 
+
+function getRandomBool() {
+  return Math.random() > 0.5;
+}
 export const skuColumns: ColumnDef<any>[] = [
   { accessorKey: 'ID_PRODUCTO', header: 'ID Producto' },
   { accessorKey: 'DESCRIPCION', header: 'Descripción', size: 200, minSize: 80, maxSize: 200},
@@ -30,6 +34,21 @@ export const skuColumns: ColumnDef<any>[] = [
     header: 'Activo SIO',
     cell: ({ cell }) => <StatusChip active={!!cell.getValue()} />,
   },
+
+{
+  accessorKey: 'CANAL',
+  header: 'Configuracion Canal',
+  cell: ({ cell }) => (
+    <StatusChip active={!!cell.getValue()} />
+  ),
+},
+{
+  accessorKey: 'LISTA_PRECIOS',
+  header: 'Vigencia Lista de precios',
+  cell: ({ cell }) => (
+    <StatusChip active={!!cell.getValue()} />
+  ),
+},
   {
     accessorKey: 'ACTIVO_HH',
     header: 'Activo HH',
@@ -41,23 +60,25 @@ export const skuColumns: ColumnDef<any>[] = [
     cell: ({ row }) => {
       return( 
       <SemaforoDialogCell
-      
         status={row.original.SEMAFORO_GLOBAL}
         activo_opm={row.original.ACTIVO_OPM}
         activo_sio={row.original.ACTIVO_SIO}
-        canal={row.original.CANAL}
+        canal={row.original._randomCanal} // Usa el valor random generado
+        listaPrecio={row.original._randomListaPrecios} // Usa el valor random generado
+        activo_hh={row.original.ACTIVO_HH}
       />
     );
     }
   },
 
-  
+
   { accessorKey: 'DB_ORIGEN', header: 'Base de Datos' },
 ];
 
 export default function SkuDetailTable({ bodega, cliente, claveLista, page, pageSize }:  SkuDetailTableProps) {
   const { setPagination, setBodega, setCliente } = useSkuTableStore();
-  const { rows, total, loading } = usePaginatedSkuQuery({
+
+  const { rows: originalRows, total, loading  } = usePaginatedSkuQuery({
     bodega,
     cliente,
     claveLista,
@@ -69,6 +90,14 @@ export default function SkuDetailTable({ bodega, cliente, claveLista, page, page
     setBodega(bodega);
     setCliente(cliente);
   }, [bodega, cliente, setBodega, setCliente]);
+
+  const rows = React.useMemo(() => (
+    originalRows.map(row => ({
+      ...row,
+      _randomCanal: getRandomBool(),
+      _randomListaPrecios: getRandomBool(),
+    }))
+  ), [originalRows]);
 
   if (loading) {
     return (

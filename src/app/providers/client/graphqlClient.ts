@@ -2,9 +2,9 @@ import { ApolloClient, from, HttpLink } from '@apollo/client';
 import { RetryLink } from '@apollo/client/link/retry';
 import { errorLink } from './errorHandling';
 import { createCacheConfig } from './cacheConfig';
-
+import { env } from '../../../config/env';
 const httpLink = new HttpLink({
-  uri: import.meta.env.VITE_GRAPHQL_API_URL,
+  uri: env.graphqlUrl,
 });
 
 const retryLink = new RetryLink({

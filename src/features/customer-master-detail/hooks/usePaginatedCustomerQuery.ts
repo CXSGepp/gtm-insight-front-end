@@ -52,17 +52,12 @@ const validPageSize = [5, 10, 25, 50, 100].includes(pageSize) ? pageSize : 50;
   }, [filters, page, pageSize, setTotal]);
 
   /* ---------- fetch filter options ---------- */
-// En el hook usePaginatedCustomerQuery
-useEffect(() => {
-  dashboardService
-    .fetchFilterOptions()
-    .then((options) => {
-      setFilterOptions(options); 
-      useCustomerTableStore.getState().setInitialFilterOptions(options); 
-    })
-    .catch(() => setFilterOptions(empty));
-}, []);
-
+  useEffect(() => {
+    dashboardService
+      .fetchFilterOptions()
+      .then(setFilterOptions)
+      .catch(() => setFilterOptions(empty));
+  }, []);
 
   return { rows, total, loading, error, page, pageSize, filterOptions };
 }

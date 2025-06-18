@@ -26,25 +26,15 @@ export interface DashboardResponse {
 }
 
 export interface DashboardFilters {
- region?: string;
-  zona?: string;
-  localidad?: string;
-  bodega?: number;
-  ruta?: number;
-  cliente?: number;
-  nombre?: string;
-  clasificacion?: string;
-  claveLista?: number;
-  canal?: number;
-  activa?: string;
-  telefono?: string;
-  direccion?: string;
-  sku?: number;
-  bd?: string;
-  uopm?: string;
-  estatusOpm?: string;
-  estatusSio?: string;
-  descripcion?: string;
+  localidad?: string | number | null;
+  bodega?: string | number | null;
+  region?: string | number | null;
+  zona?: string | number | null;
+  clasificacion?: string | number | null;
+  ruta?: string | number | null;
+  canal?: string | number | null;
+  claveLista?: string | number | null;
+  sku?: string | number | null;
 }
 
 export interface DashboardFilterOptions {

@@ -152,29 +152,6 @@ export default function CustomerFilters() {
             onChange={(value) => setLocalFilters({ ...localFilters, canal: value })}
           />
           
-            <FilterInput
-            label="Id Producto"
-            type="autocomplete"
-            options={
-              (filterOptions.productos ?? [])
-                .filter((v, i, a) => v && a.indexOf(v) === i)
-                .map((v) => ({ label: String(v), value: v }))
-            }
-            value={localFilters.sku ?? ''}
-            onChange={(value) => setLocalFilters({ ...localFilters, sku: value })}
-          />
-
-            <FilterInput
-            label="Producto"
-            type="autocomplete"
-            options={
-              (filterOptions.descripciones ?? [])
-                .filter((v, i, a) => v && a.indexOf(v) === i)
-                .map((v) => ({ label: String(v), value: v }))
-            }
-            value={localFilters.descripcion ?? ''}
-            onChange={(value) => setLocalFilters({ ...localFilters, descripcion: value })}
-          />
 
          
         </>
