@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { skuService } from '../../../app/providers';
+import { SkuQueryParams } from '../../../shared/types/sku.types';
 
 export function usePaginatedSkuQuery({
   bodega,
@@ -14,31 +15,30 @@ export function usePaginatedSkuQuery({
   page: number;
   pageSize: number;
 }) {
-  const [rows, setRows] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [total, setTotal] = useState(0);
+  const enabled = !!bodega;
 
-  useEffect(() => {
-    if (!bodega) {
-      setRows([]);
-      setTotal(0);
-      return;
-    }
-    setLoading(true);
-    skuService
-      .fetchSkusForRow({
+  const { data, isLoading, isFetching, error } = useQuery({
+    queryKey: ['skus', { bodega, cliente, claveLista, page, pageSize }],
+    queryFn: () =>
+      skuService.fetchSkusForRow({
         bodega,
         cliente,
         claveLista,
         page,
         limit: pageSize,
-      })
-      .then((data) => {
-        setRows(data.items);
-        setTotal(data.total);
-      })
-      .finally(() => setLoading(false));
-  }, [bodega, cliente, claveLista, page, pageSize]); // ← no `filters`
+      }),
+    enabled,
+    keepPreviousData: true,
+    staleTime: 5 * 60 * 1000, // 5 minutos (ajustable)
+  });
 
-  return { rows, loading, total, page, pageSize };
+  return {
+    rows: data?.items ?? [],
+    total: data?.total ?? 0,
+    isLoading,
+    isFetching,
+    error,
+    page,
+    pageSize,
+  };
 }

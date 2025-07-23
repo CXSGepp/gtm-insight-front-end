@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { usePaginatedCustomerQuery } from '../hooks/usePaginatedCustomerQuery';
-import { useCustomerTableStore } from '../store/customerTableStore';
 import { ColumnDef } from '@tanstack/react-table';
 import IconButton from '@mui/material/IconButton';
 import BaseTable from '../../../shared/components/base-table/BaseTable';
@@ -10,37 +8,39 @@ import DiscountsDetailTable from '../../discounts-detail/components/DiscountsDet
 import InventorySharpIcon from '@mui/icons-material/InventorySharp';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import Tooltip from '@mui/material/Tooltip';
-import { Box, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import Dialog from '@mui/material/Dialog';
-import Button from '@mui/material/Button';
+import { Box} from '@mui/material';
+import { useCustomerDashboardStore } from '../store/customerTableStore';
+import { useQuery } from '@tanstack/react-query';
+import { dashboardService } from '../../../app/providers/services/dashboard.service';
+import { GlassDialog } from '../../../shared/components/dialog/base-dialog';
+import { GlobalStatusChip } from '../../../shared/components/chips/GlobalStatusChip';
 
 interface CustomerDashboardItem {
-  ID: number;
+  ID_BODEGA: number;
   NOMBRE: string;
   CLIENTE: number;
-  LOCALIDAD: string;
-  ID_BODEGA: number;
-  REGION: string;
-  ZONA: string;
-  RUTA: string;
-  CLASIFICACION: string;
-  FRECUENCIA: string;
-  CLAVE_LISTA: number;
-  CANAL: number;
-  TELEFONO: number;
-  DIRECCION: string;
+
 }
 
 export default function CustomerMasterTable() {
-  const { rows, total, loading, page, pageSize } = usePaginatedCustomerQuery();
-  const { setPage, setPageSize } = useCustomerTableStore();
-
+const { filters, page, pageSize, total, setPagination, setTotal } = useCustomerDashboardStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState<CustomerDashboardItem | null>(null);
 
   const [isDiscountModalOpen, setIsDiscountModalOpen] = useState(false);
   const [selectedDiscountCustomer, setSelectedDiscountCustomer] = useState<CustomerDashboardItem | null>(null);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['customers', filters, page, pageSize],
+    queryFn: async () => {
+      const result = await dashboardService.fetchDashboardData(page, pageSize, filters);
+      setTotal(result.total);
+      return result.items;
+    },
+    keepPreviousData: true,
+  });
+
+  const rows = data ?? [];
 
   const handleOpenModal = (customer: CustomerDashboardItem) => {
     setSelectedCustomer(customer);
@@ -99,10 +99,21 @@ export default function CustomerMasterTable() {
     { accessorKey: 'CLIENTE', header: 'Cliente' },
     { accessorKey: 'LOCALIDAD', header: 'Bodega' },
     { accessorKey: 'ID_BODEGA', header: 'Id Bodega' },
+  
     { accessorKey: 'REGION', header: 'Región' },
     { accessorKey: 'ZONA', header: 'Zona' },
     { accessorKey: 'RUTA', header: 'Ruta' },
     { accessorKey: 'CLASIFICACION', header: 'Clasificación' },
+    { accessorKey: 'PRG_LEALTAD', header: 'Programa de Lealtad',
+    cell: ({ getValue }) => {
+        const status = getValue<string>();
+        if (!status) {
+          return '—';
+        }
+        return <GlobalStatusChip  status={status} />;
+      
+     },
+    },
     { accessorKey: 'FRECUENCIA', header: 'Frecuencia' },
     {
       accessorKey: 'CLAVE_LISTA',
@@ -132,47 +143,30 @@ export default function CustomerMasterTable() {
       <BaseTable
         columns={columns}
         data={rows}
-        loading={loading}
+        loading={isLoading}
         totalItems={total}
         pageIndex={page}
         pageSize={pageSize}
-        onPaginationChange={(p, s) => {
-          setPage(p);
-          setPageSize(s);
-        }}
+        onPageChange={(p) => setPagination(p, pageSize)}
+        onPageSizeChange={(s) => setPagination(page, s)}
         getRowId={(r) => String(r.ID)}
       />
       <Pagination
         page={page}
         pageSize={pageSize}
         totalItems={total}
-        onPageChange={setPage}
-        onPageSizeChange={setPageSize}
+        onPageChange={(p) => setPagination(p, pageSize)}
+        onPageSizeChange={(s) => setPagination(page, s)}
       />
 
       {/* Modal Productos */}
       {selectedCustomer && (
-        <Dialog
+        <GlassDialog
           open={isModalOpen}
           onClose={handleCloseModal}
           maxWidth="lg"
           fullWidth
-          PaperProps={{
-            sx: {
-              bgcolor: 'background.paper',
-              backgroundImage: 'none',
-            },
-          }}
-        >
-          <DialogTitle
-            sx={{
-              m: 0,
-              p: 2,
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
+          title={
             <Box>
               Productos para: <strong>{selectedCustomer.NOMBRE}</strong>
               <br />
@@ -180,83 +174,44 @@ export default function CustomerMasterTable() {
                 Cliente ID: {selectedCustomer.CLIENTE} - Bodega: {selectedCustomer.ID_BODEGA}
               </small>
             </Box>
-            <IconButton
-              aria-label="close"
-              onClick={handleCloseModal}
-              sx={{ color: (theme) => theme.palette.grey[500] }}
-            >
-              <CloseIcon />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent dividers>
+          }
+        >
             <SkuDetailTable
               bodega={selectedCustomer.ID_BODEGA}
-              cliente={selectedCustomer.CLIENTE}
-              claveLista={selectedCustomer.CLAVE_LISTA}
+
               page={0}
               pageSize={10}
             />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseModal} color="primary">
-              Cerrar
-            </Button>
-          </DialogActions>
-        </Dialog>
+
+        </GlassDialog>
       )}
 
       {/* Modal Descuentos */}
       {selectedDiscountCustomer && (
-        <Dialog
+        <GlassDialog
           open={isDiscountModalOpen}
           onClose={handleCloseDiscountModal}
           maxWidth="lg"
           fullWidth
-          PaperProps={{
-            sx: {
-              bgcolor: 'background.paper',
-              backgroundImage: 'none',
-            },
-          }}
-        >
-          <DialogTitle
-            sx={{
-              m: 0,
-              p: 2,
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <Box>
+          title={ 
+              <Box>
               Descuentos para: <strong>{selectedDiscountCustomer.NOMBRE}</strong>
               <br />
               <small>
                 Cliente ID: {selectedDiscountCustomer.CLIENTE} - Bodega: {selectedDiscountCustomer.ID_BODEGA}
               </small>
             </Box>
-            <IconButton
-              aria-label="close"
-              onClick={handleCloseDiscountModal}
-              sx={{ color: (theme) => theme.palette.grey[500] }}
-            >
-              <CloseIcon />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent dividers>
+          }
+    
+        >
             <DiscountsDetailTable
               bodega={selectedDiscountCustomer.ID_BODEGA}
               cliente={selectedDiscountCustomer.CLIENTE}
               page={0}
               pageSize={10}
             />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDiscountModal} color="primary">
-              Cerrar
-            </Button>
-          </DialogActions>
-        </Dialog>
+        
+        </GlassDialog>
       )}
     </>
   );

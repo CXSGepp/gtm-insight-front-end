@@ -6,6 +6,7 @@ import { usePaginatedSkuQuery } from '../hooks/usePaginatedSkuQuery';
 import { ColumnDef } from '@tanstack/react-table';
 import { StatusChip } from '../../../shared/components/chips/StatusChip';
 import { SemaforoDialogCell } from './SemaforoDialogCell';
+import { GlassCard } from '../../../shared/components/glass-card/glass-card';
 
 interface SkuDetailTableProps {
   bodega: number;
@@ -76,7 +77,7 @@ export const skuColumns: ColumnDef<any>[] = [
 ];
 
 export default function SkuDetailTable({ bodega, cliente, claveLista, page, pageSize }:  SkuDetailTableProps) {
-  const { setPagination, setBodega, setCliente } = useSkuTableStore();
+  const { setPagination, setBodega } = useSkuTableStore();
 
   const { rows: originalRows, total, loading  } = usePaginatedSkuQuery({
     bodega,
@@ -88,8 +89,7 @@ export default function SkuDetailTable({ bodega, cliente, claveLista, page, page
 
   React.useEffect(() => {
     setBodega(bodega);
-    setCliente(cliente);
-  }, [bodega, cliente, setBodega, setCliente]);
+  }, [bodega,  setBodega]);
 
   const rows = React.useMemo(() => (
     originalRows.map(row => ({
@@ -101,7 +101,7 @@ export default function SkuDetailTable({ bodega, cliente, claveLista, page, page
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight={120} sx={{ backgroundColor: '#0c0c0c' }}>
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight={120}>
         <CircularProgress size={28} />
       </Box>
     );
@@ -109,7 +109,7 @@ export default function SkuDetailTable({ bodega, cliente, claveLista, page, page
 
   if (!loading && rows.length === 0) {
     return (
-      <Box sx={{ mt: 2, backgroundColor: '#0c0c0c', borderRadius: 2 }}>
+      <GlassCard sx={{ mt: 2, borderRadius: 2 }}>
         <Paper
           elevation={0}
           sx={{
@@ -123,7 +123,7 @@ export default function SkuDetailTable({ bodega, cliente, claveLista, page, page
             No se han cargado datos para la bodega <b>{bodega}</b> o cliente <b>{cliente}</b>.
           </Typography>
         </Paper>
-      </Box>
+      </GlassCard>
     );
   }
 
@@ -131,25 +131,9 @@ export default function SkuDetailTable({ bodega, cliente, claveLista, page, page
     <Box
       sx={{
         overflowX: 'auto',
-        backgroundColor: '#0c0c0c',
         borderRadius: 2,
         p: 1,
-         maxWidth: '100%',
-        '& table': {
-          backgroundColor: '#0c0c0c',
-          color: '#fff',
-          borderCollapse: 'collapse',
-        },
-        '& th, & td': {
-          borderColor: '#222',
-          color: '#fff',
-        },
-        '& thead': {
-          backgroundColor: '#00083a',
-        },
-        '& tbody tr:hover': {
-          backgroundColor: '#1c1c1c',
-        },
+         maxWidth: '100%'
       }}
     >
      <BaseTable

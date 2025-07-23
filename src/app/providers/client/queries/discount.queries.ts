@@ -1,6 +1,6 @@
 // src/app/providers/client/queries/discount.queries.ts
 import { gql } from '@apollo/client';
-import { DISCOUNT_FIELDS } from './fragments/discount.fragment';
+import { DISCOUNT_FIELDS, DISC_PRODUCTS_FIELDS } from './fragments/discount.fragment';
 
 export const GET_DISCOUNTS_FOR_ROW = gql`
   ${DISCOUNT_FIELDS}
@@ -12,6 +12,20 @@ export const GET_DISCOUNTS_FOR_ROW = gql`
       total
       hasMore
       # Removed the page field as it's not available in the response
+    }
+  }
+`;
+
+
+export const  GET_DISC_PRODUCTS_FOR_ROW = gql`
+${DISC_PRODUCTS_FIELDS}
+  query getDiscProductsForRow($filters: GetEtmDiscountsDto!) {
+    getDiscProductsForRow(filters: $filters) {
+      items {
+        ...DiscountProductsFields
+      } 
+      total
+      hasMore
     }
   }
 `;

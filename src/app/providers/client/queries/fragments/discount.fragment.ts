@@ -1,4 +1,3 @@
-// src/app/providers/client/queries/fragments/discount.fragment.ts
 import { gql } from "@apollo/client";
 
 export const DISCOUNT_FIELDS = gql`
@@ -19,5 +18,26 @@ export const DISCOUNT_FIELDS = gql`
     IDCLIENTE
     ID_BODEGA
     VIGENTE
+  }
+`;
+
+export const DISC_PRODUCTS_FIELDS = gql`
+  fragment DiscountProductsFields on ReportEtmDiscProductsEntity {
+    ID_DESC
+    ID_BODEGA
+    ID_CLIENTE
+    NIVEL
+    ID_PRODUCTO
+    DESCRIPCION
+    ACTIVO_OPM
+    ACTIVO_SIO
+    ACTIVO_HH
+    SEMAFORO_GLOBAL
+    DB_ORIGEN
+    TIPO_MERCADO
+    CLAVE_LISTA
+    VIGENCIA_LISTA
+    FECHASTART
+    FECHAEND
   }
 `;

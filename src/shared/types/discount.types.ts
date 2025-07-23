@@ -18,6 +18,24 @@ export interface DiscountItem {
   VIGENTE: number;
 }
 
+export interface DiscProductItem {
+  ID_DESC: number;
+  ID_BODEGA: number;
+  ID_NIVEL: number;
+  ID_PRODUCTO: number;
+  DESCRIPCION: string;
+  ACTIVO_OPM: number;
+  ACTIVO_SIO: number;
+  ACTIVO_HH: number;
+  SEMAFORO_GLOBAL: number;
+  DB_ORIGEN: string;
+  TIPO_MERCADO: number;
+  CLAVE_LISTA: string;
+  VIGENCIA_LISTA: number;
+  FECHASTART: string;
+  FECHAEND: string;
+}
+
 export interface DiscountResponse {
   items: DiscountItem[];
   total: number;
@@ -25,9 +43,26 @@ export interface DiscountResponse {
   page: number; // Client-side pagination
 }
 
+export interface DiscProductResponse {
+  items: DiscProductItem[];
+  total: number;
+  hasMore: boolean;
+  page: number; // Client-side pagination
+}
+
+
+
 export interface DiscountQueryParams {
+  discountId?: number;
   bodega: number;
   cliente?: number;
+  page: number;
+  limit: number;
+}
+
+export interface DiscProductsQueryParams {
+  bodega: number;
+  id_desc?: number;
   page: number;
   limit: number;
 }

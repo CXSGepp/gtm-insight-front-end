@@ -26,15 +26,17 @@ export interface DashboardResponse {
 }
 
 export interface DashboardFilters {
-  localidad?: string | number | null;
-  bodega?: string | number | null;
-  region?: string | number | null;
-  zona?: string | number | null;
-  clasificacion?: string | number | null;
-  ruta?: string | number | null;
-  canal?: string | number | null;
-  claveLista?: string | number | null;
-  sku?: string | number | null;
+  cliente?: number | null;
+  nombre?: string | null;
+  localidad?: string;//
+  bodega?: number;//
+  region?: string;
+  zona?: string;
+  clasificacion?: string;
+  ruta?: number;
+  canal?: number;
+  claveLista?: number;
+ /// sku?: string | number | null;
 }
 
 export interface DashboardFilterOptions {
@@ -42,12 +44,11 @@ export interface DashboardFilterOptions {
   bodegas: number[];
   regiones: string[];
   zonas: string[];
-  ruta: number[];
   clasificaciones: string[];
-  claveLista: number[];
+  ruta: number[];
   canal: number[];
-  productos: number[];
-  descripciones: string[];
+  claveLista: number[];
+
 }
 
 export interface PaginationParams {

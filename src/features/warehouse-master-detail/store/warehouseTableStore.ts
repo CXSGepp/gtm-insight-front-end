@@ -1,27 +1,64 @@
 import { create } from 'zustand';
+import { DashboardFilterOptions, DashboardFilters } from '../../../shared/types/dashboard.types';
+import { immer } from 'zustand/middleware/immer';
 
 interface WarehouseTableState {
-  filters: Record<string, any>;
+  filters: DashboardFilters;
+  filterOptions: DashboardFilterOptions; 
   page: number;
   pageSize: number;
   total: number;
-  setPage: (page: number) => void;
-  setPageSize: (size: number) => void;
-  setFilters: (filters: Record<string, any>) => void;
+  isFilterLoading: boolean;
+  firstSelectedFilter: { key: string | null; value: any | null };
+  setPagination: (page: number, size: number) => void;
+  setTotal: (t: number) => void;
+  patchFilters: (patch: Partial<DashboardFilters>) => void;
   resetFilters: () => void;
-  setTotal: (total: number) => void;
-  setPagination: (page: number, size: number) => void; // ✅ add this
+  setFilterOptions: (opt: DashboardFilterOptions) => void;
+  setFilterLoading: (flag: boolean) => void;
+  setFirstSelected: (key: string, value: any) => void;
+  resetFirstSelected: () => void;
 }
 
-export const useWarehouseTableStore = create<WarehouseTableState>((set) => ({
-  filters: {},
-  page: 0,
-  pageSize: 50,
-  total: 0,
-  setPage: (page) => set({ page }),
-  setPageSize: (size) => set({ pageSize: size }),
-  setFilters: (filters) => set({ filters }),
-  resetFilters: () => set({ filters: {} }),
-  setTotal: (total) => set({ total }),
-  setPagination: (page, size) => set({ page, pageSize: size }), // ✅ add this
-}));
+const emptyOptions: DashboardFilterOptions = {
+   localidades: [],
+    bodegas: [],
+    regiones:[],
+    zonas: [],
+    ruta: [],
+    clasificaciones: [],
+    claveLista: [],
+    canal: [],
+}
+
+export const useWarehouseTableStore = create<WarehouseTableState>()(
+  immer((set) => ({
+    filters: {},
+    filterOptions: emptyOptions,
+    page: 0,
+    pageSize: 50,
+    total: 0,
+    isFilterLoading: false,
+    firstSelectedFilter: { key: null, value: null },
+
+    setPagination: (page, size) => set(() => ({ page, pageSize: size })),
+        setTotal: (t) => set(() => ({ total: t })),
+        patchFilters: (patch) =>
+          set((state) => {
+            state.filters = { ...state.filters, ...patch };
+          }),
+        resetFilters: () =>
+          set((state) => {
+            state.filters = {};
+            state.firstSelectedFilter = { key: null, value: null };
+          }),
+        setFilterOptions: (opt) => set(() => ({ filterOptions: opt })),
+        setFilterLoading: (flag) => set(() => ({ isFilterLoading: flag })),
+        setFirstSelected: (key, value) =>
+          set(() => ({ firstSelectedFilter: { key, value } })),
+      
+           resetFirstSelected: () =>
+        set({ firstSelectedFilter: { key: null, value: null } }),
+      }))
+);
+

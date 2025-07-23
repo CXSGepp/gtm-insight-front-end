@@ -1,49 +1,40 @@
-// src/features/discounts-detail/hooks/usePaginatedDiscountQuery.tsx
-import { useEffect, useState } from 'react';
-import { discountService } from '../../../app/providers/services/discount.service';
 import { useDiscountTableStore } from '../store/discountTableStore';
+import { useQuery } from '@tanstack/react-query';
+import { discountService } from '../../../app/providers/services/discount.service';
 
-export function usePaginatedDiscountQuery({
-  bodega,
-  cliente,
-  page,
-  pageSize,
-}: {
-  bodega: number;
-  cliente?: number;
-  page: number;
-  pageSize: number;
-}) {
-  const [rows, setRows] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [total, setTotal] = useState(0);
-  const [hasMore, setHasMore] = useState(false);
-  const { setPagination } = useDiscountTableStore();
+export function usePaginatedDiscountQuery() {
+  const {
+    bodega,
+    cliente,
+    page,
+    pageSize,
+    setPagination,
+    setTotal,
+  } = useDiscountTableStore();
 
-  useEffect(() => {
-    if (!bodega) {
-      setRows([]);
-      setTotal(0);
-      setHasMore(false);
-      return;
-    }
+  const enabled = !!bodega;
 
-    setLoading(true);
-    discountService
-      .fetchDiscountsForRow({
+  const query = useQuery({
+    queryKey: ['discounts', bodega, cliente, page, pageSize],
+    queryFn: async () => {
+      const result = await discountService.fetchDiscountsForRow({
         bodega,
         cliente,
         page,
         limit: pageSize,
-      })
-      .then((data) => {
-        setRows(data.items);
-        setTotal(data.total);
-        setHasMore(data.hasMore);
-        setPagination(page, pageSize);
-      })
-      .finally(() => setLoading(false));
-  }, [bodega, cliente, page, pageSize, setPagination]);
+      });
+      setTotal(result.total);
+      setPagination(page, pageSize);
+      return result;
+    },
+    enabled,
+    keepPreviousData: true,
+    staleTime: 5 * 60 * 1000,
+  });
 
-  return { rows, loading, total, hasMore, page, pageSize };
+  return {
+    ...query,
+    rows: query.data?.items || [],
+    total: query.data?.total || 0,
+  };
 }

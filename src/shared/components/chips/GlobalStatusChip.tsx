@@ -6,7 +6,7 @@ interface GlobalStatusChipProps {
 
 export function GlobalStatusChip({ status }: GlobalStatusChipProps) {
   let label = status;
-  let color: 'success' | 'error' | 'warning' | 'default' = 'default';
+  let color: 'success' | 'error' | 'warning' | 'default' | 'info' | 'default' = 'default';
 
   switch (status.toLowerCase()) {
     case 'verde':
@@ -20,6 +20,18 @@ export function GlobalStatusChip({ status }: GlobalStatusChipProps) {
     case 'amarillo':
       label = 'Advertencia';
       color = 'warning';
+      break;
+    case 'sin_prg':
+      label = 'Sin programa';
+      color = 'default';
+      break;
+    case 'cdg':
+      label = 'CDG';
+      color = 'info';
+      break;
+    case 'gj':
+      label = 'GJ';
+      color = 'info';
       break;
     default:
       label = status;

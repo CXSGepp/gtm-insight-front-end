@@ -10,5 +10,6 @@ export interface BaseTableProps<TData> {
     onPaginationChange: (pageIndex: number, pageSize: number)  => void;
     expandableRowContent?: (row: TData) => React.ReactNode;
     getRowId?: (row: TData) => string;
+    onRowClick?: (row: T) => void; 
     darkMode?: boolean;
 }

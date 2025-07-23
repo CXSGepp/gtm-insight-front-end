@@ -19,6 +19,7 @@ export const ETM_DASHBOARD_FIELDS = gql`
     TELEFONO
     DIRECCION
     LAST_UPDATED
+    PRG_LEALTAD
     }
 
 `;

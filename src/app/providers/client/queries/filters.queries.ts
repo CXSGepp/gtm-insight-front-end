@@ -48,7 +48,7 @@ export const GET_CANAL_FILTERED = gql`
 
 export const GET_BODEGA_FILTERED = gql`
     query GetBodegaFiltered($filters: EtmDashboardFilterInput!) {
-        getIdBodegaFiltered(filters: $filters)
+        getBodegaFiltered(filters: $filters)
     }
 `;
 
@@ -64,4 +64,14 @@ export const GET_CLAVELISTA_FILTERED = gql`
     }
 `;
 
+export const SEARCH_NOMBRES = gql`
+    query SearchNombres($partial: String!, $limit: Float! = 50) {
+        searchNombres(partial: $partial, limit: $limit)
+    }
+`;
 
+export const SEARCH_CLIENTE_ID = gql`
+    query SearchClienteId($partial: Int!, $limit: Int! = 50) {
+        searchClienteId(partial: $partial, limit: $limit)
+    }
+`;
