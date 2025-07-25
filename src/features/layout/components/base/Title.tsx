@@ -6,29 +6,20 @@ const Title: React.FC = () => {
   const { sidebarOpen } = useLayoutStore();
 
   return (
-    <AppBar
-      position="static"
-      sx={{
-        boxShadow: 'none',
-        ml: sidebarOpen ? '240px' : '70px',
-        width: `calc(100% - ${sidebarOpen ? '240px' : '70px'})`,
-        transition: 'all 0.3s ease',
-        bgcolor: '#121212', // Aseguramos que el fondo sea oscuro
-      }}
-      elevation={0}
-    >
-      <Toolbar sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#fff' }}>
-          Reporte GEPP En Tus Manos
-        </Typography>
-        <Typography
-          variant="body2"
-          sx={{ fontSize: '0.9rem', color: '#f50057', mt: 1 }}
-        >
-          Estás utilizando la versión de pruebas. Los datos y funcionalidades pueden no estar finalizados.
-        </Typography>
-      </Toolbar>
-    </AppBar>
+<Typography
+  variant="h6"
+  sx={{
+    fontWeight: 'Bold',
+    color: '#F2F2F2',
+    flexGrow: 1,
+    textAlign: 'right',
+    
+  }}
+>
+  GETM Insight
+</Typography>
+
+
   );
 };
 

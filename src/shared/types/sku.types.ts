@@ -1,4 +1,3 @@
-import { DashboardFilters } from "./dashboard.types";
 
 export interface SkuItem {
     ID: number;
@@ -11,7 +10,6 @@ export interface SkuItem {
     ACTIVO_HH: boolean;
     CANAL: string;
     LISTA_PRECIO: string;
-    FECHA_REGISTRO: string;
     DB_ORIGEN: string;
     SEMAFORO_GLOBAL: string;
     LAST_UPDATED: string;
@@ -27,7 +25,7 @@ export interface SkuItem {
   export interface SkuQueryParams {
     bodega: number;
     cliente?: number;
-    filters: DashboardFilters; // <<== typed properly now
+    claveLista?: number;
     page: number;
     limit: number;
   }

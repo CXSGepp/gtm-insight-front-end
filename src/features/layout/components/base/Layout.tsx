@@ -1,9 +1,9 @@
 import React from 'react';
-import { Box, CssBaseline, Paper, ThemeProvider } from '@mui/material';
+import {  Box, CssBaseline, ThemeProvider } from '@mui/material';
 import Sidebar from './Sidebar';
-import Title from './Title';
 import theme from '../../../../theme';
 import { useLayoutStore } from '../../store/useLayoutStore';
+import { Header } from './Header';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -15,57 +15,26 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box
-        sx={{
-          display: 'flex',
-          width: '100vw',
-          height: '100vh',
-          overflow: 'hidden',
-        }}
-      >
+  <Header />
         <Sidebar />
 
-        <Box
-          sx={{
-            flex: 1,
-            overflowY: 'auto',
-            ml: sidebarOpen ? '250px' : '70px',
-            transition: 'margin-left 0.3s ease',
-            py: 3,
-          }}
-        >
           <Box
             sx={{
+              ml: sidebarOpen ? '250px' : '70px',
+              p: 10,
+              flex: 1,
+              overflowY: 'auto',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               px: 2,
             }}
           >
-            <Box
-              sx={{
-                width: '100%',
-                maxWidth: '1200px', // ajusta según necesidad
-              }}
-            >
-              <Title />
-              <Paper
-                elevation={2}
-                sx={{
-                  mt: 2,
-                  p: 3,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 2,
-                  overflowX: 'hidden',
-                }}
-              >
                 {children}
-              </Paper>
-            </Box>
+
           </Box>
-        </Box>
-      </Box>
+   
+      
     </ThemeProvider>
   );
 };

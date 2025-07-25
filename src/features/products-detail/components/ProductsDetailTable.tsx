@@ -1,20 +1,20 @@
-import React from 'react';
-import { Box, CircularProgress, Typography, Paper } from '@mui/material';
+import React, { useEffect } from 'react';
+import { Box, CircularProgress } from '@mui/material';
 import BaseTable from '../../../shared/components/base-table/BaseTable';
 import { useSkuTableStore } from '../store/skuTableStore';
 import { usePaginatedSkuQuery } from '../hooks/usePaginatedSkuQuery';
 import { ColumnDef } from '@tanstack/react-table';
 import { StatusChip } from '../../../shared/components/chips/StatusChip';
-import { GlobalStatusChip } from '../../../shared/components/chips/GlobalStatusChip';
+import { SemaforoDialogCell } from './SemaforoDialogCell';
+import { useSnackbar } from '../../../shared/providers/SnackbarProvider';
 
 interface SkuDetailTableProps {
   bodega: number;
-  cliente: number;
 }
 
 export const skuColumns: ColumnDef<any>[] = [
   { accessorKey: 'ID_PRODUCTO', header: 'ID Producto' },
-  { accessorKey: 'DESCRIPCION', header: 'Descripción' },
+  { accessorKey: 'DESCRIPCION', header: 'Descripción', size: 200, minSize: 80, maxSize: 200 },
   {
     accessorKey: 'ACTIVO_OPM',
     header: 'Activo OPM',
@@ -26,6 +26,16 @@ export const skuColumns: ColumnDef<any>[] = [
     cell: ({ cell }) => <StatusChip active={!!cell.getValue()} />,
   },
   {
+    accessorKey: 'CANAL',
+    header: 'Configuracion Canal',
+    cell: ({ cell }) => <StatusChip active={!!cell.getValue()} />,
+  },
+  {
+    accessorKey: 'LISTA_PRECIOS',
+    header: 'Vigencia Lista de precios',
+    cell: ({ cell }) => <StatusChip active={!!cell.getValue()} />,
+  },
+  {
     accessorKey: 'ACTIVO_HH',
     header: 'Activo HH',
     cell: ({ cell }) => <StatusChip active={!!cell.getValue()} />,
@@ -33,83 +43,74 @@ export const skuColumns: ColumnDef<any>[] = [
   {
     accessorKey: 'SEMAFORO_GLOBAL',
     header: 'Semáforo Global',
-    cell: ({ cell }) => <GlobalStatusChip status={cell.getValue<string>()} />,
+    cell: ({ row }) => (
+      <SemaforoDialogCell
+        status={row.original.SEMAFORO_GLOBAL}
+        activo_opm={row.original.ACTIVO_OPM}
+        activo_sio={row.original.ACTIVO_SIO}
+        canal={row.original._randomCanal}
+        listaPrecio={row.original._randomListaPrecios}
+        activo_hh={row.original.ACTIVO_HH}
+      />
+    ),
   },
-  { accessorKey: 'CANAL', header: 'Canal' },
   { accessorKey: 'DB_ORIGEN', header: 'Base de Datos' },
 ];
 
-export default function SkuDetailTable({ bodega, cliente }: SkuDetailTableProps) {
-  const { page, pageSize, setPagination, setBodega, setCliente } = useSkuTableStore();
-  const { rows, total, loading } = usePaginatedSkuQuery();
+export default function SkuDetailTable({ bodega }: SkuDetailTableProps) {
+  const { showSnackbar } = useSnackbar();
+  const {
+    page,
+    pageSize,
+    setPagination,
+    setBodega,
+    noDataNotified,
+    setNoDataNotified,
+  } = useSkuTableStore();
 
-  React.useEffect(() => {
+  const { rows: originalRows, total, isLoading } = usePaginatedSkuQuery({
+    bodega,
+    page,
+    pageSize,
+  });
+
+  
+  useEffect(() => {
     setBodega(bodega);
-    setCliente(cliente);
-  }, [bodega, cliente, setBodega, setCliente]);
 
-  if (loading) {
+  }, [bodega, setBodega,]);
+
+  useEffect(() => {
+    if (!isLoading  && originalRows.length === 0 && !noDataNotified) {
+      showSnackbar('No se encontraron productos para los parámetros seleccionados.', 'info');
+      setNoDataNotified(true);
+    }
+  }, [isLoading , originalRows, noDataNotified, showSnackbar, setNoDataNotified]);
+
+
+  if (isLoading  && originalRows.length === 0) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight={120} sx={{ backgroundColor: '#0c0c0c' }}>
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight={120}>
         <CircularProgress size={28} />
       </Box>
     );
   }
 
-  if (!loading && rows.length === 0) {
-    return (
-      <Box sx={{ mt: 2, backgroundColor: '#0c0c0c', borderRadius: 2 }}>
-        <Paper
-          elevation={0}
-          sx={{
-            p: 3,
-            backgroundColor: 'transparent',
-            color: 'white',
-            textAlign: 'center',
-          }}
-        >
-          <Typography variant="subtitle1">
-            No se han cargado datos para la bodega <b>{bodega}</b> o cliente <b>{cliente}</b>.
-          </Typography>
-        </Paper>
-      </Box>
-    );
-  }
-
   return (
-    <Box
-      sx={{
-        overflowX: 'auto',
-        backgroundColor: '#0c0c0c',
-        borderRadius: 2,
-        p: 1,
-        '& table': {
-          backgroundColor: '#0c0c0c',
-          color: '#fff',
-          borderCollapse: 'collapse',
-        },
-        '& th, & td': {
-          borderColor: '#222',
-          color: '#fff',
-        },
-        '& thead': {
-          backgroundColor: '#00083a',
-        },
-        '& tbody tr:hover': {
-          backgroundColor: '#1c1c1c',
-        },
-      }}
-    >
-     <BaseTable
-  columns={skuColumns}
-  data={rows}
-  loading={loading}
-  totalItems={total}
-  pageIndex={page}
-  pageSize={pageSize}
-  onPaginationChange={(newPage, newSize) => setPagination(newPage, newSize)}
-  darkMode // habilita el modo oscuro
-/>
+    <Box sx={{ overflowX: 'auto', borderRadius: 2, p: 1, maxWidth: '100%' }}>
+      <BaseTable
+        columns={skuColumns}
+        data={originalRows}
+        loading={isLoading }
+        totalItems={total}
+        pageIndex={page}
+        pageSize={pageSize}
+        onPaginationChange={(updater) => {
+          const newPagination = typeof updater === 'function' ? updater({ pageIndex: page, pageSize }) : updater;
+          setPagination(newPagination.pageIndex, newPagination.pageSize);
+        }}
+        darkMode
+      />
     </Box>
   );
 }

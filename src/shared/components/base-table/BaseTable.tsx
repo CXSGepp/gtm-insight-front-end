@@ -24,6 +24,7 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { BaseTableProps } from './baseTable.types';
+import { GlassCard } from '../glass-card/glass-card';
 
 export default function BaseTable<TData>({
   columns,
@@ -69,12 +70,11 @@ export default function BaseTable<TData>({
 
   return (
     <Box sx={{ width: '100%', overflowX: 'auto' }}>
-      <Paper
+      <GlassCard
         sx={{
           width: '100%',
           overflow: 'hidden',
           mt: 2,
-          bgcolor: isDark ? theme.palette.background.default : undefined,
         }}
       >
         <TableContainer
@@ -89,22 +89,10 @@ export default function BaseTable<TData>({
             size="small"
             sx={{
               minWidth: 1000,
-              backgroundColor: isDark ? theme.palette.background.default : undefined,
-              color: isDark ? '#fff' : undefined,
-              '& th': {
-                backgroundColor: isDark ? '#00083a' : undefined,
-                color: isDark ? '#fff' : undefined,
-              },
-              '& td': {
-                color: isDark ? '#fff' : undefined,
-                borderColor: isDark ? '#333' : undefined,
-              },
-              '& tbody tr:hover': {
-                backgroundColor: isDark ? '#1c1c1c' : undefined,
-              },
             }}
           >
-            <TableHead>
+            <TableHead
+            >
               {table.getHeaderGroups().map((hg) => (
                 <TableRow key={hg.id}>
                   {hg.headers.map((header) => (
@@ -112,6 +100,15 @@ export default function BaseTable<TData>({
                       key={header.id}
                       align="left"
                       style={{ minWidth: header.getSize?.() ?? 120 }}
+                       sx={{
+                        backgroundColor: 'rgba(1, 2, 26, 0.85)', 
+                        backdropFilter: 'blur(8px)',
+                        WebkitBackdropFilter: 'blur(8px)',
+                        color: theme.palette.text.primary,
+                        fontWeight: 'bold',
+                        borderBottom: `1px solid ${theme.palette.primary.main}`,
+                      }}
+                  
                     >
                       {flexRender(header.column.columnDef.header, header.getContext())}
                     </TableCell>
@@ -126,12 +123,6 @@ export default function BaseTable<TData>({
                 <TableRow>
                   <TableCell colSpan={columns.length + 1} align="center">
                     <CircularProgress size={24} />
-                  </TableCell>
-                </TableRow>
-              ) : table.getRowModel().rows.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={columns.length + 1} align="center">
-                    No data found
                   </TableCell>
                 </TableRow>
               ) : (
@@ -159,10 +150,6 @@ export default function BaseTable<TData>({
                             <Box
                               sx={{
                                 p: 2,
-                                bgcolor: isDark ? '#121212' : '#f9f9f9',
-                                borderTop: isDark
-                                  ? '1px solid #333'
-                                  : '1px solid #e0e0e0',
                               }}
                             >
                               {expandableRowContent(row.original)}
@@ -195,7 +182,7 @@ export default function BaseTable<TData>({
             </TableFooter>
           </Table>
         </TableContainer>
-      </Paper>
+      </GlassCard>
     </Box>
   );
 }

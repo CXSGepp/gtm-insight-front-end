@@ -5,3 +5,24 @@
 @tailwind components;
 @tailwind utilities;
 
+
+/* ...existing code... */
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(120deg, #011640 #020E26, #052360, #1c0760);
+  background-size: 400% 400%;
+  animation: gradientBG 18s ease-in-out infinite;
+}
+
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

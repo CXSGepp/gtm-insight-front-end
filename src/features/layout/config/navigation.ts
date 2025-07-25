@@ -20,13 +20,13 @@ export const navigationItems: NavigationItem[] = [
       {
         label: 'Clientes',
         icon: SupportAgentIcon,
-        path: '/customers',
+        path: '/getm_insight/customers',
         key: 'customer',
       },
       {
         label: 'Bodegas',
         icon: Warehouse,
-        path: '/warehouse',
+        path: '/getm_insight/warehouse',
         key: 'warehouse',
       },
     ],

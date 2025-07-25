@@ -7,23 +7,25 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Paper,
   Collapse,
+  Drawer,
+  useTheme,
+  useMediaQuery,
+  IconButton,
 } from '@mui/material';
 import { useRouterState } from '@tanstack/react-router';
-
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import { ExpandLess, ExpandMore, Menu as MenuIcon, ChevronLeft as ChevronLeftIcon, Article as ArticleIcon } from '@mui/icons-material';
 import geppLogo from '../../../../assets/geppLogo.png';
+import GEPP_Logo_fondo_blanco from '../../../../assets/GEPP_Logo_fondo_blanco.png';
 import { navigationItems } from '../../config/navigation';
 import { useLayoutStore } from '../../store/useLayoutStore';
 
-export const Sidebar = () => {
-  const { sidebarOpen } = useLayoutStore();
-  const pathname = useRouterState({
-    select: (state) => state.location.pathname,
-  });
-  
+const DrawerContent = () => {
+  // 3. Obtén la función 'toggleSidebar' del store
+  const { sidebarOpen, closeSidebar } = useLayoutStore();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
   const [openMenus, setOpenMenus] = useState<{ [key: string]: boolean }>({});
+  const theme = useTheme();
 
   const handleToggle = (key: string) => {
     setOpenMenus((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -33,18 +35,25 @@ export const Sidebar = () => {
     pathname === path || pathname.startsWith(`${path}/`);
 
   return (
-    <Paper
-      sx={{
-        p: 2,
-        backgroundColor: '#010326',
-        width: sidebarOpen ? 250 : 70,
-        transition: 'width 0.3s ease',
-        position: 'fixed',
-        height: '100vh',
-        zIndex: 1000,
-      }}
-    >
-      <Box sx={{ px: 2, py: 2, display: 'flex', justifyContent: 'center' }}>
+      <Box>
+      {/* 2. La cabecera ahora solo tiene el botón de cierre */}
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-end', // Alinea el botón a la derecha
+          px: 1,
+          ...theme.mixins.toolbar, // Usa el alto estándar de la toolbar
+        }}
+      >
+        <IconButton onClick={closeSidebar}>
+          <ChevronLeftIcon sx={{ color: '#03178C' }} />
+        </IconButton>
+      </Box>
+      <Divider sx={{ borderColor: 'rgba(3, 23, 140, 0.5)', mb: 2 }} />
+
+      {/* El resto de la lista de navegación no cambia */}
+         <Box sx={{ px: 2, py: 2, display: 'flex', justifyContent: 'center' }}>
         <img
           src={geppLogo}
           alt="GEPP Logo"
@@ -55,8 +64,7 @@ export const Sidebar = () => {
           }}
         />
       </Box>
-
-      <Divider sx={{ borderColor: '#03178C', mb: 2 }} />
+            <Divider sx={{ borderColor: 'rgba(3, 23, 140, 0.5)', mb: 2 }} />
 
       <List component="nav" disablePadding>
         {navigationItems.map((item) =>
@@ -65,18 +73,35 @@ export const Sidebar = () => {
               <ListItemButton
                 onClick={() => handleToggle(item.key)}
                 sx={{
-                  color: '#F2F2F2',
-                  px: 3,
-                  '&.Mui-selected, &:hover': {
-                    bgcolor: '#03178C',
-                    color: '#F2F2F2',
+                  minHeight: 48,
+                  justifyContent: sidebarOpen ? 'initial' : 'center',
+                  px: 2.5,
+                  color: '#03178C',
+                  borderRadius: 2,
+                  '&:hover, &.Mui-selected': {
+                    backgroundColor: 'rgba(3, 23, 140, 0.1)',
                   },
                 }}
               >
-                <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: sidebarOpen ? 3 : 'auto',
+                    justifyContent: 'center',
+                    color: 'inherit',
+                  }}
+                >
                   <item.icon />
                 </ListItemIcon>
-                {sidebarOpen && <ListItemText primary={item.label} />}
+                <ListItemText
+                  primary={item.label}
+                  sx={{ 
+                    opacity: sidebarOpen ? 1 : 0,
+                    transition: theme.transitions.create('opacity', {
+                      duration: theme.transitions.duration.shortest,
+                    }),
+                  }} 
+                />
                 {sidebarOpen &&
                   (openMenus[item.key] ? <ExpandLess /> : <ExpandMore />)}
               </ListItemButton>
@@ -91,20 +116,35 @@ export const Sidebar = () => {
                         to={child.path}
                         selected={isRouteActive(child.path)}
                         sx={{
-                          color: '#F2F2F2',
-                          pl: 6,
-                          '&.Mui-selected, &:hover': {
-                            bgcolor: '#03178C',
-                            color: '#F2F2F2',
+                          minHeight: 48,
+                          justifyContent: sidebarOpen ? 'initial' : 'center',
+                          pl: sidebarOpen ? 6 : 2.5,
+                          color: '#03178C',
+                          borderRadius: 2,
+                          '&:hover, &.Mui-selected': {
+                            backgroundColor: 'rgba(3, 23, 140, 0.1)',
                           },
                         }}
                       >
-                        <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
+                        <ListItemIcon
+                          sx={{
+                            minWidth: 0,
+                            mr: sidebarOpen ? 3 : 'auto',
+                            justifyContent: 'center',
+                            color: 'inherit',
+                          }}
+                        >
                           <child.icon />
                         </ListItemIcon>
-                        {sidebarOpen && (
-                          <ListItemText primary={child.label} />
-                        )}
+                        <ListItemText
+                          primary={child.label}
+                          sx={{ 
+                            opacity: sidebarOpen ? 1 : 0,
+                            transition: theme.transitions.create('opacity', {
+                              duration: theme.transitions.duration.shortest,
+                            }),
+                          }}
+                        />
                       </ListItemButton>
                     ) : null
                   )}
@@ -118,23 +158,114 @@ export const Sidebar = () => {
               to={item.path}
               selected={isRouteActive(item.path)}
               sx={{
-                color: '#F2F2F2',
-                px: 3,
-                '&.Mui-selected, &:hover': {
-                  bgcolor: '#03178C',
-                  color: '#F2F2F2',
+                minHeight: 48,
+                justifyContent: sidebarOpen ? 'initial' : 'center',
+                px: 2.5,
+                color: '#03178C',
+                borderRadius: 2,
+                '&:hover, &.Mui-selected': {
+                  backgroundColor: 'rgba(1, 2, 26, 0.85)',
                 },
               }}
             >
-              <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: sidebarOpen ? 3 : 'auto',
+                  justifyContent: 'center',
+                  color: 'inherit',
+                }}
+              >
                 <item.icon />
               </ListItemIcon>
-              {sidebarOpen && <ListItemText primary={item.label} />}
+              <ListItemText
+                primary={item.label}
+                sx={{ 
+                  opacity: sidebarOpen ? 1 : 0,
+                  transition: theme.transitions.create('opacity', {
+                    duration: theme.transitions.duration.shortest,
+                  }),
+                }}
+              />
             </ListItemButton>
           ) : null
         )}
       </List>
-    </Paper>
+
+       <Box>
+        <Divider sx={{ borderColor: 'rgba(3, 23, 140, 0.5)' }} />
+        <ListItemButton
+          component="a"
+          href={`${import.meta.env.BASE_URL}GETM_INSIGHT_MANUAL.pdf`}
+          target="_blank"
+          rel="noopener noreferrer"
+          download
+          sx={{
+            minHeight: 48,
+            justifyContent: sidebarOpen ? 'initial' : 'center',
+            px: 2.5,
+            color: '#03178C',
+          }}
+        >
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              mr: sidebarOpen ? 3 : 'auto',
+              justifyContent: 'center',
+              color: 'inherit',
+            }}
+          >
+            <ArticleIcon />
+          </ListItemIcon>
+          <ListItemText
+            primary="Manual de uso"
+            sx={{
+              opacity: sidebarOpen ? 1 : 0,
+              transition: theme.transitions.create('opacity', {
+                duration: theme.transitions.duration.shortest,
+              }),
+            }}
+          />
+        </ListItemButton>
+      </Box>
+    </Box>
+
+    
+  );
+};
+
+// El componente Sidebar principal no necesita cambios
+export const Sidebar = () => {
+  const { sidebarOpen, closeSidebar } = useLayoutStore();
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
+
+  const drawerWidth = 250;
+  const collapsedDrawerWidth = 70;
+
+  return (
+    <Drawer
+      variant={isDesktop ? 'permanent' : 'temporary'}
+      open={isDesktop ? true : sidebarOpen}
+      onClose={closeSidebar}
+      PaperProps={{
+        sx: {
+          background: 'rgba(213, 223, 229, 0.52)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderRight: '1px solid rgba(216, 241, 255, 0.3)',
+          boxSizing: 'border-box',
+          width: sidebarOpen ? drawerWidth : collapsedDrawerWidth,
+          transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+          }),
+          overflowX: 'hidden',
+        },
+      }}
+    >
+      <DrawerContent />
+    </Drawer>
   );
 };
 

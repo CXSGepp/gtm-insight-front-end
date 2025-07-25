@@ -11,8 +11,9 @@ const App: React.FC = () => {
   return (
     <ApolloProvider client={client}>
       <ThemeProvider theme={theme}>
-      
+
         <RouterProvider router={router} />
+ 
       </ThemeProvider>
     </ApolloProvider>
   );

@@ -6,11 +6,14 @@ import { handleApiError } from '../utils/errorUtils';
 export const skuService = {
   async fetchSkusForRow(params: SkuQueryParams): Promise<SkuResponse> {
     try {
+      const filters = Object.fromEntries(
+        Object.entries(params).filter(([_, v]) => v !== undefined)
+      );
       console.log('[🚀 GraphQL Request] GET_SKUS_FOR_ROW with params:', params);
 
       const { data } = await client.query({
         query: GET_SKUS_FOR_ROW,
-        variables: params,
+        variables: { filters },
         fetchPolicy: 'network-only',
       });
 

@@ -6,7 +6,7 @@ export const ETM_DASHBOARD_FIELDS = gql`
     REGION
     ZONA
     LOCALIDAD
-    BODEGA
+    ID_BODEGA
     RUTA
     CLIENTE
     NOMBRE
@@ -14,10 +14,31 @@ export const ETM_DASHBOARD_FIELDS = gql`
     CLASIFICACION
     FRECUENCIA
     CLAVE_LISTA
+    CANAL
     ACTIVA
     TELEFONO
     DIRECCION
     LAST_UPDATED
+    PRG_LEALTAD
+    }
+
+`;
+
+export const ETM_DASHBOARD_FIELDS_WAREHOUSE = gql`
+    fragment DashboardFieldsWarehouse on ReportGeppWarehouseEtmEntity { 
+    ID 
+    BODEGA
+    UOPM
+    REGION
+    ZONA
+    LOCALIDAD
+    RUTA
+    TIPO_RUTA
+    CLAVE_LISTA
+    ACTIVA
+    CLASIFICACION
+    LAST_UPDATED
+    CANAL
     }
 
 `;

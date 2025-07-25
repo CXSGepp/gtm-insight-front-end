@@ -1,65 +1,37 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { skuService } from '../../../app/providers';
-import { useSkuTableStore } from '../store/skuTableStore';
 
-export function usePaginatedSkuQuery() {
-  const {
-    filters = {},
-    page,
-    pageSize,
-    setTotal,
-    bodega,
-    cliente,
-  } = useSkuTableStore();
+export function usePaginatedSkuQuery({
+  bodega,
+  page,
+  pageSize,
+}: {
+  bodega: number;
+  page: number;
+  pageSize: number;
+}) {
+  const enabled = !!bodega;
 
-  const [rows, setRows] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (!bodega) {
-      console.warn('[⚠️ usePaginatedSkuQuery] Missing bodega, skipping fetch.');
-      return;
-    }
-
-    const params = {
-      page,
-      limit: pageSize,
-      filters,
-      bodega,
-      cliente,
-    };
-
-    console.log('[📦 Fetch SKUs params]', params);
-
-    async function fetchData() {
-      if (!bodega) return; 
-      setLoading(true);
-      try {
-        console.log('[🧾 SKUS fetch params]', {
-          page,
-          limit: pageSize,
-          filters,
-          bodega,
-          cliente,
-        });
-        const data = await skuService.fetchSkusForRow(params);
-        setRows(data.items);
-        setTotal(data.total);
-      } catch (err) {
-        console.error('[❌ Failed to fetch SKUs]', err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchData();
-  }, [filters, page, pageSize, bodega, cliente, setTotal]);
+  const { data, isLoading, isFetching, error } = useQuery({
+    queryKey: ['skus', { bodega, page, pageSize }],
+    queryFn: () =>
+      skuService.fetchSkusForRow({
+        bodega,
+        page,
+        limit: pageSize,
+      }),
+    enabled,
+    keepPreviousData: true,
+    staleTime: 5 * 60 * 1000, 
+  });
 
   return {
-    rows,
-    loading,
+    rows: data?.items ?? [],
+    total: data?.total ?? 0,
+    isLoading,
+    isFetching,
+    error,
     page,
     pageSize,
-    total: useSkuTableStore.getState().total,
   };
 }

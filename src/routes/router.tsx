@@ -2,7 +2,7 @@ import {
   createRouter,
   createRoute,
   createRootRoute,
-  Navigate,                // 👈 importa el helper
+  Navigate,                
 } from '@tanstack/react-router';
 
 import RootRoute from './__root';
@@ -17,22 +17,23 @@ const rootRoute = createRootRoute({
 /* ---------- rutas de features ---------- */
 const customerRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/customers',                 // 🌟 ruta propia
+  path: 'getm_insight/customers',                
   component: CustomerDashboardRoute,
 });
 
 const warehouseRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/warehouse',
+  path: 'getm_insight/warehouse',
   component: WarehouseDashboardRoute,
 });
-const IndexRedirect: React.FC = () => <Navigate to="/customers" replace />;
+const IndexRedirect: React.FC = () => <Navigate to="/getm_insight/customers" replace />;
+
 
 /* ---------- index redirect ---------- */
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/',                          // URL “/”
-  component: IndexRedirect, // ⬅️ redirige
+  path: '/getm_insight',                         
+  component: IndexRedirect,
 });
 
 /* ---------- árbol ---------- */

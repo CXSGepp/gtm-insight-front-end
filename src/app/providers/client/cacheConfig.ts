@@ -1,4 +1,3 @@
-// src/app/providers/client/cacheConfig.ts
 import { InMemoryCache } from '@apollo/client';
 
 export const createCacheConfig = () => new InMemoryCache({
@@ -8,7 +7,7 @@ export const createCacheConfig = () => new InMemoryCache({
         getReportEtmDashboard: {
           keyArgs: ['filters'],
           merge: (_existing, incoming) => {
-            return incoming; // 👈 reemplaza totalmente, no mezcles páginas
+            return incoming; 
           },
         },
       },
