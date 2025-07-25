@@ -1,4 +1,3 @@
-// src/shared/types/discount.types.ts
 export interface DiscountItem {
   DESCID: number;
   IDDESCUENTOMSIO: number;
@@ -16,6 +15,7 @@ export interface DiscountItem {
   IDCLIENTE: number;
   ID_BODEGA: number;
   VIGENTE: number;
+  MAXNUM: number;
 }
 
 export interface DiscProductItem {
@@ -34,17 +34,18 @@ export interface DiscProductItem {
   VIGENCIA_LISTA: number;
   FECHASTART: string;
   FECHAEND: string;
+  
 }
 
-export interface DiscountResponse {
-  items: DiscountItem[];
+export interface DiscountResponse <T> {
+  items: T[];
   total: number;
   hasMore: boolean;
   page: number; // Client-side pagination
 }
 
-export interface DiscProductResponse {
-  items: DiscProductItem[];
+export interface DiscProductResponse <T> {
+  items: T[];
   total: number;
   hasMore: boolean;
   page: number; // Client-side pagination

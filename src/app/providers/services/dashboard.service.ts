@@ -1,5 +1,5 @@
 import { client } from '../client/graphqlClient';
-import { GET_REPORT_ETM_DASHBOARD } from '../client/queries/dashboard.queries';
+import { GET_REPORT_ETM_DASHBOARD, GET_REPORT_ETM_DASHBOARD_WAREHOUSE } from '../client/queries/dashboard.queries';
 import { GET_DISTINCT_FILTER_OPTIONS,
   GET_ZONAS_FILTERED,
   GET_REGIONS_FILTERED,
@@ -45,7 +45,7 @@ function mapFrontendFiltersToBackend(f: DashboardFilters): EtmDashboardFilterInp
     clasificacion: typeof f.clasificacion === 'string' ? f.clasificacion : (typeof f.clasificacion === 'number' ? String(f.clasificacion) : undefined),
     claveLista:    typeof f.claveLista === 'number' ? f.claveLista : (typeof f.claveLista === 'string' ? Number(f.claveLista) : undefined),
     canal:         typeof f.canal === 'number' ? f.canal : (typeof f.canal === 'string' ? Number(f.canal) : undefined),
-    
+
   };
 }
 
@@ -57,6 +57,39 @@ const clean = (o: EtmDashboardFilterInput) =>
 
 /* ---- service object ---- */
 export const dashboardService = {
+
+   async fetchDashboardWarehouseData(
+    page = 0,
+    limit = 50,
+    filters: DashboardFilters = {},
+  ): Promise<DashboardResponse> {
+    try {
+      console.log('Recibido en service:', page, limit, filters);
+      const backendFilters = clean(mapFrontendFiltersToBackend(filters));
+      
+      backendFilters.page = page;
+      backendFilters.limit = Math.min(Math.max(1, limit), 100);
+    console.log('backendFilters:', backendFilters)
+      const { data } = await client.query({
+        query: GET_REPORT_ETM_DASHBOARD_WAREHOUSE,
+        variables: { filters: backendFilters },
+        fetchPolicy: 'network-only',
+      });
+
+      return (
+        data.getReportWarehouseEtmDashboard ?? {
+          items: [],
+          total: 0,
+          hasMore: false,
+          page: 0,
+        }
+      );
+    } catch (err) {
+      throw handleApiError(err);
+    }
+  },
+
+
   async fetchDashboardData(
     page = 0,
     limit = 50,
@@ -266,6 +299,7 @@ export const dashboardService = {
       throw handleApiError(err);
     }
   },
+  
 
  /**
    * Devuelve las listas dependientes cuando el usuario selecciona el

@@ -1,8 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { dashboardService } from '../../../app/providers/services/dashboard.service';
 import { useCustomerDashboardStore } from '../store/customerTableStore';
-import { useEffect } from 'react';
-
 export function usePaginatedCustomerQuery() {
   const {
     filters,
@@ -10,12 +8,14 @@ export function usePaginatedCustomerQuery() {
     pageSize,
     total,
     setTotal,
-    filterOptions,
-    setFilterOptions,
-    setFilterLoading,
   } = useCustomerDashboardStore();
  
-  const query = useQuery({
+   const {
+    data: tableData,
+    isLoading: isTableLoading, 
+    isFetching: isTableFetching,
+    error: tableError,
+  } = useQuery({
     queryKey: ['customers', filters, page, pageSize],
     queryFn: async () => {
       const result = await dashboardService.fetchDashboardData(page, pageSize, filters);
@@ -25,34 +25,20 @@ export function usePaginatedCustomerQuery() {
     keepPreviousData: true,
   });
 
-  // Cargar opciones de filtro iniciales una vez
-  useEffect(() => {
-    (async () => {
-      setFilterLoading(true);
-      try {
-        const options = await dashboardService.fetchFilterOptions();
-        setFilterOptions(options);
-      } catch (err) {
-        setFilterOptions({
-          localidades: [],
-          bodegas: [],
-          regiones: [],
-          zonas: [],
-          ruta: [],
-          clasificaciones: [],
-          claveLista: [],
-          canal: [],
-        });
-      } finally {
-        setFilterLoading(false);
-      }
-    })();
-  }, [setFilterOptions, setFilterLoading]);
+  const {
+    data: filterOptions,
+  } = useQuery({
+    queryKey: ['customerFilterOptions'],
+    queryFn: () => dashboardService.fetchFilterOptions(),
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+  });
 
   return {
-    rows: query.data ?? [],
-    loading: query.isLoading,
-    error: query.error,
+    rows: tableData,
+    loading: isTableLoading,
+    isFetching: isTableFetching,
+    error: tableError,
     total,
     page,
     pageSize,

@@ -23,3 +23,22 @@ export const ETM_DASHBOARD_FIELDS = gql`
     }
 
 `;
+
+export const ETM_DASHBOARD_FIELDS_WAREHOUSE = gql`
+    fragment DashboardFieldsWarehouse on ReportGeppWarehouseEtmEntity { 
+    ID 
+    BODEGA
+    UOPM
+    REGION
+    ZONA
+    LOCALIDAD
+    RUTA
+    TIPO_RUTA
+    CLAVE_LISTA
+    ACTIVA
+    CLASIFICACION
+    LAST_UPDATED
+    CANAL
+    }
+
+`;

@@ -75,3 +75,11 @@ export const SEARCH_CLIENTE_ID = gql`
         searchClienteId(partial: $partial, limit: $limit)
     }
 `;
+
+export const GET_PGR_LEALTAD = gql`
+  query GetDistinctPgrLealtad {
+    getDistinctPgrLealtad {
+      pgrLealtad
+    }
+  }
+`;

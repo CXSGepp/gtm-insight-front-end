@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { ColumnDef } from '@tanstack/react-table';
 import IconButton from '@mui/material/IconButton';
 import BaseTable from '../../../shared/components/base-table/BaseTable';
 import Pagination from '../../../shared/components/pagination/Pagination';
@@ -8,75 +9,66 @@ import InventorySharpIcon from '@mui/icons-material/InventorySharp';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import Tooltip from '@mui/material/Tooltip';
 import { Box} from '@mui/material';
-
-import { useQuery } from '@tanstack/react-query';
-import { dashboardService } from '../../../app/providers/services/dashboard.service';
-import { GlassDialog } from '../../../shared/components/dialog/base-dialog';
-
-
-import { ColumnDef } from '@tanstack/react-table';
 import { useWarehouseTableStore } from '../store/warehouseTableStore';
+import { GlassDialog } from '../../../shared/components/dialog/base-dialog';
+import { GlobalStatusChip } from '../../../shared/components/chips/GlobalStatusChip';
+import { useSnackbar } from '../../../shared/providers/SnackbarProvider'; // Importa el hook
+import { usePaginatedWarehouseQuery } from '../hooks/usePaginatedWarehouseQuery';
 
 interface WarehouseDashboardItem {
-    LOCALIDAD: string;
-    ID_BODEGA: number;
-    REGION: string;
-    ZONA: string;
-    RUTA: string;
-    CLASIFICACION: string;
-    FRECUENCIA: string;
-    CLAVE_LISTA: number;
-    CANAL: number;
-    TELEFONO: number;
-    DIRECCION: string;
+ BODEGA: number;
+ LOCALIDAD: string;
 }
 
+export default function WarehouserMasterTable() {
+ const { showSnackbar } = useSnackbar();
+  const { 
+    page, 
+    pageSize, 
+    setPagination,
+    noDataNotified, 
+    setNoDataNotified,
+  } = useWarehouseTableStore();
 
-export default function WarehouseMasterTable() {
-  const { filters, page, pageSize, total, setPagination, setTotal } = useWarehouseTableStore();
-  
+const { rows, total, loading } = usePaginatedWarehouseQuery();
+
+
+  useEffect(() => {
+    if (!loading && rows.length === 0 && !noDataNotified) {
+      showSnackbar('No se encontraron datos para los filtros seleccionados.', 'info');
+      setNoDataNotified(true); 
+    }
+  }, [loading, rows, noDataNotified, showSnackbar, setNoDataNotified]);
+
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedWarehouse, setSelectedWarehouse] = useState<WarehouseDashboardItem | null>(null);
-  
   const [isDiscountModalOpen, setIsDiscountModalOpen] = useState(false);
   const [selectedDiscountWarehouse, setSelectedDiscountWarehouse] = useState<WarehouseDashboardItem | null>(null);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['warehouses', filters, page, pageSize],
-    queryFn: async () => { 
-      const result = await dashboardService.fetchDashboardData(page, pageSize, filters);
-      setTotal(result.total);
-      return result.items;
-    },
-   
-  });
 
-  const rows = data ?? [];
-  
   const handleOpenModal = (warehouse: WarehouseDashboardItem) => {
     setSelectedWarehouse(warehouse);
     setIsModalOpen(true);
   };
-  
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedWarehouse(null);
   };
 
-  const handleOpenDiscountModal = (warehouse: WarehouseDashboardItem) => {
-    setSelectedDiscountWarehouse(warehouse);
+  const handleOpenDiscountModal = (customer: WarehouseDashboardItem) => {
+    setSelectedDiscountWarehouse(customer);
     setIsDiscountModalOpen(true);
   };
 
   const handleCloseDiscountModal = () => {
     setIsDiscountModalOpen(false);
     setSelectedDiscountWarehouse(null);
-  }
+  };
 
   const columns: ColumnDef<WarehouseDashboardItem>[] = [
-
-    
-      {
+    {
       id: 'view-products',
       header: () => 'Productos',
       cell: ({ row }) => (
@@ -109,35 +101,32 @@ export default function WarehouseMasterTable() {
       size: 50,
     },
     { accessorKey: 'LOCALIDAD', header: 'Bodega' },
-    { accessorKey: 'ID_BODEGA', header: 'Id Bodega' },
-  
+    { accessorKey: 'BODEGA', header: 'Id Bodega' },
     { accessorKey: 'REGION', header: 'Región' },
     { accessorKey: 'ZONA', header: 'Zona' },
     { accessorKey: 'RUTA', header: 'Ruta' },
     { accessorKey: 'CLASIFICACION', header: 'Clasificación' },
-    { accessorKey: 'FRECUENCIA', header: 'Frecuencia' },
     {
       accessorKey: 'CLAVE_LISTA',
       header: 'Clave Lista',
       cell: ({ getValue }) => getValue() ?? '—',
     },
     { accessorKey: 'CANAL', header: 'Canal' },
-
   ];
 
   return (
     <>
-    <BaseTable
-      columns={columns}
-      data={rows}
-      loading={isLoading}
-      totalItems={total}
-      pageIndex={page}
-      pageSize={pageSize}
-      onPageChange={(p) => setPagination(p, pageSize)}
-      onPageSizeChange={(s) => setPagination(page, s)}
-      getRowId={(r) => String(r.ID)}
-    />
+      <BaseTable
+        columns={columns}
+        data={rows}
+        loading={loading}
+        totalItems={total}
+        pageIndex={page}
+        pageSize={pageSize}
+        onPageChange={(p) => setPagination(p, pageSize)}
+        onPageSizeChange={(s) => setPagination(page, s)}
+        getRowId={(r) => String(r.ID)}
+      />
       <Pagination
         page={page}
         pageSize={pageSize}
@@ -145,52 +134,58 @@ export default function WarehouseMasterTable() {
         onPageChange={(p) => setPagination(p, pageSize)}
         onPageSizeChange={(s) => setPagination(page, s)}
       />
-    {/* Modal Productos */}
-    {selectedWarehouse && (
-    <GlassDialog
-      open={isModalOpen}
-      onClose={handleCloseModal}
-      maxWidth="lg"
-      fullWidth
-      title={
-          <Box>
-            Productos para: <strong>{selectedWarehouse.LOCALIDAD}</strong>
-          </Box>
-        }
-      >
-        <SkuDetailTable
-                     bodega={selectedWarehouse.ID_BODEGA}
-                     page={0}
-                     pageSize={10}
-                   />
 
-    </GlassDialog>
-    )}
+      {/* Modal Productos */}
+      {selectedWarehouse && (
+        <GlassDialog
+          open={isModalOpen}
+          onClose={handleCloseModal}
+          maxWidth="lg"
+          fullWidth
+          title={
+            <Box>
+              Productos para: <strong>{selectedWarehouse.LOCALIDAD}</strong>
+              <br />
+              <small>
+                Boidega ID: {selectedWarehouse.BODEGA}
+              </small>
+            </Box>
+          }
+        >
+            <SkuDetailTable
+              bodega={selectedWarehouse.BODEGA}
+
+            />
+
+        </GlassDialog>
+      )}
+
+      {/* Modal Descuentos */}
+      {selectedDiscountWarehouse && (
+        <GlassDialog
+          open={isDiscountModalOpen}
+          onClose={handleCloseDiscountModal}
+          maxWidth="lg"
+          fullWidth
+          title={ 
+              <Box>
+              Descuentos para: <strong>{selectedDiscountWarehouse.LOCALIDAD}</strong>
+              <br />
+              <small>
+               Bodega: {selectedDiscountWarehouse.BODEGA}
+              </small>
+            </Box>
+          }
     
-  {/* Modal Descuentos */}
-       {selectedDiscountWarehouse && (
-         <GlassDialog
-           open={isDiscountModalOpen}
-           onClose={handleCloseDiscountModal}
-           maxWidth="lg"
-           fullWidth
-           title={ 
-               <Box>
-               Descuentos para: <strong>{selectedDiscountWarehouse.LOCALIDAD}</strong>
-               <br />
-             </Box>
-           }
-     
-         >
-             <DiscountsDetailTable
-               bodega={selectedDiscountWarehouse.ID_BODEGA}
-               page={0}
-               pageSize={10}
-             />
-         
-         </GlassDialog>
-       )}
-     </>
-   );
-
+        >
+            <DiscountsDetailTable
+              bodega={selectedDiscountWarehouse.BODEGA}
+              page={0}
+              pageSize={10}
+            />
+        
+        </GlassDialog>
+      )}
+    </>
+  );
 }

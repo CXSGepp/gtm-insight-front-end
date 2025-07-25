@@ -36,6 +36,7 @@ export interface DashboardFilters {
   ruta?: number;
   canal?: number;
   claveLista?: number;
+  pgrLealtad?: string;
  /// sku?: string | number | null;
 }
 
@@ -48,6 +49,7 @@ export interface DashboardFilterOptions {
   ruta: number[];
   canal: number[];
   claveLista: number[];
+  pgrLealtad?: string;
 
 }
 
@@ -83,6 +85,7 @@ export interface EtmDashboardFilterInput {
   canal?: number;
   uopm?: string;
   direccion?: string;
+  pgrLealtad?: string;
 
   /* ── filtros de SKU ──────────────────────────────── */
   sku?: number;

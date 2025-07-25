@@ -125,12 +125,6 @@ export default function BaseTable<TData>({
                     <CircularProgress size={24} />
                   </TableCell>
                 </TableRow>
-              ) : table.getRowModel().rows.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={columns.length + 1} align="center">
-                    No data found
-                  </TableCell>
-                </TableRow>
               ) : (
                 table.getRowModel().rows.map((row) => (
                   <React.Fragment key={row.id}>

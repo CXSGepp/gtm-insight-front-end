@@ -11,6 +11,7 @@ import {
   Box,
 } from '@mui/material';
 import TrafficSharpIcon from '@mui/icons-material/TrafficSharp';
+import { GlassDialog } from '../../../shared/components/dialog/base-dialog';
 
 interface SemaforoProps {
   status: string;
@@ -92,7 +93,7 @@ export const SemaforoDialogCell: React.FC<SemaforoProps> = ({
         </IconButton>
       </Tooltip>
 
-      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="xs" fullWidth>
+      <GlassDialog open={open} onClose={() => setOpen(false)} maxWidth="xs" fullWidth>
         <DialogTitle sx={{ textAlign: 'center', pt: 2 }}>
           Resumen de validaciones
         </DialogTitle>
@@ -110,12 +111,7 @@ export const SemaforoDialogCell: React.FC<SemaforoProps> = ({
           ))}
         </DialogContent>
 
-        <DialogActions>
-          <Button onClick={() => setOpen(false)} variant="contained" color="primary" fullWidth>
-            Cerrar
-          </Button>
-        </DialogActions>
-      </Dialog>
+      </GlassDialog>
     </>
   );
 };

@@ -11,10 +11,10 @@ import {
   Drawer,
   useTheme,
   useMediaQuery,
-  IconButton, // 1. Importa IconButton
+  IconButton,
 } from '@mui/material';
 import { useRouterState } from '@tanstack/react-router';
-import { ExpandLess, ExpandMore, Menu as MenuIcon, ChevronLeft as ChevronLeftIcon } from '@mui/icons-material';
+import { ExpandLess, ExpandMore, Menu as MenuIcon, ChevronLeft as ChevronLeftIcon, Article as ArticleIcon } from '@mui/icons-material';
 import geppLogo from '../../../../assets/geppLogo.png';
 import GEPP_Logo_fondo_blanco from '../../../../assets/GEPP_Logo_fondo_blanco.png';
 import { navigationItems } from '../../config/navigation';
@@ -191,7 +191,46 @@ const DrawerContent = () => {
           ) : null
         )}
       </List>
+
+       <Box>
+        <Divider sx={{ borderColor: 'rgba(3, 23, 140, 0.5)' }} />
+        <ListItemButton
+          component="a"
+          href={`${import.meta.env.BASE_URL}GETM_INSIGHT_MANUAL.pdf`}
+          target="_blank"
+          rel="noopener noreferrer"
+          download
+          sx={{
+            minHeight: 48,
+            justifyContent: sidebarOpen ? 'initial' : 'center',
+            px: 2.5,
+            color: '#03178C',
+          }}
+        >
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              mr: sidebarOpen ? 3 : 'auto',
+              justifyContent: 'center',
+              color: 'inherit',
+            }}
+          >
+            <ArticleIcon />
+          </ListItemIcon>
+          <ListItemText
+            primary="Manual de uso"
+            sx={{
+              opacity: sidebarOpen ? 1 : 0,
+              transition: theme.transitions.create('opacity', {
+                duration: theme.transitions.duration.shortest,
+              }),
+            }}
+          />
+        </ListItemButton>
+      </Box>
     </Box>
+
+    
   );
 };
 

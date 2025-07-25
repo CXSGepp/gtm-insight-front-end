@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Box,
   CircularProgress,
-  Typography,
-  Paper,
-  Button,
   Tooltip,
   IconButton,
 } from '@mui/material';
@@ -14,63 +12,70 @@ import { ColumnDef } from '@tanstack/react-table';
 import { StatusChip } from '../../../shared/components/chips/StatusChip';
 import { GlobalStatusChip } from '../../../shared/components/chips/GlobalStatusChip';
 import InventorySharpIcon from '@mui/icons-material/InventorySharp';
-// 1. Importa el hook y el componente del diálogo
 import { useDiscountProductsQuery } from '../hooks/useDiscountProducts';
 import { DiscProductsDetailDialog } from './DiscProductsDetailDialog';
-import { GlassCard } from '../../../shared/components/glass-card/glass-card';
+import { useSnackbar } from '../../../shared/providers/SnackbarProvider';
 
-interface DiscountsDetailTableProps {
+interface DiscountDetailTableProps {
   bodega: number;
   cliente?: number;
-  page: number;
-  pageSize: number;
 }
 
 export default function DiscountsDetailTable({
   bodega,
-  cliente,
-  page,
-  pageSize,
-}: DiscountsDetailTableProps) {
-  const { setPagination, setBodega, setCliente } = useDiscountTableStore();
-  const { data: discountData, isLoading: discountsLoading } = usePaginatedDiscountQuery({
-    bodega,
-    cliente,
+  cliente
+}: DiscountDetailTableProps) {
+  const { showSnackbar } = useSnackbar();
+  const {
     page,
     pageSize,
-  });
+    setPagination,
+    patchFilters,
+    noDataNotified,
+    setNoDataNotified,
+  } = useDiscountTableStore();
 
-  // 2. Simplifica el estado local. Solo necesitas saber qué diálogo abrir.
+  const { rows, total, loading } = usePaginatedDiscountQuery();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedDiscountId, setSelectedDiscountId] = useState<number | null>(null);
 
-  // 3. Usa el hook para obtener los productos del descuento seleccionado.
-  //    Se activará solo cuando 'selectedDiscountId' tenga un valor.
-  const { data: productsData, isLoading: productsLoading } = useDiscountProductsQuery({
+
+  const { data: productsData, loading: productsLoading } = useDiscountProductsQuery({
       bodega,
       cliente,
       id_desc: selectedDiscountId,
-      page: 1, // O la paginación que necesites para el modal
+      page: 1,
       limit: 100,
   });
 
-  const handleOpenProducts = (discountId: number) => {
+  useEffect(() => {
+  patchFilters({ bodega, cliente });
+  }, [bodega, cliente, patchFilters]);
+
+  useEffect(() => {
+    if (!loading && rows.length === 0 && !noDataNotified) {
+      showSnackbar('No se encontraron descuentos para los parámetros seleccionados.', 'info');
+      setNoDataNotified(true);
+    }
+  }, [loading, rows, noDataNotified, showSnackbar, setNoDataNotified]);
+
+   const handleOpenProducts = (discountId: number) => {
     setSelectedDiscountId(discountId);
     setIsDialogOpen(true);
   };
 
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
-    setSelectedDiscountId(null); // Limpia el ID al cerrar
+    setSelectedDiscountId(null);
   };
 
   const discountColumns: ColumnDef<any>[] = [
-    { accessorKey: 'DESCID', header: 'ID Descuento' },
+    { accessorKey: 'DESCID', header: 'Id Descuento' },
     {
       id: 'productos',
       header:  () => 'Productos',
       cell: ({ row }) => (
-      <Tooltip title="Ver productos al descuento">
+      <Tooltip title="Ver productos asociados al descuento">
        <IconButton
           size="small"
           onClick={() => handleOpenProducts(row.original.DESCID)}
@@ -82,9 +87,10 @@ export default function DiscountsDetailTable({
       ),
       size: 80,
     },
-    { accessorKey: 'DESCNAME', header: 'Descripción', size: 200, minSize: 80, maxSize: 200 },
-    { accessorKey: 'FECHASTART', header: 'Fecha Inicio' },
-    { accessorKey: 'FECHAEND', header: 'Fecha Fin' },
+    { accessorKey: 'DESCNAME', header: 'Nombre Descuento' },
+    { accessorKey: 'MAXNUM', header: 'Impactos'},
+    { accessorKey: 'IDDESCUENTOMSIO', header: 'Id Descuento MsiO'},
+
     {
       accessorKey: 'EXCLUSIVOTLV',
       header: 'Exclusivo TLV',
@@ -105,6 +111,13 @@ export default function DiscountsDetailTable({
       header: 'Exclusivo MPEP',
       cell: ({ cell }) => <StatusChip active={!!cell.getValue()} />,
     },
+     {
+      accessorKey: 'EXCLUSIVOMPEPW',
+      header: 'Exclusivo PEPW',
+      cell: ({ cell }) => <StatusChip active={!!cell.getValue()} />,
+    },
+    { accessorKey: 'FECHASTART', header: 'Fecha Inicio' },
+    { accessorKey: 'FECHAEND', header: 'Fecha Fin' },
     {
       accessorKey: 'VIGENTE',
       header: 'Vigente',
@@ -112,45 +125,29 @@ export default function DiscountsDetailTable({
     },
   ];
 
-  useEffect(() => {
-    setBodega(bodega);
-    if (cliente) setCliente(cliente);
-  }, [bodega, cliente, setBodega, setCliente]);
-
-  if (discountsLoading) {
-    return (
-      <GlassCard display="flex" justifyContent="center" alignItems="center" minHeight={120} >
-        <CircularProgress size={28} />
-      </GlassCard>
-    );
-  }
-
-  if (!discountsLoading && (!discountData)) {
-    return (
-      <GlassCard
-       sx={{ mt: 2,  borderRadius: 2 }}>
-          <Typography variant="h6">
-            No se encontraron descuentos para la bodega <b>{bodega}</b> o cliente <b>{cliente}</b>.
-          </Typography>
-      </GlassCard>
-    );
-  }
-
-  return (
+ return (
     <>
-        <BaseTable
-          columns={discountColumns}
-          data={discountData?.items ?? []}
-          loading={discountsLoading}
-          totalItems={discountData?.total ?? 0}
-          pageIndex={page}
-          pageSize={pageSize}
-          onPaginationChange={(newPage, newSize) => setPagination(newPage, newSize)}
-          darkMode
-        />
+      <BaseTable
+        columns={discountColumns}
+        data={rows}
+        loading={loading}
+        totalItems={total}
+        pageIndex={page}
+        pageSize={pageSize}
   
+          onPaginationChange={(paginationUpdater) => {
+ 
+          const oldState = { page, pageSize };
+          const newState =
+            typeof paginationUpdater === 'function'
+              ? paginationUpdater(oldState)
+              : paginationUpdater;
+          
+          setPagination(newState.pageIndex, newState.pageSize);
+        }}
+        darkMode
+      />
 
-      {/* 5. Renderiza el componente del diálogo y pásale los datos del hook */}
       <DiscProductsDetailDialog
         open={isDialogOpen}
         onClose={handleCloseDialog}

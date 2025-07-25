@@ -18,6 +18,7 @@ export const DISCOUNT_FIELDS = gql`
     IDCLIENTE
     ID_BODEGA
     VIGENTE
+    MAXNUM
   }
 `;
 

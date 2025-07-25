@@ -1,4 +1,3 @@
-import React from 'react';
 import FilterContainer from '../../../shared/components/filters/filter-container/FilterContainer';
 import FilterInput from '../../../shared/components/filters/filter-input/FilterInput';
 import { useWarehouseFilters } from '../hooks/useWarehouseFilters';

@@ -1,40 +1,40 @@
-import { useDiscountTableStore } from '../store/discountTableStore';
 import { useQuery } from '@tanstack/react-query';
+import { useDiscountTableStore } from '../store/discountTableStore';
 import { discountService } from '../../../app/providers/services/discount.service';
+import { DiscountQueryParams, DiscountResponse, DiscountItem } from '../../../shared/types/discount.types'; // Ajusta la ruta si es necesario
 
 export function usePaginatedDiscountQuery() {
-  const {
-    bodega,
-    cliente,
-    page,
-    pageSize,
-    setPagination,
-    setTotal,
-  } = useDiscountTableStore();
+  const { filters, page, pageSize, setNoDataNotified } = useDiscountTableStore();
 
-  const enabled = !!bodega;
+  const enabled = !!filters.bodega;
 
-  const query = useQuery({
-    queryKey: ['discounts', bodega, cliente, page, pageSize],
-    queryFn: async () => {
-      const result = await discountService.fetchDiscountsForRow({
-        bodega,
-        cliente,
+ const { data, isLoading, isFetching } = useQuery<DiscountResponse<DiscountItem>>({
+    queryKey: ['discounts', { filters, page, pageSize }],
+    queryFn: () => {
+      const params: DiscountQueryParams = {
+        ...filters,
         page,
         limit: pageSize,
-      });
-      setTotal(result.total);
-      setPagination(page, pageSize);
-      return result;
+        bodega: filters.bodega,
+      };
+      
+      return discountService.fetchDiscountsForRow(params);
     },
     enabled,
     keepPreviousData: true,
     staleTime: 5 * 60 * 1000,
+    onSuccess: (data) => {
+      if (data.items.length === 0) {
+        setNoDataNotified(true);
+      }
+    },
   });
 
+
   return {
-    ...query,
-    rows: query.data?.items || [],
-    total: query.data?.total || 0,
+    rows: data?.items ?? [],
+    total: data?.total ?? 0,
+    loading: isLoading,
+    isFetching,
   };
 }

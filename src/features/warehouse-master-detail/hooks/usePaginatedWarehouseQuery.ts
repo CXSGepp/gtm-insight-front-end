@@ -1,8 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { dashboardService } from '../../../app/providers/services/dashboard.service';
-
-import { useEffect } from 'react';
-import { useWarehouseDashboardStore } from '../store/warehouseTableStore';
+import { useWarehouseTableStore } from '../store/warehouseTableStore';
 
 export function usePaginatedWarehouseQuery() {
   const {
@@ -11,53 +9,40 @@ export function usePaginatedWarehouseQuery() {
     pageSize,
     total,
     setTotal,
-    filterOptions,
-    setFilterOptions,
-    setFilterLoading,
-  } = useWarehouseDashboardStore();
+  } = useWarehouseTableStore();
  
-  const query = useQuery({
-    queryKey: ['customers', filters, page, pageSize],
+   const {
+    data: tableData = [],
+    isLoading: isTableLoading, 
+    isFetching: isTableFetching,
+    error: tableError,
+  } = useQuery({
+    queryKey: ['warehouse', filters, page, pageSize],
     queryFn: async () => {
-      const result = await dashboardService.fetchDashboardData(page, pageSize, filters);
-      setTotal(result.total); // mantiene sincronizado Zustand
-      return result.items;
+      const result = await dashboardService.fetchDashboardWarehouseData(page, pageSize, filters);
+      setTotal(result.total);
+      return result.items ?? [];
     },
     keepPreviousData: true,
   });
 
-  // Cargar opciones de filtro iniciales una vez
-  useEffect(() => {
-    (async () => {
-      setFilterLoading(true);
-      try {
-        const options = await dashboardService.fetchFilterOptions();
-        setFilterOptions(options);
-      } catch (err) {
-        setFilterOptions({
-          localidades: [],
-          bodegas: [],
-          regiones: [],
-          zonas: [],
-          ruta: [],
-          clasificaciones: [],
-          claveLista: [],
-          canal: [],
-        });
-      } finally {
-        setFilterLoading(false);
-      }
-    })();
-  }, [setFilterOptions, setFilterLoading]);
+  const {
+    data: filterOptions,
+  } = useQuery({
+    queryKey: ['warehouseFilterOptions'],
+    queryFn: () => dashboardService.fetchFilterOptions(),
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+  });
 
   return {
-    rows: query.data ?? [],
-    loading: query.isLoading,
-    error: query.error,
+    rows: tableData,
+    loading: isTableLoading,
+    isFetching: isTableFetching,
+    error: tableError,
     total,
     page,
     pageSize,
     filterOptions,
   };
 }
-

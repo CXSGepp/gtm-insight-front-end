@@ -28,10 +28,11 @@ export function useWarehouseFilters() {
             setFilterLoading(false);
             return opts;
         },
-        staleTime: 1000 * 60 * 1000, // 1 hour
+        staleTime: 1000 * 60 * 1000,
     });
 
-    useQuery({ 
+   
+    useQuery({
         queryKey: ['filter-options', firstSelectedFilter.key, firstSelectedFilter.value],
         enabled: !!firstSelectedFilter.key,
         queryFn: async () => {
@@ -47,30 +48,29 @@ export function useWarehouseFilters() {
         staleTime: 1000 * 60 * 5,
     });
 
-    const applyFilters = (payload: Record<string, any>) => {
-        patchFilters(payload);
-        if( firstSelectedFilter.key ) {
+    const applyFilters = (localFilters: Record<string, any>) => {
+         patchFilters(localFilters);  
+        
+        if (firstSelectedFilter.key) {
             resetFirstSelected();
         }
-    }
+    };
 
     const resetAll = async () => {
         resetFilters();
-        resetFirstSelected();
+        resetFirstSelected(); 
         await queryClient.invalidateQueries({ queryKey: ['filter-options', 'initial'] });
+    };
 
-    }
-        const onFilterChange = useCallback(
+    const onFilterChange = useCallback(
         (
             key: string,
             value: any,
             localFilters: Record<string, any>,
             setLocal: (f: Record<string, any>) => void,
         ) => {
-            // Actualiza el estado local del formulario
             setLocal({ ...localFilters, [key]: value });
             
-            // Si aún no se ha seleccionado un filtro para la cascada, establece este como el primero.
             if (!firstSelectedFilter.key) {
                 setFirstSelected(key, value);
             }
@@ -86,5 +86,4 @@ export function useWarehouseFilters() {
         resetAll,
         onFilterChange,
     };
-
 }

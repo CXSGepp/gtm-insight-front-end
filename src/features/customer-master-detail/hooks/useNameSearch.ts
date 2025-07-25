@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { client } from '../../../app/providers/client/graphqlClient';
 import { gql } from '@apollo/client';
-
+import { dashboardService } from '../../../app/providers';
+import { useQuery } from '@tanstack/react-query';
 const SEARCH_NOMBRES = gql`
   query SearchNombres($partial: String!, $limit: Float!) {
     searchNombres(partial: $partial, limit: $limit)
@@ -45,4 +46,21 @@ export function useNameSearch(input: string) {
   }, [input]);
 
   return { options, loading };
+}
+
+
+export function usePgrLealtad() {
+  const { data, isLoading } = useQuery({
+    queryKey: ['pgrLealtadOptions'],
+    
+    queryFn: () => dashboardService.fetchPrgLealtad(),
+    
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+  });
+
+  return {
+    options: data ?? [],
+    loading: isLoading,
+  };
 }

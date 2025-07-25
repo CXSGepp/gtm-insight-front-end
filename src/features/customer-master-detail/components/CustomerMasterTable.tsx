@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import IconButton from '@mui/material/IconButton';
 import BaseTable from '../../../shared/components/base-table/BaseTable';
@@ -10,10 +10,10 @@ import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import Tooltip from '@mui/material/Tooltip';
 import { Box} from '@mui/material';
 import { useCustomerDashboardStore } from '../store/customerTableStore';
-import { useQuery } from '@tanstack/react-query';
-import { dashboardService } from '../../../app/providers/services/dashboard.service';
 import { GlassDialog } from '../../../shared/components/dialog/base-dialog';
 import { GlobalStatusChip } from '../../../shared/components/chips/GlobalStatusChip';
+import { useSnackbar } from '../../../shared/providers/SnackbarProvider'; // Importa el hook
+import { usePaginatedCustomerQuery } from '../hooks/usePaginatedCustomerQuery';
 
 interface CustomerDashboardItem {
   ID_BODEGA: number;
@@ -23,24 +23,31 @@ interface CustomerDashboardItem {
 }
 
 export default function CustomerMasterTable() {
-const { filters, page, pageSize, total, setPagination, setTotal } = useCustomerDashboardStore();
+ const { showSnackbar } = useSnackbar();
+  const { 
+    page, 
+    pageSize, 
+    setPagination,
+    noDataNotified, 
+    setNoDataNotified,
+  } = useCustomerDashboardStore();
+
+const { rows, total, loading } = usePaginatedCustomerQuery();
+
+
+  useEffect(() => {
+    if (!loading && rows.length === 0 && !noDataNotified) {
+      showSnackbar('No se encontraron datos para los filtros seleccionados.', 'info');
+      setNoDataNotified(true); 
+    }
+  }, [loading, rows, noDataNotified, showSnackbar, setNoDataNotified]);
+
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState<CustomerDashboardItem | null>(null);
-
   const [isDiscountModalOpen, setIsDiscountModalOpen] = useState(false);
   const [selectedDiscountCustomer, setSelectedDiscountCustomer] = useState<CustomerDashboardItem | null>(null);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['customers', filters, page, pageSize],
-    queryFn: async () => {
-      const result = await dashboardService.fetchDashboardData(page, pageSize, filters);
-      setTotal(result.total);
-      return result.items;
-    },
-    keepPreviousData: true,
-  });
-
-  const rows = data ?? [];
 
   const handleOpenModal = (customer: CustomerDashboardItem) => {
     setSelectedCustomer(customer);
@@ -143,7 +150,7 @@ const { filters, page, pageSize, total, setPagination, setTotal } = useCustomerD
       <BaseTable
         columns={columns}
         data={rows}
-        loading={isLoading}
+        loading={loading}
         totalItems={total}
         pageIndex={page}
         pageSize={pageSize}
@@ -179,8 +186,6 @@ const { filters, page, pageSize, total, setPagination, setTotal } = useCustomerD
             <SkuDetailTable
               bodega={selectedCustomer.ID_BODEGA}
 
-              page={0}
-              pageSize={10}
             />
 
         </GlassDialog>
